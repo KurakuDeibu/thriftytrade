@@ -33,6 +33,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container">
     <div class="error-container">
         <i class="bi bi-exclamation-triangle error-icon mb-4"></i>

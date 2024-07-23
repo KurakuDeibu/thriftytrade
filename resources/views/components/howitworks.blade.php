@@ -1,3 +1,4 @@
+
 <div class="hero-section my-4">
     <h2 class="fw-bold text-center mt-2 mb-4">How It Works</h2>
     <div class="row text-center">

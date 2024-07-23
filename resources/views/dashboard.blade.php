@@ -10,6 +10,11 @@
       color: #4267b2 !important;
 
     }
+    .sidebar {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
     .nav-link-custom:hover::after {
       content: '';
@@ -19,16 +24,6 @@
       position: absolute;
       bottom: 0;
       left: 0;
-    }
-
-    .new-listing-btn-custom {
-      background-color: #42b72a;
-      color: white;
-      transition: background-color 0.3s ease;
-    }
-
-    .new-listing-btn-custom:hover {
-      background-color: #4267B2;
     }
 
     .stat-card-custom {
@@ -72,16 +67,21 @@
                 <div class="container mt-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h1 class="navbar-brand">{{ Auth::user()->name }}'s' Dashboard</h1>
-                        <button class="btn btn-outline-primary"> Manage Listing</button>
+                        {{-- <button class="btn btn-outline-primary"> Manage Listing</button> --}}
                     </div>
+
+                    {{-- @foreach ($featuredProducts as $products) --}}
 
                     <div class="row mb-4">
                         <div class="col-md-3 mb-3">
                             <div class="bg-white p-3 rounded stat-card-custom">
                                 <div class="text-muted">Active Listings</div>
-                                <div class="h4">69</div>
+                                <div class="h4">5</div>
                             </div>
                         </div>
+                                                
+                    {{-- @endforeach --}}
+
                         <div class="col-md-3 mb-3">
                             <div class="bg-white p-3 rounded stat-card-custom">
                                 <div class="text-muted">Items Sold</div>
@@ -91,7 +91,9 @@
                         <div class="col-md-3 mb-3">
                             <div class="bg-white p-3 rounded stat-card-custom">
                                 <div class="text-muted">Total Earnings</div>
-                                <div class="h4">$350</div>
+                                <div class="h4">₱250
+                                    {{-- {{Auth::user()->products->sum('price')}} --}}
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-3 mb-3">
@@ -124,7 +126,7 @@
                             <tbody>
                                 <tr>
                                     <td>Vintage Lamp</td>
-                                    <td>$45</td>
+                                    <td>₱250</td>
                                     <td>May 15, 2024</td>
                                     <td><span class="status-active">Active</span></td>
                                     <td>
@@ -134,16 +136,16 @@
                                 </tr>
                                 <tr>
                                     <td>Mountain Bike</td>
-                                    <td>$120</td>
+                                    <td>₱250</td>
                                     <td>May 10, 2024</td>
                                     <td><span class="status-sold">Sold</span></td>
                                     <td>
-                                        <button class="btn btn-outline-danger">View Details</button>
+                                        <button class="btn btn-primary">View Details</button>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Wooden Bookshelf</td>
-                                    <td>$80</td>
+                                    <td>₱250</td>
                                     <td>May 18, 2024</td>
                                     <td><span class="status-active">Active</span></td>
                                     <td>
@@ -153,7 +155,7 @@
                                 </tr>
                                 <tr>
                                     <td>Coffee Maker</td>
-                                    <td>$35</td>
+                                    <td>₱250</td>
                                     <td>May 20, 2024</td>
                                     <td><span class="status-active">Active</span></td>
                                     <td>
@@ -163,7 +165,7 @@
                                 </tr>
                                 <tr>
                                     <td>Indoor Plant</td>
-                                    <td>$25</td>
+                                    <td>₱250</td>
                                     <td>May 22, 2024</td>
                                     <td><span class="status-active">Active</span></td>
                                     <td>

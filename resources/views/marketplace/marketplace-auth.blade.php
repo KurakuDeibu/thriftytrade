@@ -73,11 +73,13 @@
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 py-2">
                     <div class="col">
                         <div class="card h-100 item-card">
+
                             <img src="https://placehold.co/400x400" alt="Vintage Lamp" class="card-img-top item-image">
                             <div class="card-body">
                                 <h5 class="card-title item-title">Vintage Lamp</h5>
                                 <p class="card-text item-price">$45</p>
                             </div>
+
                         </div>
                     </div>
 

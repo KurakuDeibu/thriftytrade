@@ -149,10 +149,10 @@ return [
         Features::emailVerification(),
         Features::updateProfileInformation(),
         Features::updatePasswords(),
-        // Features::twoFactorAuthentication([
+        // // Features::twoFactorAuthentication([
         //     'confirm' => true,
         //     'confirmPassword' => true,
-        //     // 'window' => 0,
+            // 'window' => 0,
         // ]), 
     ],
 

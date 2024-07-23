@@ -87,7 +87,7 @@
                 </ul>
 
                 @auth
-                <div class="py-2"><a href="/create-listing">
+                <div class="py-2"><a href="/create/listing">
                         <button class="btn btn-outline-primary mx-2">+ New Listing</button>
                     </a>
                 </div>

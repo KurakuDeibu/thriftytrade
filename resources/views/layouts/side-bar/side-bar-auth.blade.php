@@ -19,10 +19,19 @@
             <h4>Your Stats</h4>
             <p>Items Sold: 12</p>
             <p>Earnings: ₱350</p>
+
         </div>
 
+        @auth
+            
+        <div class="card bg-light mb-2"><a href="{{url('/dashboard')}}" class="btn btn-outline-primary">Manage Listings</a></div>
+        @endauth
 
-
+        
+        @if (Route::has('/marketplace'))
+        
+        @endif
+        
         @include('components.filter')
 
     </aside>
