@@ -1,8 +1,4 @@
 <style>
-    body {
-        background-color: #f8f9fa;
-    }
-
     .navbar-brand {
         font-weight: bold;
         color: #0d6efd !important;
@@ -30,8 +26,9 @@
     }
 </style>
 
-@extends('layouts.app')
 
+@extends('layouts.app')
+    
 @section('content')
 
 <div class="container">
@@ -44,5 +41,6 @@
         </a>
     </div>
 </div>
-
 @endsection
+
+

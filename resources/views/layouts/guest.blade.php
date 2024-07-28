@@ -31,6 +31,7 @@
             <main class="container mx-auto">
                 {{ $slot }}
             </main>
+            {{-- @yield('content') --}}
 
         @include('layouts.partials.footer')
 

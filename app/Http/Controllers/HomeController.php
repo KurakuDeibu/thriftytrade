@@ -14,7 +14,7 @@ class HomeController extends Controller
     public function __invoke(Request $request)
     {
         return view('home', [
-            'featuredProducts' => Product::take(6)->get()
+            'featuredProducts' => Product::featured()->latest('created_at')->take(6)->get()
         ]); // home.blade.php / landing page
 
     }

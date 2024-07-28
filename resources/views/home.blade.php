@@ -84,8 +84,7 @@
         @endauth
 
 
-        @include('components.products.contents')
-
+        @include('components.partials.product-card')
         {{-- <!-- CONTENT -->
         <div class="col-lg-9">
             <main>
@@ -114,9 +113,10 @@
     </div> --}}
 
         <!-- END OF CONTENT -->
-    </div>
+
     </div>
 
+
     @include('components.howitworks')
-    </div>
+</div>
 @endsection

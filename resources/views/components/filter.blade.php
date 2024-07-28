@@ -16,10 +16,11 @@
             <label for="category" class="form-label">Category:</label>
             <select id="category" class="form-select">
                 <option value="">All Categories</option>
-                <option value="furniture">Furniture</option>
-                <option value="electronics">Electronics</option>
-                <option value="clothing">Clothing</option>
-                <option value="books">Books</option>
+                <option value="wantabuyer">Want a Buyer</option>
+                <option value="wantaseller">Want a Seller</option>
+                <option value="">Featured</option>
+                <option value="">Vehicles</option>
+                <option value="">Others</option>
             </select>
         </div>
 

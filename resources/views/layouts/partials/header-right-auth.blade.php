@@ -1,4 +1,5 @@
    <!-- Settings Dropdown -->
+   
    <div class="ms-3 relative">
     <x-dropdown align="right" width="48">
         <x-slot name="trigger">
@@ -30,8 +31,12 @@
                 {{ __('Manage Account') }}
             </div>
 
-            <x-dropdown-link href="{{ route('profile.show') }}">
+            <x-dropdown-link wire:navigate href="{{ route('profile.show') }}">
                 {{ __('Profile') }}
+            </x-dropdown-link>
+
+            <x-dropdown-link wire:navigate href="{{ route('dashboard') }}">
+                {{ __('History') }}
             </x-dropdown-link>
 
             @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
