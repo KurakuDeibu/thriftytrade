@@ -1,8 +1,4 @@
 <style>
-    body {
-        background-color: #f8f9fa;
-    }
-
     .navbar-brand {
         font-weight: bold;
         color: #4267B2 !important;
@@ -59,23 +55,22 @@
 
                         <div class="col-md-7">
                             <div class="mb-3">
-                                <label for="title" class="form-label">Title</label>
+                                <label for="title" class="form-label">Product Name: </label>
                                 <input type="text" class="form-control" id="title" name="title" required="">
                             </div>
                             <div class="mb-3">
                                 <label for="category" class="form-label">Category</label>
                                 <select class="form-select" id="category" name="category" required="">
                                     <option value="">Select a category</option>
-                                    <option value="electronics">Electronics</option>
-                                    <option value="clothing">Clothing</option>
-                                    <option value="furniture">Furniture</option>
-                                    <option value="books">Books</option>
-                                    <option value="toys">Toys</option>
-                                    <option value="other">Other</option>
+                                    <option value="wantabuyer">Want a Buyer</option>
+                                    <option value="wantaseller">Want a Seller</option>
+                                    <option value="featured">Featured</option>
+                                    <option value="vehicles">Vehicles</option>
+                                    <option value="others">Others</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
+                                <label for="description" class="form-label">Product Description: </label>
                                 <textarea class="form-control" id="description" name="description" rows="4" required=""></textarea>
                             </div>
                             <div class="row">
@@ -89,10 +84,9 @@
                                     <select class="form-select" id="condition" name="condition" required="">
                                         <option value="">Select condition</option>
                                         <option value="new">New</option>
-                                        <option value="like-new">Like New</option>
-                                        <option value="good">Good</option>
-                                        <option value="fair">Fair</option>
-                                        <option value="poor">Poor</option>
+                                        <option value="like-new">Likely New</option>
+                                        <option value="good">Used</option>
+                                        <option value="fair">Likely Used</option>
                                     </select>
                                 </div>
                             </div>
@@ -102,9 +96,9 @@
                             </div>
                             <div class="mb-3 form-check">
                                 <input type="checkbox" class="form-check-input" id="agreeTerms" required="">
-                                <label class="form-check-label" for="agreeTerms">I agree to the <a href="/terms">Terms
+                                <label class="form-check-label" for="agreeTerms">I agree to the <a href="/terms-of-service">Terms
                                         of Service</a> and
-                                    <a href="/privacy">Privacy Policy</a></label>
+                                    <a href="/privacy-policy">Privacy Policy</a></label>
                             </div>
                             <button type="submit" class="btn btn-primary">Create Listing</button>
                         </div>

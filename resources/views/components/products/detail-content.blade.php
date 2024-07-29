@@ -1,5 +1,5 @@
 <div class="container mt-4">
-    <nav aria-label="breadcrumb">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
             <li class="breadcrumb-item"><a href="{{ url('marketplace') }}">Marketplace</a></li>
@@ -9,8 +9,8 @@
 
     <div class="d-flex justify-content-between align-items-center py-3">
         <h1><strong>{{ $marketplaceProducts->prodName }}</strong></h1>
-        <div>
-            <button class="btn btn-primary px-5 me-5"><i class="bi bi-chat-left-text-fill"></i> Message</button>
+        <div class="d-flex flex-wrap justify-content-end">
+            <button class="btn btn-primary px-5 me-2 me-md-5"><i class="bi bi-chat-left-text-fill"></i> Message</button>
             <button class="btn btn-outline-primary me-2" data-toggle="modal" data-target="#shareModal"><i class="fas fa-share"></i></button>
             <button class="btn btn-outline-danger me-2" data-toggle="modal" data-target="#reportModal"><i class="fas fa-flag"></i></button>
         </div>
@@ -75,10 +75,10 @@
                 </button>
             </div>
             <div class="modal-body text-center">
-                <a href="#" class="text-primary"><i class="fab fa-facebook"></i></a>
-                <a href="#" class="text-info"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="text-danger"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="text-success"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" class="text-primary h2"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="text-info h2"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-danger h2"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-success h2"><i class="fab fa-whatsapp"></i></a>
             </div>
         </div>
     </div>
@@ -107,7 +107,7 @@
                             <option value="other">Other</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                    <div class="py-3 form-group">
                         <label for="reportDescription">Description:</label>
                         <textarea class="form-control" id="reportDescription" rows="2" required=""></textarea>
                     </div>

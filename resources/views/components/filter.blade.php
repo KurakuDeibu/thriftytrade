@@ -18,9 +18,9 @@
                 <option value="">All Categories</option>
                 <option value="wantabuyer">Want a Buyer</option>
                 <option value="wantaseller">Want a Seller</option>
-                <option value="">Featured</option>
-                <option value="">Vehicles</option>
-                <option value="">Others</option>
+                <option value="featured">Featured</option>
+                <option value="vehicles">Vehicles</option>
+                <option value="others">Others</option>
             </select>
         </div>
 
@@ -29,9 +29,9 @@
             <select id="condition" class="form-select">
                 <option value="">Any Condition</option>
                 <option value="new">New</option>
-                <option value="like-new">Like New</option>
-                <option value="good">Good</option>
-                <option value="fair">Fair</option>
+                <option value="like-new">Likely New</option>
+                <option value="good">Used</option>
+                <option value="fair">Likely Used</option>
             </select>
         </div>
 

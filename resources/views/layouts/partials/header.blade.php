@@ -35,12 +35,12 @@ body {
     float: left;
     width: 12rem;
     height: 70px;
-    background: url("img/thriftytrade-logo.png") left/contain no-repeat;
+    background: url("{{ asset('img/thriftytrade-logo.png') }}") left/contain no-repeat;   
     transition: all 0.5s ease;
 }
 
 #logo:hover {
-    background: url("img/thriftytrade-logo.png") left/contain no-repeat;
+    background: url("{{ asset('img/thriftytrade-logo.png') }}") left/contain no-repeat;
     transform: scale(1.2);
 }
 
