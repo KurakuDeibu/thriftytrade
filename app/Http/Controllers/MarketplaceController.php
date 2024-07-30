@@ -18,7 +18,7 @@ class MarketplaceController extends Controller
                 ->orWhere('prodDescription', 'like', "%$query%")
                 ->paginate(15);
         } else {
-            $marketplaceProducts = Product::inRandomOrder()->paginate(15);
+            $marketplaceProducts = Product::inRandomOrder()->paginate(6);
         }
 
         return view('marketplace.marketplace-auth')->with('marketplaceProducts', $marketplaceProducts);

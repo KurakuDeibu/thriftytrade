@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Product extends Model
+class Products extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
+        'user_id',
         'prodName',
         'prodPrice',
         'prodCondition',
@@ -25,13 +27,8 @@ class Product extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function scopeFeatured($query)
+    public function categories()
     {
-        $query->where('featured', true);
-    }
-
-    public function scopeRecommended($query)
-    {
-        return $query->inRandomOrder()->paginate(4);
+        return $this->belongsToMany(Category::class);
     }
 }

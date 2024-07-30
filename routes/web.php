@@ -13,6 +13,7 @@ Route::get('/marketplace', [MarketplaceController::class, 'showMarketplace'])->n
 // Route::get('layouts.side-bar.side-bar-auth', [MarketplaceController::class, 'showUserProducts'])->name('showUserProducts')->middleware('auth');
 // Route::get('/marketplace', [MarketplaceController::class, 'showProductCount'])->name('productCount')->middleware('auth');
 
+Route::view('/onboard-register','auth.register-onboarding')->name('auth.onboard-register');
 
 // Route::get('/', [MarketplaceController::class,'search'])->name('searchProducts');
 
