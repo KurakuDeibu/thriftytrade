@@ -17,12 +17,13 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Session;
 
-
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    protected static ?string $navigationGroup = 'User Management';
 
     public static function form(Form $form): Form
     {
@@ -31,10 +32,12 @@ class UserResource extends Resource
             Forms\Components\Section::make('Profile')
                 ->schema([
                     Forms\Components\FileUpload::make('profile_photo_path')
-                        ->label('Image')
+                        ->label('Update Profile Photo')
+                        ->image()
+                        ->directory('profile-photos')
                         ->required(),
                 ]),
-            Forms\Components\Section::make('Details')
+                Forms\Components\Section::make('Details')
                 ->schema([
                     Forms\Components\TextInput::make('name')
                         ->label('Username')
@@ -63,7 +66,7 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('profile_photo_path')->label('Image'),
+                ImageColumn::make('profile_photo_path')->label('Image')->circular()->width(50)->height(50),
                 TextColumn::make('name')->label('Username')->sortable(),
                 TextColumn::make('email')->label('Email')->searchable(),
                 TextColumn::make('email_verified_at')->label('Email Verified At')->sortable()->searchable(),
@@ -83,8 +86,8 @@ class UserResource extends Resource
                         // Filament::getFlash()->success('Email verified successfully!');
                     }),
                     Tables\Actions\ActionGroup::make([
-                        Tables\Actions\EditAction::make(),
-                        Tables\Actions\DeleteAction::make()->label('Block'),
+                        Tables\Actions\ViewAction::make()->label('View'), // Changed EditAction to ViewAction
+                        Tables\Actions\DeleteAction::make()->label('Delete'), // Delete User
                     ])->icon('heroicon-o-ellipsis-vertical'),
             ])
 

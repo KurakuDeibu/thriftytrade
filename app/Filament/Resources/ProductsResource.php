@@ -29,7 +29,9 @@ class ProductsResource extends Resource
 {
     protected static ?string $model = Products::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+
+    protected static ?string $navigationGroup = 'Product Management';
 
     public static function form(Form $form): Form
 {
@@ -43,9 +45,9 @@ class ProductsResource extends Resource
                             ->label('Product Name')
                             ->required()
                             ->maxLength(255),
-                        Select::make('title')
+                        Select::make('categories')
                             ->label('Product Category')
-                            ->relationship('categories', 'title'),
+                            ->relationship('categories', 'slug'),
                         TextInput::make('prodPrice')
                             ->label('Product Price')
                             ->numeric()
@@ -119,8 +121,10 @@ class ProductsResource extends Resource
 
             ])
             ->actions([
+                Tables\Actions\ViewAction::make()->label('View'), // <--- Added ViewAction to view product info
+
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
+                    // Tables\Actions\EditAction::make(), // Disabled edit
                     Tables\Actions\DeleteAction::make(),
                     Tables\Actions\Action::make('toggle-feature')
                         ->label(fn (Products $record) => $record->featured ? 'Unfeature' : 'Feature')
