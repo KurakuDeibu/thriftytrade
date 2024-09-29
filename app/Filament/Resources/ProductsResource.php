@@ -46,6 +46,7 @@ class ProductsResource extends Resource
                             ->required()
                             ->maxLength(255),
                         Select::make('categories')
+                            ->multiple()
                             ->label('Product Category')
                             ->relationship('categories', 'slug'),
                         TextInput::make('prodPrice')
