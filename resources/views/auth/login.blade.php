@@ -2,10 +2,10 @@
     <x-authentication-card>
         <x-slot name="logo">
             {{-- <x-authentication-card-logo /> --}}
-            <h1 class="py-3 font-bold text-indigo-600 display-3">LOGIN</h1>
+            <h1 class="py-3 font-bold text-indigo-600 display-4">LOGIN</h1>
         </x-slot>
 
-        <x-validation-errors class="mb-4" />
+        {{-- <x-validation-errors class="mb-4" /> --}}
 
         @session('status')
             <div class="mb-4 text-sm font-medium text-green-600">
@@ -20,12 +20,18 @@
                 <x-label for="email" value="{{ __('Email') }}" />
                 <x-input id="email" class="block w-full mt-1" type="email" name="email" :value="old('email')" required
                     autofocus autocomplete="username" />
+                    @error('email')
+                    <small class="mt-1 text-xsm text-red-600 font-semibold">{{$message}}</small>
+                @enderror
             </div>
 
             <div class="mt-4">
                 <x-label for="password" value="{{ __('Password') }}" />
                 <x-input id="password" class="block w-full mt-1" type="password" name="password" required
                     autocomplete="current-password" />
+                    @error('password')
+                    <small class="mt-1 text-xsm text-red-600 font-semibold">{{$message}}</small>
+                @enderror
             </div>
 
             <div class="block mt-4">
