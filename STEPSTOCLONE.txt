@@ -1,4 +1,4 @@
--clone the app
+-clone the app on github/or github desktop
 -modify the .env file
 -modify mailer
 
