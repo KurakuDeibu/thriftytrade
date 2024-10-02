@@ -1,0 +1,19 @@
+-clone the app
+-modify the .env file
+-modify mailer
+
+-composer install
+-composer update
+-make sure laravel 11^
+
+-php artisan migrate:fresh
+
+OPTIMIZE THE LOADING
+-php artisan route:cache
+-php artisan icons:cache
+-php artisan view:cache
+-php artisan config:cache
+
+## admin routes ##
+-localhost:8080/admin/login
+-admin/products/
