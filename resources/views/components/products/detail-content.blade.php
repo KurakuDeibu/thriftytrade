@@ -45,7 +45,7 @@
         <div class="col-md-4">
             <ul class="mb-4 list-group">
                 <li class="list-group-item"><strong>Condition:</strong> {{ $marketplaceProducts->prodCondition }}</li>
-                <li class="list-group-item"><strong>Category:</strong> {{ $marketplaceProducts->category->categName}}</li>
+                <li class="list-group-item"><strong>Category:</strong> {{ $marketplaceProducts->category_id}}</li>
                 <li class="list-group-item"><strong>Posted By:</strong> {{ $marketplaceProducts->author->name}}</li>
                 <li class="list-group-item"><strong>Price:</strong> ₱{{ $marketplaceProducts->prodPrice }}</li>
                 <li class="list-group-item"><strong>Commission Fee:</strong> ₱{{ $marketplaceProducts->prodCommissionFee }}</li>
