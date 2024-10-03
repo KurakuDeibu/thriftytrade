@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductsResource\Pages;
 use App\Filament\Resources\ProductsResource\RelationManagers;
+use App\Models\Category;
 use App\Models\Products;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Section;
@@ -13,6 +15,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\CheckboxColumn;
@@ -28,6 +31,8 @@ use Filament\Tables\Columns\IconColumn;
 class ProductsResource extends Resource
 {
     protected static ?string $model = Products::class;
+
+    protected static bool $isGloballySearchable = true;
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
@@ -45,10 +50,6 @@ class ProductsResource extends Resource
                             ->label('Product Name')
                             ->required()
                             ->maxLength(255),
-                        Select::make('categories')
-                            ->multiple()
-                            ->label('Product Category')
-                            ->relationship('categories', 'slug'),
                         TextInput::make('prodPrice')
                             ->label('Product Price')
                             ->numeric()
@@ -64,6 +65,8 @@ class ProductsResource extends Resource
                             ->label('Product Commission Fee')
                             ->numeric()
                             ->required(),
+                            Select::make('user_id')->label('User ')->options(User::pluck('name', 'id'))->required(),
+                            Select::make('category_id')->label('Category')->options(Category::pluck('categName', 'id'))->required(),
                         RichEditor::make('prodDescription')
                             ->label('Product Description')
                             ->required(),
@@ -77,13 +80,8 @@ class ProductsResource extends Resource
                                 ->directory('products/images')
                                 ->label('Product Image')
                                 ->required(),
-                                Select::make('featured')
-                                ->label('Featured')
-                                ->required()
-                                ->options([
-                                    true => 'Yes',
-                                    false => 'No',
-                                ]),
+                                Toggle::make('featured')
+                                ->label('Featured'),
                         ]),
                     ])->columnSpan(1),
 
@@ -102,18 +100,19 @@ class ProductsResource extends Resource
                 ImageColumn::make('prodImage')->label('Image'),
                 TextColumn::make('prodName')->label('Product Name')->sortable()->searchable(),
 
-                TextColumn::make('slug')->label('Category')->sortable()->searchable(),
+                TextColumn::make('category.categName')->label('Category')->searchable()->sortable(),
                 TextColumn::make('prodCondition')->label('Condition')->sortable()->searchable(),
 
                 TextColumn::make('prodPrice')->label('Price')
                 ->sortable(),
                 TextColumn::make('prodCommissionFee')->label('Commission Fee')
                 ->sortable(),
+                TextColumn::make('created_at')->label('Created At')->dateTime()->sortable(),
+                TextColumn::make('updated_at')->label('Updated At')->dateTime()->sortable(),
 
                 IconColumn::make('featured')
                 ->boolean()
                 ->label('Is Featured'),
-
             ])
 
             ->filters([
