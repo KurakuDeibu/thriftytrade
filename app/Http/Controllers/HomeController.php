@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
+use App\Models\Products;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -15,9 +15,11 @@ class HomeController extends Controller
      */
     public function __invoke(Request $request)
     {
+        //VIEW FEATURED PRODUCTS FROM LANDING PAGE
+
         //Added caching to show products
         $featuredProducts = Cache::remember('featuredProducts', Carbon::now()->addHour(5), function () {
-        return Product::featured()->latest('created_at')->take(6)->get();
+        return Products::featured()->latest('created_at')->take(6)->get();
         });
 
         // home.blade.php / landing page
