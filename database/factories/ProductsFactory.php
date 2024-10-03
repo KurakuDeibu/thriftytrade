@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -25,7 +26,7 @@ class ProductsFactory extends Factory
             //
             'user_id' => User::factory(),
             'prodName' => $this->faker->sentence(),
-            'slug' => $this->faker->slug(5),
+            'category_id' => Category::factory(),
             'prodImage' => $this->faker->imageUrl(),
             'prodPrice' => $this->faker->randomFloat(2, 0, 100),
             'prodDescription' => $this->faker->paragraph(2),
@@ -33,17 +34,7 @@ class ProductsFactory extends Factory
             'prodCommissionFee' => $this->faker->randomFloat(2, 0, 100),
             'prodRefTag' => Str::random(10),
 
-            // 'prodCondition' => $this->faker->randomElement($conditionType),
-
             'featured' => $this->faker->boolean(10),
-
-            // 'user_id' => User::factory(),
-            // 'title' => $this->faker->sentence(),
-            // 'slug' => $this->faker->slug(5),
-            // 'prodImage' => $this->faker->imageUrl(),
-            // 'description' => $this->faker->paragraph(3),
-            // 'price' => $this->faker->randomFloat(2, 0, 100),
-            // 'featured' => $this->faker->boolean(10),
         ];
     }
 }

@@ -14,6 +14,7 @@ class Products extends Model
 
     protected $fillable = [
         'user_id',
+        'category_id',
         'prodName',
         'prodPrice',
         'prodCondition',
@@ -29,9 +30,15 @@ class Products extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function categories()
+    public function category()
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function scopeFeatured($query)
+    {
+        //SHOW FEATURE PRODUCT
+        $query->where('featured', true);
     }
 
     public function getProductImage()
