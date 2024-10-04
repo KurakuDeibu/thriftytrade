@@ -2,12 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Category>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductImage>
  */
-class CategoryFactory extends Factory
+class ProductImageFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +19,8 @@ class CategoryFactory extends Factory
     {
         return [
             //
-            'categName' => $this->faker->word(),
+            'productID' => Product::factory(),  // Automatically create a product
+            'imageURL' => $this->faker->imageUrl(),
         ];
     }
 }

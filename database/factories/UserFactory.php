@@ -27,14 +27,14 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-
-            'firstName' => fake()->firstName(),
-            'lastName' => fake()->lastName(),
-            'middleName' => fake()->firstName(), // or null
-            'userAddress' => fake()->address(),
-            'birthDay' => fake()->date(),
-            'phoneNum' => fake()->phoneNumber(),
+            'name' => $this->faker->unique()->name(),
+            'firstName' => $this->faker->firstName,
+            'lastName' => $this->faker->lastName,
+            'middleName' => $this->faker->optional()->firstName,
+            'userAddress' => $this->faker->address,
+            'birthDay' => $this->faker->date(),
+            'phoneNum' => $this->faker->phoneNumber,
+            'userRefTag' => $this->faker->randomNumber(1,10),
 
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),

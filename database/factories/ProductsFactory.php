@@ -31,7 +31,7 @@ class ProductsFactory extends Factory
             'prodPrice' => $this->faker->randomFloat(2, 0, 100),
             'prodDescription' => $this->faker->paragraph(2),
             'prodCondition' => $this->faker->randomElement($conditionType),
-            'prodCommissionFee' => $this->faker->randomFloat(2, 0, 100),
+            // 'prodCommissionFee' => $this->faker->randomFloat(2, 0, 100),
             'prodRefTag' => Str::random(10),
 
             'featured' => $this->faker->boolean(10),

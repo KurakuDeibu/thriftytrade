@@ -12,6 +12,8 @@ class Products extends Model
     use HasFactory;
     use SoftDeletes;
 
+    protected $table = "products";
+
     protected $fillable = [
         'user_id',
         'category_id',
@@ -20,7 +22,8 @@ class Products extends Model
         'prodCondition',
         'prodImage',
         'prodDescription',
-        'prodCommissionFee',
+        'prodRefTag',
+        // 'prodCommissionFee',
         'featured',
         // 'is'
     ];
@@ -32,7 +35,7 @@ class Products extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsTo(Category::class);
     }
 
     public function scopeFeatured($query)

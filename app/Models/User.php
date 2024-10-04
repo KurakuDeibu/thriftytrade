@@ -22,7 +22,6 @@ class User extends Authenticatable implements FilamentUser
     use Notifiable;
     use TwoFactorAuthenticatable;
 
-
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->email === 'admin@gmail.com'; // super admin
@@ -33,17 +32,27 @@ class User extends Authenticatable implements FilamentUser
      *
      * @var array<int, string>
      */
+
+    protected $table = "users";
+
     protected $fillable = [
-        'userName',
+        'products_id',
+        'name',
         'firstName',
         'lastName',
         'middleName',
         'userAddress',
         'birthDay',
         'phoneNum',
+        'userRefTag',
         'email',
         'password',
     ];
+
+    public function products()
+    {
+        return $this->hasMany(Products::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.
