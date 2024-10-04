@@ -25,8 +25,8 @@ return new class extends Migration
             $table->decimal('totalPrice', 10, 2);
             $table->string('tranStatus', 30);
             $table->decimal('systemCommission', 10, 2);
-            // $table->foreignId('finderID')->nullable()->constrained('users', 'userID');
             $table->decimal('finderCommission', 10, 2)->nullable();
+            $table->timestamps();
         });
     }
 

@@ -32,7 +32,7 @@ return new class extends Migration
 
             // $table->foreignId('categID')->constrained('category', 'categID');
             // $table->foreignId('sellerID')->constrained('users', 'userID');
-
+            $table->softDeletes();
             $table->timestamps();
 
         });
