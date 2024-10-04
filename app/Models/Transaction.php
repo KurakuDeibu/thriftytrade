@@ -11,6 +11,17 @@ class Transaction extends Model
 
     protected $table = "transactions";
 
+    protected $fillable = [
+        'user_id',
+        'products_id',
+        'tranDate',
+        'quantity',
+        'totalPrice',
+        'tranStatus',
+        'systemCommission',
+        'finderCommission',
+
+    ];
     public function buyer() {
         return $this->belongsTo(User::class);
     }
