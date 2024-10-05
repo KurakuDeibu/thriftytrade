@@ -36,16 +36,15 @@ class User extends Authenticatable implements FilamentUser
     protected $table = "users";
 
     protected $fillable = [
-        'products_id',
-        'name',
+        'users_id',
         'firstName',
         'lastName',
         'middleName',
-        'userAddress',
-        'birthDay',
-        'phoneNum',
-        'userRefTag',
+        'name',
         'email',
+        'birthDay',
+        'userAddress',      
+        'phoneNum',      
         'password',
     ];
 
