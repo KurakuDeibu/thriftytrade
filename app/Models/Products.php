@@ -17,13 +17,12 @@ class Products extends Model
     protected $fillable = [
         'user_id',
         'category_id',
+        'productimages_id',
         'prodName',
         'prodPrice',
         'prodCondition',
         'prodImage',
         'prodDescription',
-        'prodRefTag',
-        // 'prodCommissionFee',
         'featured',
         // 'is'
     ];

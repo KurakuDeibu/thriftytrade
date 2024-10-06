@@ -28,7 +28,7 @@ class Transaction extends Model
 
     // A transaction involves a product
     public function product() {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Products::class);
     }
 
     // A transaction can have a finder (user)
