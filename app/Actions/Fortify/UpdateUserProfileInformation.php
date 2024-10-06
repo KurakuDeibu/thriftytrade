@@ -18,6 +18,13 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     public function update(User $user, array $input): void
     {
         Validator::make($input, [
+            'firstName' => ['required', 'string', 'max:255'],
+            'lastName' => ['required', 'string', 'max:255'],
+            'middleName' => ['nullable','string', 'max:255'],
+            'userAddress' => ['required','string', 'max:255'],
+            'birthDay' => ['required','string', 'max:255'],
+            'phoneNum' => ['required','string', 'min:11'],
+
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
@@ -32,6 +39,12 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $this->updateVerifiedUser($user, $input);
         } else {
             $user->forceFill([
+                'firstName' => $input['firstName'],
+                'lastName' => $input['lastName'],
+                'middleName' => $input['middleName'],
+                'userAddress' => $input['userAddress'],
+                'birthDay' => $input['birthDay'],
+                'phoneNum' => $input['phoneNum'],
                 'name' => $input['name'],
                 'email' => $input['email'],
             ])->save();
@@ -46,6 +59,12 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     protected function updateVerifiedUser(User $user, array $input): void
     {
         $user->forceFill([
+            'firstName' => $input['firstName'],
+            'lastName' => $input['lastName'],
+            'middleName' => $input['middleName'],
+            'userAddress' => $input['userAddress'],
+            'birthDay' => $input['birthDay'],
+            'phoneNum' => $input['phoneNum'],
             'name' => $input['name'],
             'email' => $input['email'],
             'email_verified_at' => null,
