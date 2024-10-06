@@ -85,7 +85,7 @@
 
 
         @include('components.partials.product-card')
-        {{-- <!-- CONTENT -->
+         <!-- CONTENT -->
         <div class="col-lg-9">
             <main>
                 <h2 class="mb-4">Featured Items</h2>
@@ -110,7 +110,7 @@
         </div>
         </main>
 
-    </div> --}}
+    </div>
 
         <!-- END OF CONTENT -->
 

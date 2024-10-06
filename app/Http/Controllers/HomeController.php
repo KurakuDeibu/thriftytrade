@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Products;
+use App\Models\Category;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -21,10 +22,12 @@ class HomeController extends Controller
         $featuredProducts = Cache::remember('featuredProducts', Carbon::now()->addHour(5), function () {
         return Products::featured()->latest('created_at')->take(6)->get();
         });
+        $categories = Category::orderBy('categName', 'asc')->get();
 
         // home.blade.php / landing page
         return view('home', [
-            'featuredProducts' => $featuredProducts
+            'featuredProducts' => $featuredProducts,
+            'categories' => $categories
         ]);
 
     }

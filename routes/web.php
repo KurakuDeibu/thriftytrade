@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -36,7 +38,18 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    // Route::get('/dashboard', function () {
+    //     return view('dashboard');
+    // })->name('dashboard');
+    Route::get('/dashboard', [PageController::class, 'show'])->name('dashboard');
 });
+
+// ROUTE for Seller in CRUD Products
+
+Route::get('/create/listing', [ProductController::class, 'create'])->name('products.create');
+Route::post('/create/listing', [ProductController::class, 'store'])->name('products.store');
+
+
+Route::get('/dashboard', [ProductController::class, 'dashboard'])->name('dashboard');
+
+
