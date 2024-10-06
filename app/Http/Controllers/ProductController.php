@@ -65,6 +65,8 @@ class ProductController extends Controller
         return view('dashboard', compact('userProducts'));
     }
 
+    
+
     // Redirect to the page where seller can modify the product
     public function editProduct(Products $product) {
 

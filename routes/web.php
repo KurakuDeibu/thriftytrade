@@ -52,4 +52,5 @@ Route::post('/create/listing', [ProductController::class, 'store'])->name('produ
 
 Route::get('/dashboard', [ProductController::class, 'dashboard'])->name('dashboard');
 
+Route::get('/', [HomeController::class, 'featuredProd'])->name('home');
 

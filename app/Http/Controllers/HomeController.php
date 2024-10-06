@@ -31,4 +31,15 @@ class HomeController extends Controller
         ]);
 
     }
+
+    public function featuredProd()
+    {
+        // Fetch only featured products with 'featured' = 1
+        $featuredProducts = Products::where('featured', 1)->with('author')->get();
+
+        return view('home', [
+            'featuredProducts' => $featuredProducts,
+        ]);
+    }
+
 }
