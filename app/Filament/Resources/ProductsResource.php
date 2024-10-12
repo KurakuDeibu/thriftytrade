@@ -58,10 +58,10 @@ class ProductsResource extends Resource
                                 'used' => 'Used',
                                 'new' => 'New',
                             ]),
-                        TextInput::make('prodCommissionFee')
-                            ->label('Product Commission Fee')
-                            ->numeric()
-                            ->required(),
+                        // TextInput::make('prodCommissionFee')
+                        //     ->label('Product Commission Fee')
+                        //     ->numeric()
+                        //     ->required(),
 
                             Select::make('user_id')->label('Posted By')->options(User::pluck('name', 'id'))->required(),
                             Select::make('category_id')->label('Category')->options(Category::pluck('categName', 'id')),
@@ -103,7 +103,7 @@ class ProductsResource extends Resource
                 TextColumn::make('prodCondition')->label('Condition')->sortable()->searchable(),
 
                 TextColumn::make('prodPrice')->label('Price')->sortable(),
-                TextColumn::make('prodCommissionFee')->label('Commission Fee')->sortable(),
+                // TextColumn::make('prodCommissionFee')->label('Commission Fee')->sortable(),
 
                 IconColumn::make('featured')
                 ->boolean()
@@ -116,18 +116,21 @@ class ProductsResource extends Resource
 
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()->label('View'), // <--- Added ViewAction to view product info
 
-                Tables\Actions\ActionGroup::make([
-                    // Tables\Actions\EditAction::make(), // Disabled edit
-                    Tables\Actions\DeleteAction::make(),
-                    Tables\Actions\Action::make('toggle-feature')
+                Tables\Actions\Action::make('toggle-feature')
                         ->label(fn (Products $record) => $record->featured ? 'Unfeature' : 'Feature')
                         ->icon(fn (Products $record) => $record->featured ? 'heroicon-o-star' : 'heroicon-o-star')
                         ->action(function (Products $record) {
                             $record->featured = !$record->featured;
                             $record->save();
                         }),
+
+                Tables\Actions\ActionGroup::make([
+                Tables\Actions\ViewAction::make()->label('View'), // <--- Added ViewAction to view product info
+
+                    // Tables\Actions\EditAction::make(), // Disabled edit
+
+                        Tables\Actions\DeleteAction::make(),
                     ]),
             ])
 
@@ -150,7 +153,7 @@ class ProductsResource extends Resource
         return [
             'index' => Pages\ListProducts::route('/'),
             'create' => Pages\CreateProducts::route('/create'),
-            'edit' => Pages\EditProducts::route('/{record}/edit'),
+            // 'edit' => Pages\EditProducts::route('/{record}/edit'),
         ];
     }
 }

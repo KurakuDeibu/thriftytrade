@@ -15,6 +15,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\Toggle;
 use Illuminate\Support\Facades\Session;
 
 class UserResource extends Resource
@@ -69,7 +70,7 @@ class UserResource extends Resource
                         ->required()
                         ->email(),
 
-                    Forms\Components\Checkbox::make('is_verified')
+                    Toggle::make('is_verified')
                         ->label('Verify Email')
                         ->afterStateUpdated(function ($state, callable $set) {
                             if ($state) {
@@ -142,7 +143,7 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            // 'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 }
