@@ -1,51 +1,59 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="container mt-4">
 
-<x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
 
-    <div>
-        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            @if (Laravel\Fortify\Features::canUpdateProfileInformation())
-                @livewire('profile.update-profile-information-form')
-
-                <x-section-border />
-            @endif
-
-            @if (Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::updatePasswords()))
-                <div class="mt-10 sm:mt-0">
-                    @livewire('profile.update-password-form')
+        <div class="card">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs" id="profileTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="profileinfo-tab" data-bs-toggle="tab"
+                            data-bs-target="#profileinfo" type="button" role="tab" aria-controls="profileinfo"
+                            aria-selected="true">Profile Information</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="updatepassword-tab" data-bs-toggle="tab"
+                            data-bs-target="#updatepassword" type="button" role="tab" aria-controls="updatepassword"
+                            aria-selected="false">Update Password</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="deleteaccount-tab" data-bs-toggle="tab" data-bs-target="#deleteaccount"
+                            type="button" role="tab" aria-controls="deleteaccount" aria-selected="false">Delete
+                            Account</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content" id="profileTabsContent">
+                    <div class="tab-pane fade show active" id="profileinfo" role="tabpanel"
+                        aria-labelledby="profileinfo-tab">
+                        @livewire('profile.update-profile-information-form')
+                    </div>
+                    <div class="tab-pane fade" id="updatepassword" role="tabpanel" aria-labelledby="updatepassword-tab">
+                        @livewire('profile.update-password-form')
+                    </div>
+                    <div class="tab-pane fade" id="deleteaccount" role="tabpanel" aria-labelledby="deleteaccount-tab">
+                        @livewire('profile.delete-user-form')
+                    </div>
                 </div>
-
-                <x-section-border />
-            @endif
-
-            @if (Laravel\Fortify\Features::canManageTwoFactorAuthentication())
-                <div class="mt-10 sm:mt-0">
-                    @livewire('profile.two-factor-authentication-form')
-                </div>
-
-                <x-section-border />
-            @endif
-
-            {{-- browser session
-            <div class="mt-10 sm:mt-0">
-                @livewire('profile.logout-other-browser-sessions-form')
-            </div> --}}
-
-            @if (Laravel\Jetstream\Jetstream::hasAccountDeletionFeatures())
-                <x-section-border />
-
-                <div class="mt-10 sm:mt-0">
-                    @livewire('profile.delete-user-form')
-                </div>
-            @endif
+            </div>
         </div>
     </div>
 
-    @endsection
-        
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var triggerTabList = [].slice.call(document.querySelectorAll('#profileTabs button'))
+                triggerTabList.forEach(function(triggerEl) {
+                    var tabTrigger = new bootstrap.Tab(triggerEl)
+
+                    triggerEl.addEventListener('click', function(event) {
+                        event.preventDefault()
+                        tabTrigger.show()
+                    })
+                })
+            });
+        </script>
+    @endpush
+@endsection
