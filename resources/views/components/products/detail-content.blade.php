@@ -1,137 +1,277 @@
-<div class="container mt-4">
-    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ url('marketplace') }}">Marketplace</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ $marketplaceProducts->prodName }}</li>
-        </ol>
-    </nav>
+<head>
+    <style>
+        .glide__slide img {
+            width: 100vw;
+            height: 25rem;
+            object-fit: cover;
+            filter: drop-shadow(0 2rem -2rem rgba(0, 0, 0, 0.7));
+        }
 
-    <div class="py-3 d-flex justify-content-between align-items-center">
-        <h1><strong>{{ $marketplaceProducts->prodName }}</strong></h1>
-        <div class="flex-wrap d-flex justify-content-end">
+        .seller-info {
+            display: flex;
+            align-items: center;
+        }
 
-            <a href="">
-            <button class="px-5 btn btn-primary me-2 me-md-5"><i class="bi bi-chat-left-text-fill"></i> Message</button>
-            </a>
+        .seller-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 20px;
+            border: solid 1px rgb(119, 164, 255);
+        }
 
-            <button class="btn btn-outline-primary me-2" data-toggle="modal" data-target="#shareModal"><i class="fas fa-share"></i></button>
-            <button class="btn btn-outline-danger me-2" data-toggle="modal" data-target="#reportModal"><i class="fas fa-flag"></i></button>
-        </div>
-    </div>
+        .glide__arrow {
+            color: #333;
+            opacity: 0.7;
+            background: rgba(255, 255, 255, 0.5);
+            border: none;
+            padding: 10px;
+            transition: opacity 0.3s ease;
+        }
 
-    <div class="row">
-        <div class="col-md-8">
-            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img src="{{ asset('storage/' . $marketplaceProducts->prodImage )}}" class="d-block w-100" alt="{{ $marketplaceProducts->prodName }} image">
-                    </div>
-                    <div class="carousel-item">
-                        <img src="{{ asset('storage/' . $marketplaceProducts->prodImage )}}" class="d-block w-100" alt="{{ $marketplaceProducts->prodName }} image">
-                    </div>
+        .glide__arrow:hover {
+            opacity: 1;
+        }
 
-                </div>
-                <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <ul class="mb-4 list-group">
-                <li class="list-group-item"><strong>Condition:</strong> {{ $marketplaceProducts->prodCondition }}</li>
-                <li class="list-group-item"><strong>Category:</strong> {{ $marketplaceProducts->category->categName}}</li>
-                <li class="list-group-item"><strong>Posted By:</strong> {{ $marketplaceProducts->author->name}}</li>
-                <li class="list-group-item"><strong>Price:</strong> ₱{{ $marketplaceProducts->prodPrice }}</li>
-                <li class="list-group-item"><strong>Commission Fee:</strong> ₱{{ $marketplaceProducts->prodCommissionFee }}</li>
-                {{-- <li class="list-group-item"><strong>Location:</strong> {{ $marketplaceProducts->author->userAddress }}</li> --}}
-            </ul>
+        .glide__arrow--left {
+            left: 10px;
+        }
 
-            <div class="mb-2 card">
-                <div class="card-body bg-light">
-                    <h5 class="card-title">Description</h5>
-                    @if(!Auth::check())
-                    {!! \Illuminate\Support\Str::limit(html_entity_decode(strip_tags($marketplaceProducts->prodDescription)), 50) !!}
-                    @else
-                    {{html_entity_decode(strip_tags($marketplaceProducts->prodDescription))}}
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+        .glide__arrow--right {
+            right: 10px;
+        }
 
-<!-- Share Modal -->
-<div class="modal fade" id="shareModal" tabindex="-1" role="dialog" aria-labelledby="shareModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="shareModalLabel">Share to Socials</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="text-center modal-body">
-                <a href="#" class="text-primary h2"><i class="fab fa-facebook"></i></a>
-                <a href="#" class="text-info h2"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="text-danger h2"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="text-success h2"><i class="fab fa-whatsapp"></i></a>
-            </div>
-        </div>
-    </div>
-</div>
+        .glide__bullet {
+            background: #333;
+            opacity: 0.7;
+            width: 8px;
+            height: 8px;
+        }
 
-<!-- Report Modal -->
-<div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reportModalLabel">Report this item</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="reportForm">
-                    <div class="form-group">
-                        <label for="reportReason">Reason for report:</label>
-                        <select class="form-control" id="reportReason" required="">
-                            <option value="">Select a reason</option>
-                            <option value="inappropriate">Inappropriate content</option>
-                            <option value="spam">Spam</option>
-                            <option value="fraud">Fraudulent listing</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div class="py-3 form-group">
-                        <label for="reportDescription">Description:</label>
-                        <textarea class="form-control" id="reportDescription" rows="2" required=""></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit Report</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+        .glide__bullet--active {
+            background: rgb(251, 252, 255);
+            opacity: 1;
+        }
 
-<script>
-    $(document).ready(function() {
-        $('.see-more').on('click', function(e) {
-            e.preventDefault();
-            if (!{{ Auth::check() ? 'true' : 'false' }}) {
-                window.location.href = '{{ route('register') }}';
-            } else {
-                // Show full description
-                $(this).prev().html('{{ $marketplaceProducts->prodDescription }}');
-                $(this).remove();
+        .card-title.truncate {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            -webkit-line-clamp: 2;
+            text-overflow: ellipsis;
+            font-size: 1rem;
+            height: 3rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 0;
+        }
+
+        .card:hover {
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Mobile styles */
+        @media (max-width: 1200px) {
+            .sticky-bottom {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-color: white;
+                padding: 15px;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
             }
-        });
-    });
-</script>
+        }
+
+        .fixed-card {
+            height: 250px;
+            /* Set a fixed height for the card */
+            width: 100%;
+            /* Ensure it takes full width of the column */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            /* Space out content evenly */
+        }
+
+        .fixed-card img {
+            max-height: 150px;
+            /* Limit image height */
+            object-fit: cover;
+            /* Ensure the image covers the area */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mt-4 container-lg">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url('marketplace') }}">Marketplace</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ $marketplaceProducts->prodName }}</li>
+            </ol>
+        </nav>
+
+        <div class="border-b-2 row">
+            <!-- Product Image Slider Column -->
+            <div class="mb-4 col-lg-6">
+                <!-- Glide slider container -->
+                <div class="glide">
+                    <div class="glide__track" data-glide-el="track">
+                        <ol class="glide__slides">
+                            <li class="glide__slide">
+                                <img src="{{ asset('storage/' . $marketplaceProducts->prodImage) }}"
+                                    alt="{{ $marketplaceProducts->prodName }}">
+                            </li>
+                        </ol>
+                    </div>
+                    <!-- Glide arrows -->
+                    <div class="glide__arrows" data-glide-el="controls">
+                        <button class="glide__arrow glide__arrow--left" data-glide-dir="<"><i
+                                class="fas fa-chevron-left"></i></button>
+                        <button class="glide__arrow glide__arrow--right" data-glide-dir=">"><i
+                                class="fas fa-chevron-right"></i></button>
+                    </div>
+
+                    <!-- Glide bullets -->
+                    <div class="glide__bullets" data-glide-el="controls[nav]">
+                        <button class="glide__bullet" data-glide-dir="=0"></button>
+                        <button class="glide__bullet" data-glide-dir="=1"></button>
+                        <button class="glide__bullet" data-glide-dir="=2"></button>
+                    </div>
+
+                </div>
+                <div class="p-3 seller-info">
+
+                    <img src="{{ $marketplaceProducts->author->profile_photo_url }}"
+                        alt="{{ $marketplaceProducts->author->name }} IMAGE" class="seller-avatar">
+                    <div>
+                        <strong>{{ $marketplaceProducts->author->name }}</strong>
+                        <div class="text-muted">{{ $marketplaceProducts->author->userAddress }}</div>
+                    </div>
+                </div>
+                <div class="border-b-2 d-block d-lg-none">
+
+                </div>
+            </div>
+
+            <!-- Product Details Column -->
+            <div class="col-lg-6">
+
+                <!-- Seller information -->
+                {{-- SHOW STATUS IF SOLD OR NOT --}}
+                <h1 class="h2 fw-bold text-break">{{ $marketplaceProducts->prodName }}</h1>
+                <!-- Additional details -->
+                <p class="py-1 text-muted d-flex justify-content-between align-items-center">
+                    <small>Posted # days ago • 2 chats </small>
+                    @if ($marketplaceProducts->featured == true)
+                        <small class="text-white badge bg-primary">Featured</small>
+                    @endif
+                </p>
+                <h2 class="py-2 fw-bold h4">₱{{ $marketplaceProducts->prodPrice }}</h2>
+
+                <!-- Product description -->
+                <p class="py-2 text-break">{{ $marketplaceProducts->prodDescription }}</p>
+
+                <!-- Product details -->
+                <ul class="list-unstyled">
+
+                    <li class="mb-2"><strong>Condition:</strong> {{ $marketplaceProducts->prodCondition }}</li>
+                    <li class="mb-2"><strong>Category:</strong> {{ $marketplaceProducts->category->categName }}
+                    </li>
+                </ul>
+
+
+                <!-- CTA Button (visible on desktop) -->
+                <div class="mt-4 mb-2 d-lg-block">
+                    <a href="#" class="btn btn-outline-primary btn-lg w-100">OFFER
+                        [₱{{ $marketplaceProducts->prodPrice }}]</a>
+                </div>
+
+                <div class="mb-2 d-none d-lg-block">
+                    <a href="#" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-envelope"></i> CHAT WITH SELLER
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAT Button (sticky on mobile) -->
+    <div class="d-lg-none sticky-bottom">
+        <a href="#" class="btn btn-primary btn-lg w-100">
+            <i class="fas fa-envelope"></i> CHAT WITH SELLER
+        </a>
+    </div>
+
+    {{-- SIMILAR LISTINGS OF THE USER --}}
+    <div class="container mt-5">
+        <div class="mb-4 row">
+            <div class="col-12 d-flex justify-content-between align-items-center">
+                <h2 class="text-xl font-bold text-center">Other listings by {{ $marketplaceProducts->author->name }}
+                </h2>
+                <a href="#" class="font-medium text-blue-500 hover:text-blue-700">Show All</a>
+            </div>
+        </div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
+            {{-- @foreach ($similarProducts as $product) --}}
+            <div class="col">
+                <a href="/marketplace/product/{{ $marketplaceProducts->id }}"
+                    class="card h-100 text-decoration-none text-dark">
+                    <img src="{{ asset('storage/' . $marketplaceProducts->prodImage) }}" class="card-img-top"
+                        alt="{{ $marketplaceProducts->prodName }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ Str::limit($marketplaceProducts->prodName, 40) }}</h5>
+                        <p class="card-text">₱{{ $marketplaceProducts->prodPrice }}</p>
+                    </div>
+                </a>
+            </div>
+            {{-- @endforeach --}}
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="mb-4 row">
+            <div class="col-12 d-flex justify-content-between align-items-center">
+                <h2 class="text-xl font-bold text-center">Recommended Products in ThriftyTrade</h2>
+                <a href="#" class="font-medium text-blue-500 hover:text-blue-700">Show All</a>
+            </div>
+        </div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
+            @for ($i = 0; $i < 5; $i++)
+                <div class="col">
+                    <a href="/marketplace/product/{{ $marketplaceProducts->id }}"
+                        class="card h-100 text-decoration-none text-dark">
+                        <img src="{{ asset('storage/' . $marketplaceProducts->prodImage) }}" class="card-img-top"
+                            alt="{{ $marketplaceProducts->prodName }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ Str::limit($marketplaceProducts->prodName, 40) }}</h5>
+                            <p class="card-text">₱{{ $marketplaceProducts->prodPrice }}</p>
+                        </div>
+                    </a>
+                </div>
+            @endfor
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
+    <script>
+        // Initialize Glide slider
+        new Glide('.glide', {
+            type: 'carousel',
+            perView: 1,
+            focusAt: 'center',
+            keyboard: true,
+            breakpoints: {
+                767: {
+                    perView: 1
+                }
+            }
+        }).mount();
+    </script>
+</body>
