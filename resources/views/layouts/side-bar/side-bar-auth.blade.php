@@ -1,36 +1,45 @@
-<!-- SIDE-BAR-START -->
+<!-- SIDE-BAR-AUTH -->
 <div class="row">
-<div class="col-lg-3 mb-4">
+    <div class="mb-4 col-lg-3">
 
-    <aside class="sidebar p-3">
-        <div class="text-center mb-4">
-            {{-- <img src="https://placehold.co/400x400" alt="User Avatar" class="user-avatar mb-2"> --}}
-          
-            <div class="card bg-light py-2 text-center mb-2 px-2">
-            <div class="shrink-0 me-2 flex justify-center items-center py-1">
-                <img class="h-12 w-12 rounded-full object-cover mb-1" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }} Profile" />
+        <aside class="p-3 sidebar">
+            <div class="mb-4 text-center">
+                {{-- <img src="https://placehold.co/400x400" alt="User Avatar" class="mb-2 user-avatar"> --}}
+
+                <div class="px-2 py-2 mb-2 text-center card bg-light">
+                    <div class="flex items-center justify-center py-1 shrink-0 me-2">
+                        <img class="object-cover w-12 h-12 mb-1 rounded-full" src="{{ Auth::user()->profile_photo_url }}"
+                            alt="{{ Auth::user()->name }} Profile" />
+                    </div>
+
+                    <h3 class="mb-2">Welcome, <strong>{{ Auth::user()->name }}!</strong></h3>
+                    {{-- <p class="mb-2">Active Listings: {{ $activeProducts }} </p> --}}
+
+                    <div class="mb-2 card bg-light"><a wire:navigate href="{{ route('dashboard') }}"
+                            class="btn btn-outline-primary {{ Route::currentRouteName() === 'dashboard' ? 'active' : '' }}">Dashboard</a>
+                    </div>
+                    {{-- <div class="mb-2 card bg-light"><a href="/seller-dashboard" class="btn btn-outline-primary">Selling</a></div> --}}
+                </div>
             </div>
+            @if (Route::currentRouteName() === 'marketplace' || Route::currentRouteName() === 'home')
+                {{-- Check if the current route is NOT dashboard --}}
+                @include('components.filter') {{-- Include the filter component only if not on dashboard --}}
+            @else
+                @auth
+                    {{-- Check if the current route is dashboard --}}
+                    <div class="mb-2 card bg-light"><a wire:navigate href="{{ route('manage-listing') }}"
+                            class="btn btn-outline-primary {{ Route::currentRouteName() === 'manage-listing' ? 'active' : '' }}">Manage
+                            Listings</a>
+                    </div>
 
-            <h3 class="mb-2">Welcome, <strong>{{ Auth::user()->name }}!</strong></h3>
-        {{-- <p class="mb-2">Active Listings: {{$productCount}} </p> --}}
-        <p class="mb-2">Active Listings: 5 </p>
-            <div class="card bg-light mb-2"><a href="{{url('/dashboard')}}" class="btn btn-outline-primary">Dashboard</a></div> 
-            {{-- <div class="card bg-light mb-2"><a href="/seller-dashboard" class="btn btn-outline-primary">Selling</a></div> --}}
-        </div>
-        </div>
+                    <div class="mb-2 card bg-light"><a href="{{ url('/user/buying') }}"
+                            class="btn btn-outline-primary">Buying</a></div>
 
-        @auth
-            
-        <div class="card bg-light mb-2"><a href="{{url('/managelisting')}}" class="btn btn-outline-primary">Manage Listings</a></div>
-        @endauth
+                    <div class="mb-2 card bg-light"><a href="{{ url('/user/history') }}" class="btn btn-outline-primary">My
+                            History</a></div>
+                @endauth
+            @endif
 
-        
-        @if (Route::has('/marketplace'))
-        
-        @endif
-        
-        @include('components.filter')
-
-    </aside>
-</div>
-<!-- END OF SIDE-BAR -->
+        </aside>
+    </div>
+    <!-- END OF SIDE-BAR -->

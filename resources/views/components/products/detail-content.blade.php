@@ -53,16 +53,6 @@
             opacity: 1;
         }
 
-        .card-title.truncate {
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            -webkit-line-clamp: 2;
-            text-overflow: ellipsis;
-            font-size: 1rem;
-            height: 3rem;
-        }
-
         .card {
             border: none;
             border-radius: 0;
@@ -87,22 +77,17 @@
             }
         }
 
-        .fixed-card {
-            height: 250px;
-            /* Set a fixed height for the card */
+        /* Set a fixed height for the image */
+        .fixed-image {
             width: 100%;
-            /* Ensure it takes full width of the column */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            /* Space out content evenly */
+            height: 10rem;
+            object-fit: cover;
+            border-radius: 0;
         }
 
-        .fixed-card img {
-            max-height: 150px;
-            /* Limit image height */
-            object-fit: cover;
-            /* Ensure the image covers the area */
+        /* Custom hover effect with border */
+        .hover-underline:hover {
+            border-color: 1px solid red;
         }
     </style>
 </head>
@@ -111,9 +96,10 @@
     <div class="mt-4 container-lg">
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ url('marketplace') }}">Marketplace</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ $marketplaceProducts->prodName }}</li>
+                <li class="breadcrumb-item"><small><a href="{{ url('/') }}">Home</a></small></li>
+                <li class="breadcrumb-item"><small><a href="{{ url('marketplace') }}">Marketplace</a></small></li>
+                <li class="breadcrumb-item active" aria-current="page"><small>{{ $marketplaceProducts->prodName }}</small>
+                </li>
             </ol>
         </nav>
 
@@ -125,8 +111,10 @@
                     <div class="glide__track" data-glide-el="track">
                         <ol class="glide__slides">
                             <li class="glide__slide">
-                                <img src="{{ asset('storage/' . $marketplaceProducts->prodImage) }}"
-                                    alt="{{ $marketplaceProducts->prodName }}">
+                                <img src="{{ $marketplaceProducts->prodImage && file_exists(public_path('storage/' . $marketplaceProducts->prodImage))
+                                    ? asset('storage/' . $marketplaceProducts->prodImage)
+                                    : asset('img/NOIMG.jpg') }}"
+                                    class="card-img-top fixed-image" alt="{{ $marketplaceProducts->prodName }}">
                             </li>
                         </ol>
                     </div>
@@ -147,11 +135,15 @@
 
                 </div>
                 <div class="p-3 seller-info">
+                    <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}">
+                        <img src="{{ $marketplaceProducts->author->profile_photo_url }}"
+                            alt="{{ $marketplaceProducts->author->name }} IMAGE" class="seller-avatar">
+                    </a>
 
-                    <img src="{{ $marketplaceProducts->author->profile_photo_url }}"
-                        alt="{{ $marketplaceProducts->author->name }} IMAGE" class="seller-avatar">
                     <div>
-                        <strong>{{ $marketplaceProducts->author->name }}</strong>
+                        <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
+                            class="text-dark text-decoration-none hover-underline">
+                            <strong>{{ $marketplaceProducts->author->name }}</strong></a>
                         <div class="text-muted">{{ $marketplaceProducts->author->userAddress }}</div>
                     </div>
                 </div>
@@ -165,10 +157,13 @@
 
                 <!-- Seller information -->
                 {{-- SHOW STATUS IF SOLD OR NOT --}}
-                <h1 class="h2 fw-bold text-break">{{ $marketplaceProducts->prodName }}</h1>
+                <h1 class="h2 fw-bold text-break">
+                    <span class="badge text-dark">[Status]</span>
+                    {{ $marketplaceProducts->prodName }}
+                </h1>
                 <!-- Additional details -->
                 <p class="py-1 text-muted d-flex justify-content-between align-items-center">
-                    <small>Posted # days ago • 2 chats </small>
+                    <small>Posted {{ $marketplaceProducts->created_at->diffForHumans() }} • 2 chats </small>
                     @if ($marketplaceProducts->featured == true)
                         <small class="text-white badge bg-primary">Featured</small>
                     @endif
@@ -187,54 +182,106 @@
                 </ul>
 
 
-                <!-- CTA Button (visible on desktop) -->
-                <div class="mt-4 mb-2 d-lg-block">
-                    <a href="#" class="btn btn-outline-primary btn-lg w-100">OFFER
-                        [₱{{ $marketplaceProducts->prodPrice }}]</a>
-                </div>
+                <!-- Conditional buttons based on user authentication and ownership -->
+                @if (Auth::check())
+                    @if (Auth::user()->id == $marketplaceProducts->author->id)
+                        <!-- Show Edit Product Button if the user is the owner -->
+                        <div class="mt-4 mb-2 d-lg-block">
+                            {{-- <a href="{{ route('product.edit', $marketplaceProducts->id) }}" --}}
+                            <a href="{{ route('listing.edit', $marketplaceProducts->id) }}"
+                                class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-edit"></i> EDIT PRODUCT
+                            </a>
+                        </div>
+                    @else
+                        <!-- Offer Button for non-owners -->
+                        <div class="mt-4 mb-2 d-lg-block">
+                            <a href="#" class="btn btn-outline-primary btn-lg w-100">OFFER
+                                [₱{{ $marketplaceProducts->prodPrice }}]</a>
+                        </div>
+                        <!-- Chat Button for non-owners -->
+                        <div class="mb-2 d-lg-block">
+                            <a href="#" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-envelope"></i> CHAT WITH SELLER
+                            </a>
+                        </div>
+                    @endif
+                @else
+                    <!-- Show Login Button if not authenticated -->
+                    <div class="mt-4 mb-2 d-lg-block">
+                        <a href="{{ route('login') }}" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-sign-in-alt"></i> LOGIN TO CHAT
+                        </a>
+                    </div>
+                @endif
 
-                <div class="mb-2 d-none d-lg-block">
-                    <a href="#" class="btn btn-primary btn-lg w-100">
-                        <i class="fas fa-envelope"></i> CHAT WITH SELLER
-                    </a>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- CHAT Button (sticky on mobile) -->
-    <div class="d-lg-none sticky-bottom">
-        <a href="#" class="btn btn-primary btn-lg w-100">
-            <i class="fas fa-envelope"></i> CHAT WITH SELLER
-        </a>
-    </div>
+    {{-- CHAT BUTTON (sticky for mobile)  --}}
+    @auth
+        @if (Auth::user()->id == $marketplaceProducts->author->id)
+            <div class="d-lg-none sticky-bottom">
+                <a href="{{ route('listing.edit', $marketplaceProducts->id) }}" class="btn btn-primary btn-lg w-100">
+                    <i class="fas fa-envelope"></i> EDIT PRODUCT
+                </a>
+            </div>
+        @else
+            <div class="d-lg-none sticky-bottom">
+                <a href="#" class="btn btn-primary btn-lg w-100">
+                    <i class="fas fa-envelope"></i> CHAT WITH SELLER
+                </a>
+            </div>
+        @endif
+    @else
+        <div class="d-lg-none sticky-bottom">
+            <a href="{{ route('login') }}" class="btn btn-primary btn-lg w-100">
+                <i class="fas fa-envelope"></i> LOGIN TO CHAT
+            </a>
+        </div>
+    @endauth
 
-    {{-- SIMILAR LISTINGS OF THE USER --}}
+
+    {{-- OTHER LISTINGS OF THE USER --}}
     <div class="container mt-5">
         <div class="mb-4 row">
             <div class="col-12 d-flex justify-content-between align-items-center">
-                <h2 class="text-xl font-bold text-center">Other listings by {{ $marketplaceProducts->author->name }}
+                <h2 class="text-xl font-bold text-center">
+                    Other listings by
+                    {{ $marketplaceProducts->author->name }}
                 </h2>
-                <a href="#" class="font-medium text-blue-500 hover:text-blue-700">Show All</a>
+                <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
+                    class="font-medium text-blue-500 hover:text-blue-700">Show All</a>
             </div>
         </div>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
-            {{-- @foreach ($similarProducts as $product) --}}
-            <div class="col">
-                <a href="/marketplace/product/{{ $marketplaceProducts->id }}"
-                    class="card h-100 text-decoration-none text-dark">
-                    <img src="{{ asset('storage/' . $marketplaceProducts->prodImage) }}" class="card-img-top"
-                        alt="{{ $marketplaceProducts->prodName }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ Str::limit($marketplaceProducts->prodName, 40) }}</h5>
-                        <p class="card-text">₱{{ $marketplaceProducts->prodPrice }}</p>
+            @if ($hasOtherListings)
+                @foreach ($showOtherListings as $product)
+                    <div class="col">
+                        <a href="/marketplace/product/{{ $product->id }}"
+                            class="card h-100 text-decoration-none text-dark">
+                            <img src="{{ $product->prodImage && file_exists(public_path('storage/' . $product->prodImage))
+                                ? asset('storage/' . $product->prodImage)
+                                : asset('img/NOIMG.jpg') }}"
+                                class="card-img-top fixed-image" alt="{{ $product->prodName }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ Str::limit($product->prodName, 40, '...') }}</h5>
+                                <p class="card-text">₱{{ $product->prodPrice }}</p>
+                            </div>
+                        </a>
                     </div>
-                </a>
-            </div>
-            {{-- @endforeach --}}
+                @endforeach
+            @else
+                <p class="text-center alert alert-primary w-100">No other listings available from this user.</p>
+            @endif
+
+
+
         </div>
     </div>
 
+    {{-- RECOMMENDED LISTINGS FOR THE USER --}}
     <div class="container mt-5">
         <div class="mb-4 row">
             <div class="col-12 d-flex justify-content-between align-items-center">
@@ -247,10 +294,13 @@
                 <div class="col">
                     <a href="/marketplace/product/{{ $marketplaceProducts->id }}"
                         class="card h-100 text-decoration-none text-dark">
-                        <img src="{{ asset('storage/' . $marketplaceProducts->prodImage) }}" class="card-img-top"
-                            alt="{{ $marketplaceProducts->prodName }}">
+                        <img src="{{ $marketplaceProducts->prodImage && file_exists(public_path('storage/' . $marketplaceProducts->prodImage))
+                            ? asset('storage/' . $marketplaceProducts->prodImage)
+                            : asset('img/NOIMG.jpg') }}"
+                            class="card-img-top fixed-image" alt="{{ $marketplaceProducts->prodName }}">
                         <div class="card-body">
-                            <h5 class="card-title">{{ Str::limit($marketplaceProducts->prodName, 40) }}</h5>
+                            <h5 class="card-title">{{ Str::limit($marketplaceProducts->prodName, 40, '...') }}
+                            </h5>
                             <p class="card-text">₱{{ $marketplaceProducts->prodPrice }}</p>
                         </div>
                     </a>

@@ -13,7 +13,8 @@
         <aside class="p-3 sidebar">
             <div class="auth-prompt">
                 <h4>Ready to start?</h4>
-                <p class="mb-2">Sign up or log in to access all features and start your <span class="text-primary">Thrifty Activity!</span></p>
+                <p class="mb-2">Sign up or log in to access all features and start your <span
+                        class="text-primary">Thrifty Activity!</span></p>
                 <a href="{{ url('/register') }}" class="mb-2 btn btn-primary">Register</a>
                 <a href="{{ url('/login') }}" class="mb-2 btn btn-outline-primary">Login</a>
             </div>
@@ -21,14 +22,11 @@
             <div>
                 <h4>Browse Categories</h4>
                 <ul class="mt-2 list-group">
-                    <li class="list-group-item"><a href="/category/" class="text-decoration-none">Want a Buyer</a></li>
-                    <li class="list-group-item"><a href="/category/" class="text-decoration-none">Want a Seller</a></li>
-                    </li>
-                    <li class="list-group-item"><a href="/category/" class="text-decoration-none">Featured</a></li>
-                    <li class="list-group-item"><a href="/category/" class="text-decoration-none">Vehicles</a></li>
-                    <li class="list-group-item"><a href="/categories" class="text-decoration-none">Others</a></li>
+                    @foreach (\App\Models\Category::all() as $category)
+                        <li wire:model="category" class="list-group-item"><a href="/category/"
+                                class="text-decoration-none">{{ $category->categName }}</a></li>
+                    @endforeach
                 </ul>
             </div>
-
         </aside>
     </div>
