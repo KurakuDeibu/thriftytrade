@@ -17,7 +17,6 @@ class Products extends Model
     protected $fillable = [
         'user_id',
         'category_id',
-        'productimages_id',
         'prodName',
         'prodPrice',
         'prodCondition',
@@ -48,5 +47,10 @@ class Products extends Model
         $isURL = str_contains($this->prodImage, 'http');
 
         return ($isURL) ? $this->prodImage : Storage::url($this->prodImage);
+    }
+
+    public function prodCount()
+    {
+
     }
 }
