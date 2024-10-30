@@ -128,7 +128,7 @@ class ProductsResource extends Resource
                 Tables\Actions\ActionGroup::make([
                 Tables\Actions\ViewAction::make()->label('View'), // <--- Added ViewAction to view product info
 
-                    // Tables\Actions\EditAction::make(), // Disabled edit
+                    Tables\Actions\EditAction::make(), // Disabled edit
 
                         Tables\Actions\DeleteAction::make(),
                     ]),
@@ -155,5 +155,10 @@ class ProductsResource extends Resource
             'create' => Pages\CreateProducts::route('/create'),
             // 'edit' => Pages\EditProducts::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }
