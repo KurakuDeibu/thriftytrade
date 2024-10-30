@@ -14,23 +14,12 @@
         <p class="mb-4 lead">Buy and sell secondhand items in your local community</p>
 
         @guest
-            <a wire:navigate href="{{ '/register' }}" class="mt-2 btn btn-light btn-lg">Join Now</a>
+            <a href="{{ '/register' }}" class="mt-2 btn btn-light btn-lg">Join Now</a>
         @endguest
 
         @auth
             <a wire:navigate href="{{ '/marketplace' }}" class="mt-2 btn btn-light btn-lg">Start your Thrifty Activity!</a>
         @endauth
-
-        {{-- <div class="mt-4 search-bar"> --}}
-
-            {{-- <form class="d-flex">
-
-                <input class="form-control me-2" type="search" placeholder="Search for listings..."
-                    aria-label="Search">
-                <button class="btn btn-light" type="submit">Search</button>
-            </form> --}}
-
-        {{-- </div> --}}
 
     </div>
 </div>

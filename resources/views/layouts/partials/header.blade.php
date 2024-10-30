@@ -1,7 +1,6 @@
 <style>
     body {
         background-color: #f8f9fa;
-        width: 100vw;
         overflow-x: hidden;
     }
 
@@ -53,6 +52,16 @@
             transform: scale(1);
         }
     }
+
+    @media (max-width: 991.98px) {
+        .navbar-nav .nav-link {
+            padding: 0.5rem 1rem;
+        }
+
+        .navbar-nav .nav-link i {
+            margin-right: 0.5rem;
+        }
+    }
 </style>
 
 <nav class="bg-white shadow-sm navbar sticky-top navbar-expand-lg navbar-light">
@@ -69,25 +78,25 @@
                             <i class="bi bi-shop"></i> Marketplace
                         </a>
                     </li> --}}
-                @auth
+                {{-- @auth --}}
 
-                    {{-- <li class="nav-item">
+                {{-- <li class="nav-item">
                         <x-nav-link href="{{ url('marketplace') }}" :active="request()->routeIs('marketplace')"><i class="bi bi-shop">
                                 {{ __('Marketplace') }}</i>
                         </x-nav-link>
                     </li> --}}
 
-                    {{-- <li class="nav-item">
+                {{-- <li class="nav-item">
                         <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')"><i class="bi bi-heart">
                                 {{ __('Wishlist') }}</i>
                         </x-nav-link>
                     </li> --}}
-                @endauth
+                {{-- @endauth --}}
 
             </ul>
 
             @auth
-                <div class="py-2"><a wire:navigate href="/create/listing">
+                <div class="py-2"><a wire:navigate href="{{ route('listing.create') }}">
                         <button class="mx-2 btn btn-outline-primary">+ Sell Products</button>
                     </a>
                 </div>
@@ -96,27 +105,30 @@
             <ul class="navbar-nav">
                 <li class="nav-item">
                     @auth
-                        <a class="nav-link" href="/auth/chatui">
+                        <a class="nav-link" href="{{ route('chat.chat-message') }}">
                         @endauth
                         @guest
-                            <a class="nav-link" href="/guest/chatui">
+                            <a class="nav-link" href="{{ route('chat.chat-message') }}">
                             @endguest
                             <i class="bi bi-chat"></i>
+                            <span class="d-lg-none">Chat</span>
                         </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link" href="/notifications">
                         <i class="bi bi-bell"></i>
+                        <span class="d-lg-none">Notifications</span>
                     </a>
                 </li>
 
+
                 @auth
-                <li class="flex items-center">
-                    <a class="px-1" href="/dashboard">
-                        <span class="mr-2 fw-bold">Hi! {{ Auth::user()->name }}</span>
-                    </a>
-                </li>
+                    <li class="flex items-center">
+                        <a class="px-1" href="{{ route('dashboard') }}">
+                            <span class="mr-2 fw-bold">Hi! {{ Auth::user()->name }}</span>
+                        </a>
+                    </li>
                 @endauth
 
             </ul>

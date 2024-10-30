@@ -16,7 +16,7 @@
             <select wire:model="category" class="form-select">
                 <option value="">Select a category...</option>
                 @foreach (\App\Models\Category::all() as $category)
-                    <option value="{{ $category ->category_id }}">{{ $category ->categName }}</option>
+                    <option value="{{ $category->category_id }}">{{ $category->categName }}</option>
                 @endforeach
             </select>
         </div>
@@ -32,7 +32,7 @@
             </select>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+        <button type="submit" class="btn btn-outline-primary w-100">Apply Filters</button>
     </form>
 </div>
 <!-- END OF FILTER-DIV -->
