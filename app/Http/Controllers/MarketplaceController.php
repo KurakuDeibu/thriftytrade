@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Products;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class MarketplaceController extends Controller
@@ -15,34 +16,57 @@ class MarketplaceController extends Controller
     {
         $query = $request->input('query');
 
-        if ($query) {
-            $marketplaceProducts = Products::where('prodName', 'like', "%$query%")
-                ->orWhere('prodDescription', 'like', "%$query%")
+        if ($query && strlen($query) >= 5) {
+            $marketplaceProducts = Products::where(function($q) use ($query) {
+                    $q->where('prodName', 'like', "%$query%")
+                      ->orWhere('prodDescription', 'like', "%$query%");
+                })
                 ->paginate(15);
         } else {
-            $marketplaceProducts = Products::inRandomOrder()->paginate(6);
+            $marketplaceProducts = Products::latest()->paginate(6);
         }
 
-        return view('marketplace.marketplace-auth')->with('marketplaceProducts', $marketplaceProducts);
+        return view('marketplace.marketplace-auth', [
+            'marketplaceProducts' => $marketplaceProducts,
+            'query' => $query  // Pass the query to the view
+        ]);
     }
 
-    // public function showUserProducts()
-    // {
-    //     $user_id = auth()->id(); // Get the ID of the authenticated user
-
-    //     $showUserProducts = Product::where('user_id', $user_id)->paginate(15);
-
-    //     return view('layouts.side-bar.side-bar-auth')->with('showUserProducts', $showUserProducts);
-    // }
-
-    // PRODUCT DETAILS
+    // SHOW PRODUCT DETAILS
     public function showDetails($id)
     {
         $marketplaceProducts = Products::findOrFail($id);
-        // $mightAlsoLike = Product::inRandomOrder()->paginate(4);
+
+        $showOtherListings = Products::where('user_id', $marketplaceProducts->user_id)
+        ->where('id', '!=', $id) // Exclude the current product
+        ->latest() // Order them by latest
+        ->paginate(5); //
+
+            // Check if there are any other listings
+            $hasOtherListings = $showOtherListings->isNotEmpty();
+
+        // dd($showOtherListings);
+
         return view('products.product-details')->with([
             'marketplaceProducts' => $marketplaceProducts,
-            // 'mightAlsoLike' => $mightAlsoLike,
+            'showOtherListings' => $showOtherListings,
+            'hasOtherListings' => $hasOtherListings, // Pass the condition to the view
         ]);
     }
+
+    public function showUserListings($userId)
+    {
+       // Fetch the user by their ID
+        $user = User::findOrFail($userId);
+        // Fetch the products listed by the user
+        $userProducts = Products::where('user_id', $userId)->latest()->paginate(15);
+        $totalProducts = $userProducts->count();
+
+        return view('profile.user-listing', [
+            'user' => $user,
+            'userProducts' => $userProducts,
+            'totalProducts' => $totalProducts
+        ]);
+    }
+
 }
