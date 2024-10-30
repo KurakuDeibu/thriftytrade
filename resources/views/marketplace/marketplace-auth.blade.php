@@ -1,13 +1,4 @@
 <style>
-    body {
-        background-color: #f8f9fa;
-    }
-
-    .navbar-brand {
-        font-weight: bold;
-        color: #4267B2 !important;
-    }
-
     .sidebar {
         background-color: white;
         border-radius: 8px;
@@ -77,8 +68,8 @@
                     @endforeach
 
                     @if (!$marketplaceProducts->hasMorePages())
-                    <div class="text-center alert alert-primary w-100">No more products to show...</div>
-                @endif
+                        <div class="text-center alert alert-primary w-100">No more products to show...</div>
+                    @endif
 
                 </div>
         </div>
@@ -88,28 +79,6 @@
     </div>
 
     </div>
-    {{ $marketplaceProducts->onEachSide(0)->links() }}
-
+    {{ $marketplaceProducts->appends(['query' => $query])->links() }}
     </div>
 @endsection
-
-{{-- <script>
-        document.querySelector('.btn-new-listing').addEventListener('click', function() {
-            alert('Opening new listing form...');
-        });
-
-        document.querySelectorAll('.item-card').forEach(card => {
-            card.addEventListener('click', function() {
-                const itemTitle = this.querySelector('.item-title').textContent;
-                alert('View details for ' + itemTitle);
-            });
-        });
-
-        document.querySelector('form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const location = document.getElementById('location').value;
-            const category = document.getElementById('category').value;
-            const condition = document.getElementById('condition').value;
-            alert(`Applying filters: Location - ${location}, Category - ${category}, Condition - ${condition}`);
-        });
-    </script> --}}
