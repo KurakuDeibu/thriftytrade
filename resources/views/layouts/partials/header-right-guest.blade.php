@@ -5,9 +5,3 @@
         </x-nav-link>
     </li>
 </ul>
-    {{--
-    <li class="nav-item">
-        <x-nav-link href="{{ url('register') }}" :active="request()->routeIs('register')">
-            {{ __('Register') }}
-        </x-nav-link>
-    </li> --}}

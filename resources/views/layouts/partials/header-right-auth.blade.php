@@ -13,8 +13,8 @@
                @else
                    <span class="inline-flex rounded-md">
                        <button type="button"
-                       class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out bg-white border border-indigo-400 rounded-md opacity-100 hover:text-gray-700 focus:outline-none focus:bg-gray-100 active:bg-gray-100">
-                       {{ Auth::user()->name }}
+                           class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out bg-white border border-indigo-400 rounded-md opacity-100 hover:text-gray-700 focus:outline-none focus:bg-gray-100 active:bg-gray-100">
+                           {{ Auth::user()->name }}
 
                            <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -28,10 +28,13 @@
            <x-slot name="content">
                <!-- Account Management -->
                <div class="block px-4 py-2 text-xs text-gray-400 opacity-100">
-                <p>Signed in as</p><span class="fw-bold">{{ Auth::user()->email }}</span>
-            </div>
+                   <p>Signed in as</p><span class="fw-bold">{{ Auth::user()->email }}</span>
+               </div>
                <div class="border-t border-gray-200"></div>
 
+               <x-dropdown-link wire:navigate href="{{ route('profile.user-listing', Auth::user()->id) }}">
+                   {{ __('My Listings') }}
+               </x-dropdown-link>
 
                <x-dropdown-link wire:navigate href="{{ route('profile.show') }}">
                    {{ __('Edit Profile') }}
