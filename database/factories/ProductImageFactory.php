@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Product;
+use App\Models\Products;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,7 +20,7 @@ class ProductImageFactory extends Factory
     {
         return [
             //
-            'productID' => Product::factory(),  // Automatically create a product
+            'products_id' => Products::factory(),
             'imageURL' => $this->faker->imageUrl(),
         ];
     }
