@@ -5,9 +5,22 @@
     <x-alert-toast type="success" :message="session('success')" />
 @endif
 
-{{-- Error Messages --}}
-@if (session('error'))
-    <x-alert-toast type="error" :message="session('error')" />
+{{-- Error Messages and Validation Errors Combined --}}
+@if (session('error') || $errors->any())
+    @php
+        $errorMessages = [];
+        // Add session error if exists
+        if (session('error')) {
+            $errorMessages = is_array(session('error'))
+                ? array_merge($errorMessages, session('error'))
+                : array_merge($errorMessages, [session('error')]);
+        }
+        // Add validation errors if exists
+        if ($errors->any()) {
+            $errorMessages = array_merge($errorMessages, $errors->all());
+        }
+    @endphp
+    <x-alert-toast type="error" :message="$errorMessages" />
 @endif
 
 {{-- Warning Messages --}}
@@ -38,13 +51,6 @@
 {{-- Light Messages --}}
 @if (session('light'))
     <x-alert-toast type="light" :message="session('light')" />
-@endif
-
-{{-- Validation Errors --}}
-@if ($errors->any())
-    @foreach ($errors->all() as $error)
-        <x-alert-toast type="error" :message="$error" />
-    @endforeach
 @endif
 
 @push('scripts')

@@ -63,6 +63,15 @@
     ];
 
     $positionClass = $positionClasses[$position] ?? $positionClasses['top-end'];
+
+    // Handle error messages from Laravel's error bag
+if ($type === 'error' && session()->has('errors')) {
+    $errors = session()->get('errors')->all();
+        $messages = $errors;
+    } else {
+        // Handle regular messages
+        $messages = is_array($message) ? $message : [$message];
+    }
 @endphp
 
 <div id="{{ $type }}Alert" class="p-3 position-fixed {{ $positionClass }}"
@@ -79,7 +88,15 @@
             </button>
         </div>
         <div class="toast-body">
-            {{ $message }}
+            @if (count($messages) > 1)
+                <ul class="mb-0 ps-3">
+                    @foreach ($messages as $msg)
+                        <li>{{ $msg }}</li>
+                    @endforeach
+                </ul>
+            @else
+                {{ $messages[0] }}
+            @endif
         </div>
     </div>
 </div>
