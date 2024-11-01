@@ -86,8 +86,26 @@
         }
 
         /* Custom hover effect with border */
-        .hover-underline:hover {
-            border-color: 1px solid red;
+        .hover-underline {
+            position: relative;
+            text-decoration: none;
+        }
+
+        .hover-underline::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #475c7d;
+            /* Bootstrap primary color, you can change this */
+            transform: scaleX(0);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .hover-underline:hover::after {
+            transform: scaleX(1);
         }
     </style>
 </head>
@@ -134,6 +152,8 @@
                     </div>
 
                 </div>
+
+                {{-- SELLER INFO --}}
                 <div class="p-3 seller-info">
                     <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}">
                         <img src="{{ $marketplaceProducts->author->profile_photo_url }}"
@@ -143,7 +163,8 @@
                     <div>
                         <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
                             class="text-dark text-decoration-none hover-underline">
-                            <strong>{{ $marketplaceProducts->author->name }}</strong></a>
+                            <strong>{{ $marketplaceProducts->author->name }}</strong>
+                        </a>
                         <div class="text-muted">{{ $marketplaceProducts->author->userAddress }}</div>
                     </div>
                 </div>
@@ -157,10 +178,11 @@
 
                 <!-- Seller information -->
                 {{-- SHOW STATUS IF SOLD OR NOT --}}
-                <h1 class="h2 fw-bold text-break">
-                    <span class="badge text-dark">[Status]</span>
-                    {{ $marketplaceProducts->prodName }}
-                </h1>
+                <div class="d-flex flex-wrap align-items-center justify-content-between w-100">
+                    <h1 class="h2 fw-bold text-break mb-0">{{ $marketplaceProducts->prodName }}</h1>
+                    <x-status-badge :status="$marketplaceProducts->status->statusName" class="ms-auto" />
+                </div>
+
                 <!-- Additional details -->
                 <p class="py-1 text-muted d-flex justify-content-between align-items-center">
                     <small>Posted {{ $marketplaceProducts->created_at->diffForHumans() }} • 2 chats </small>
@@ -194,17 +216,23 @@
                             </a>
                         </div>
                     @else
-                        <!-- Offer Button for non-owners -->
+                        <!-- Offer Button for buyers -->
                         <div class="mt-4 mb-2 d-lg-block">
                             <a href="#" class="btn btn-outline-primary btn-lg w-100">OFFER
                                 [₱{{ $marketplaceProducts->prodPrice }}]</a>
                         </div>
-                        <!-- Chat Button for non-owners -->
+
+                        <!-- Chat Button for buyers -->
                         <div class="mb-2 d-lg-block">
                             <a href="#" class="btn btn-primary btn-lg w-100">
                                 <i class="fas fa-envelope"></i> CHAT WITH SELLER
                             </a>
                         </div>
+
+                        <!-- Chat Button for buyers -->
+                        {{-- ----- MESSAGE MODAL - components/Message.blade.php --}}
+                        {{-- @include('components.Message') --}}
+                        {{-- END OF MESSAGE MODAL --}}
                     @endif
                 @else
                     <!-- Show Login Button if not authenticated -->
@@ -248,11 +276,10 @@
         <div class="mb-4 row">
             <div class="col-12 d-flex justify-content-between align-items-center">
                 <h2 class="text-xl font-bold text-center">
-                    Other listings by
-                    {{ $marketplaceProducts->author->name }}
+                    Other listings by {{ $marketplaceProducts->author->name }}
                 </h2>
                 <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
-                    class="font-medium text-blue-500 hover:text-blue-700">Show All</a>
+                    class="font-medium text-blue-500 hover-underline">Show All</a>
             </div>
         </div>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
@@ -286,7 +313,7 @@
         <div class="mb-4 row">
             <div class="col-12 d-flex justify-content-between align-items-center">
                 <h2 class="text-xl font-bold text-center">Recommended Products in ThriftyTrade</h2>
-                <a href="#" class="font-medium text-blue-500 hover:text-blue-700">Show All</a>
+                <a href="#" class="font-medium text-blue-500 hover-underline">Show All</a>
             </div>
         </div>
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
