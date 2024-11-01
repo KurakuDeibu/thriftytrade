@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Products;
 use App\Http\Controllers\Controller;
+use App\Models\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Termwind\Components\Dd;
@@ -26,19 +27,22 @@ class ProductController extends Controller
     {
         // Fetch categories and order them alphabetically by name
         $categories = Category::orderBy('categName', 'asc')->get();
-        return view('listing.create', compact('categories'));
+        $stats = Status::orderBy('statusName', 'asc')->get();
+        return view('listing.create', compact('categories', 'stats'));
     }
 
     //Add seller's product in the database
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|min:3|max:255',
             'category_id' => 'required|exists:category,id',
+            'status_id' => 'required|exists:status,id',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
+            'quantity' => 'required|numeric|min:0',
             'condition' => 'required|string|max:20',
-            'images' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
 
@@ -48,24 +52,16 @@ class ProductController extends Controller
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('products/images', $imageName, 'public');
         }
-        // Handling image uploads
-        // $imagePaths = [];
-        // if ($request->hasFile('images')) {
-        //     foreach ($request->file('images') as $image) {
-        //         $path = $image->store('products', 'public');
-        //         $imagePaths[] = $path;
-        //     }
-        // }
-        // $validatedData['prodImage'] = json_encode($imagePaths);
-
 
         // Creating product listing
         Products::create([
             'user_id' => auth()->id(),
             'category_id' => $request->category_id,
+            'status_id' => $request->status_id,
             'prodName' => $request->name,
             'prodDescription' => $request->description,
             'prodPrice' => $request->price,
+            'prodQuantity' => $request->quantity,
             'prodCondition' => $request->condition,
             'prodImage' => $imagePath,
             'featured' => $request->has('featured')
@@ -83,8 +79,9 @@ class ProductController extends Controller
             return redirect()->route('manage-listing')->with('error', 'Unauthorized access.');
         }
         $categories = Category::orderBy('categName', 'asc')->get();
+        $stats = Status::orderBy('statusName', 'asc')->get();
 
-        return view('listing.edit', compact('product', 'categories'));
+        return view('listing.edit', compact('product', 'categories', 'stats'));
     }
 
     // Update seller's product in the database
@@ -93,8 +90,10 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:category,id',
+            'status_id' => 'required|exists:status,id',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
+            'quantity' => 'required|numeric|min:0',
             'condition' => 'required|string|max:20',
             'images' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
@@ -104,7 +103,9 @@ class ProductController extends Controller
             'prodName' => $request->name,
             'prodDescription' => $request->description,
             'category_id' => $request->category_id,
+            'status_id' => $request->status_id,
             'prodPrice' => $request->price,
+            'prodQuantity' => $request->quantity,
             'prodCondition' => $request->condition,
         ];
 
