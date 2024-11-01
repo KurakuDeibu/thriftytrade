@@ -96,7 +96,7 @@
             </ul>
 
             @auth
-                <div class="py-2"><a wire:navigate href="{{ route('listing.create') }}">
+                <div class="py-2"><a href="{{ route('listing.create') }}">
                         <button class="mx-2 btn btn-outline-primary">+ Sell Products</button>
                     </a>
                 </div>
