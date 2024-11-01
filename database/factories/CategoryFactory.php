@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,8 +18,26 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            //
-            'categName' => $this->faker->word(),
+            'categName' => 'Electronics', // default state
         ];
+    }
+
+    public function createAllCategories()
+    {
+        $categoryNames = [
+            'Electronics',
+            'Clothing',
+            'Books',
+            'Home & Garden',
+            'Sports',
+            'Toys',
+            'Health & Wellness',
+            'Office Supplies',
+            'Pet Supplies',
+        ];
+
+        foreach ($categoryNames as $categoryName) {
+            Category::create(['categName' => $categoryName]);
+        }
     }
 }
