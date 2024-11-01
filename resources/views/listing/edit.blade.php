@@ -48,7 +48,7 @@
 @section('content')
     <div class="container">
         <div class="form-container">
-            <h1 class="py-4 fw-bold">Edit Listing</h1>
+            <h1 class="mb-4 fw-bold">Edit Listing</h1>
 
             <form action="{{ route('listing.update', $product->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -84,16 +84,29 @@
                         </div>
 
                         <!-- Category -->
-                        <div class="mb-3">
-                            <label for="category" class="form-label">Category</label>
-                            <select class="form-select" id="category_id" name="category_id">
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}"
-                                        {{ $category->id == $product->category_id ? 'selected' : '' }}>
-                                        {{ $category->categName }}
-                                    </option>
-                                @endforeach
-                            </select>
+                        <div class="row g-3">
+                            <div class="col-12 col-sm-6">
+                                <label for="category" class="form-label">Category</label>
+                                <select class="form-select" id="category_id" name="category_id">
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}"
+                                            {{ $category->id == $product->category_id ? 'selected' : '' }}>
+                                            {{ $category->categName }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status_id" name="status_id">
+                                    @foreach ($stats as $status)
+                                        <option value="{{ $status->id }}"
+                                            {{ $status->id == $product->status_id ? 'selected' : '' }}>
+                                            {{ $status->statusName }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                         {{-- @dd($product->category->category_id) --}}
 
@@ -105,10 +118,15 @@
 
                         <!-- Price and Condition -->
                         <div class="row g-3">
-                            <div class="col-12 col-sm-6">
+                            <div class="col-12 col-sm-3">
                                 <label for="price" class="form-label">Price (₱)</label>
                                 <input type="number" class="form-control" id="price" name="price" min="0"
                                     step="0.01" value="{{ $product->prodPrice }}">
+                            </div>
+                            <div class="col-12 col-sm-3">
+                                <label for="quantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="quantity" name="quantity" min="0"
+                                    step="1" value="{{ $product->prodQuantity }}">
                             </div>
 
                             <div class="col-12 col-sm-6">

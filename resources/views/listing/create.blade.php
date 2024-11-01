@@ -1,58 +1,6 @@
-<style>
-    .form-container {
-        max-width: 100%;
-        margin: 1.5rem auto;
-        padding: 1.5rem;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .image-preview-container {
-        margin-bottom: 1rem;
-    }
-
-    .image-preview {
-        width: 100%;
-        height: 300px;
-        margin-top: 1rem;
-        border-radius: 8px;
-        overflow: hidden;
-        background-color: #f8f9fa;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 2px dashed #dee2e6;
-    }
-
-    .image-preview img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-
-    .image-preview .placeholder-text {
-        color: #6c757d;
-        font-size: 0.9rem;
-        text-align: center;
-    }
-
-    .is-invalid {
-        border-color: #dc3545;
-    }
-
-    @media (max-width: 768px) {
-        .form-container {
-            padding: 1rem;
-        }
-
-        .image-preview {
-            height: 250px;
-        }
-    }
-</style>
-
 @extends('layouts.app')
+
+<link href="{{ asset('css/listings-styles.css') }}" rel="stylesheet">
 
 @section('content')
     <div class="container">
@@ -92,7 +40,7 @@
                             </div>
 
                             <!-- Category -->
-                            <div class="col-12">
+                            <div class="col-12 col-sm-6">
                                 <label for="category" class="form-label">Category</label>
                                 <select class="form-select @error('category_id') is-invalid @enderror" id="category"
                                     name="category_id">
@@ -109,6 +57,23 @@
                                 @enderror
                             </div>
 
+                            <div class="col-12 col-sm-6">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select @error('status_id') is-invalid @enderror" id="status"
+                                    name="status_id">
+                                    <option value="">Select a status</option>
+                                    @foreach ($stats as $status)
+                                        <option value="{{ $status->id }}"
+                                            {{ old('status_id') == $status->id ? 'selected' : '' }}>
+                                            {{ $status->statusName }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('status_id')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+
                             <!-- Description -->
                             <div class="col-12">
                                 <label for="description" class="form-label">Product Description</label>
@@ -120,12 +85,22 @@
                             </div>
 
                             <!-- Price -->
-                            <div class="col-12 col-sm-6">
+                            <div class="col-12 col-sm-3">
                                 <label for="price" class="form-label">Price (₱)</label>
                                 <input type="number" class="form-control @error('price') is-invalid @enderror"
                                     id="price" name="price" min="0" step="0.01"
                                     value="{{ old('price') }}">
                                 @error('price')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+
+                            <div class="col-12 col-sm-3">
+                                <label for="quantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control @error('quantity') is-invalid @enderror"
+                                    id="quantity" name="quantity" min="0" step="1"
+                                    value="{{ old('quantity') }}">
+                                @error('quantity')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
@@ -179,4 +154,6 @@
             }
         }
     </script>
+
+    <script src="{{ asset('js/listings-validation.js') }}"></script>
 @endsection
