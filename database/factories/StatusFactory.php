@@ -18,22 +18,7 @@ class StatusFactory extends Factory
     public function definition(): array
     {
         return [
-            'statusName' => 'Available', // default state
+            'statusName' => $this->faker->unique()->word,
         ];
-    }
-
-    public function createAllStatuses()
-    {
-        $statusNames = [
-            'Available',
-            'Negotiable',
-            'Pending',
-            'Sold',
-            'Rush',
-        ];
-
-        foreach ($statusNames as $statusName) {
-            Status::create(['statusName' => $statusName]);
-        }
     }
 }

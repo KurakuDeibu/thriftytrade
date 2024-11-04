@@ -23,20 +23,21 @@ class ProductsFactory extends Factory
         $conditionType = ['New', 'Likely New', 'Used', 'Likely Used'];
 
         return [
-            //
-            'user_id' => User::factory(),
-            'prodName' => $this->faker->sentence(),
-            'category_id' => Category::factory(),
-            'status_id' => Status::factory(),
-            'prodImage' => $this->faker->imageUrl(),
-            // 'productimages_id' => ProductImage::factory(),
-            'prodPrice' => $this->faker->randomFloat(2, 0, 100),
-            'prodDescription' => $this->faker->paragraph(2),
-            'prodCondition' => $this->faker->randomElement($conditionType),
-            'prodQuantity' => $this->faker->numberBetween(1,50),
-
-
-            'featured' => $this->faker->boolean(10),
-        ];
+             'prodName' => $this->faker->word,
+        'prodPrice' => $this->faker->randomFloat(2, 1, 1000),
+        'prodQuantity' => $this->faker->numberBetween(1, 100),
+        'prodCondition' => $this->faker->word,
+        'prodImage' => $this->faker->imageUrl(),
+        'prodDescription' => $this->faker->paragraph,
+        'featured' => $this->faker->boolean,
+        'user_id' => function () {
+            return User::inRandomOrder()->first()->id;
+        },
+        'category_id' => function () {
+            return Category::inRandomOrder()->first()->id;
+        },
+        'status_id' => function () {
+            return Status::inRandomOrder()->first()->id;
+        }];
     }
 }

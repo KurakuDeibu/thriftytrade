@@ -1,19 +1,24 @@
--clone the app on github/or github desktop
--modify the .env file
--modify mailer
-
--composer install
--composer update
 -make sure laravel 11^
 
--php artisan migrate:fresh
+$ git clone git@github.com:KurakuDeibu/thriftytrade.git project
+$ cd project
+$ composer install
+$ composer update
+$ cp .env.example .env # THEN EDIT YOUR ENV FILE ACCORDING TO YOUR OWN SETTINGS.
+$ modify mailer
+$ php artisan key:generate
+$ php artisan storage:link
+$ php artisan migrate
+$ php artisan db:seed
+$ php artisan serve
 
-OPTIMIZE THE LOADING
+
+## admin routes ##
+-/admin/login
+-/admin/products/
+
+CACHE PAGES
 -php artisan route:cache
 -php artisan icons:cache
 -php artisan view:cache
 -php artisan config:cache
-
-## admin routes ##
--localhost:8080/admin/login
--admin/products/

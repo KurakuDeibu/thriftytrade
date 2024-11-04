@@ -18,26 +18,7 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'categName' => 'Electronics', // default state
+            'categName' => $this->faker->unique()->word,
         ];
-    }
-
-    public function createAllCategories()
-    {
-        $categoryNames = [
-            'Electronics',
-            'Clothing',
-            'Books',
-            'Home & Garden',
-            'Sports',
-            'Toys',
-            'Health & Wellness',
-            'Office Supplies',
-            'Pet Supplies',
-        ];
-
-        foreach ($categoryNames as $categoryName) {
-            Category::create(['categName' => $categoryName]);
-        }
     }
 }
