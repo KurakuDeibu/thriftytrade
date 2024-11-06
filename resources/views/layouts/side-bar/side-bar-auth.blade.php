@@ -26,15 +26,28 @@
                 @include('components.filter') {{-- Include the filter component only if not on dashboard --}}
             @else
                 @auth
-                    {{-- Check if the current route is dashboard --}}
+                    {{-- MANAGE LISTINGS --}}
                     <div class="mb-2 card bg-light"><a wire:navigate href="{{ route('manage-listing') }}"
                             class="btn btn-outline-primary {{ Route::currentRouteName() === 'manage-listing' ? 'active' : '' }}">Manage
                             Listings</a>
                     </div>
 
+                    {{-- MANAGE-OFFERS --}}
+                    <div class="mb-2 card bg-light"><a wire:navigate href="{{ route('seller-offers') }}"
+                            class="btn btn-outline-primary {{ Route::currentRouteName() === 'seller-offers' ? 'active' : '' }}">Manage
+                            Offers</a>
+                    </div>
+
+                    {{-- WISHLISTS --}}
+                    {{-- <div class="mb-2 card bg-light"><a href="{{ url('/user/wishlists') }}"
+                            class="btn btn-outline-primary">My
+                            Wishlists</a></div> --}}
+
+                    {{-- BUYING --}}
                     <div class="mb-2 card bg-light"><a href="{{ url('/user/buying') }}"
                             class="btn btn-outline-primary">Buying</a></div>
 
+                    {{-- HISTORY --}}
                     <div class="mb-2 card bg-light"><a href="{{ url('/user/history') }}" class="btn btn-outline-primary">My
                             History</a></div>
                 @endauth

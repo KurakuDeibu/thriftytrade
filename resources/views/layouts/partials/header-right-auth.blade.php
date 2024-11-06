@@ -36,6 +36,10 @@
                    {{ __('My Listings') }}
                </x-dropdown-link>
 
+               {{-- <x-dropdown-link wire:navigate href="{{ route('profile.user-listing', Auth::user()->id) }}">
+                   {{ __('My Wishlists') }}
+               </x-dropdown-link> --}}
+
                <x-dropdown-link wire:navigate href="{{ route('profile.show') }}">
                    {{ __('Edit Profile') }}
                </x-dropdown-link>

@@ -27,7 +27,7 @@
 
     .item-image {
         height: 200px;
-        object-fit: cover;
+        object-fit: inherit;
     }
 
     .item-title {
