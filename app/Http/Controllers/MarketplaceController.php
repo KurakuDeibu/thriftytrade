@@ -23,7 +23,7 @@ class MarketplaceController extends Controller
                 })
                 ->paginate(15);
         } else {
-            $marketplaceProducts = Products::latest()->paginate(6);
+            $marketplaceProducts = Products::latest()->paginate(9);
         }
 
         return view('marketplace.marketplace-auth', [

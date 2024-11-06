@@ -55,6 +55,7 @@
 
         .card {
             border: none;
+            position: relative;
             border-radius: 0;
         }
 
@@ -107,6 +108,51 @@
         .hover-underline:hover::after {
             transform: scaleX(1);
         }
+
+        .modal-content {
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .wishlist-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(249, 248, 255, 0.736);
+            padding: 8px;
+            z-index: 10;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .wishlist-icon:hover {
+            transform: scale(0.8);
+            color: white;
+            background-color: rgb(100, 121, 255);
+        }
     </style>
 </head>
 
@@ -133,8 +179,12 @@
                                     ? asset('storage/' . $marketplaceProducts->prodImage)
                                     : asset('img/NOIMG.jpg') }}"
                                     class="card-img-top fixed-image" alt="{{ $marketplaceProducts->prodName }}">
+
                             </li>
                         </ol>
+                    </div>
+                    <div class="wishlist-icon">
+                        <i class="far fa-heart"></i>
                     </div>
                     <!-- Glide arrows -->
                     <div class="glide__arrows" data-glide-el="controls">
@@ -159,7 +209,7 @@
                         <img src="{{ $marketplaceProducts->author->profile_photo_url }}"
                             alt="{{ $marketplaceProducts->author->name }} IMAGE" class="seller-avatar">
                     </a>
-
+                    <span class="border-b-8"></span>
                     <div>
                         <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
                             class="text-dark text-decoration-none hover-underline">
@@ -169,7 +219,6 @@
                     </div>
                 </div>
                 <div class="border-b-2 d-block d-lg-none">
-
                 </div>
             </div>
 
@@ -178,14 +227,15 @@
 
                 <!-- Seller information -->
                 {{-- SHOW STATUS IF SOLD OR NOT --}}
-                <div class="d-flex flex-wrap align-items-center justify-content-between w-100">
-                    <h1 class="h2 fw-bold text-break mb-0">{{ $marketplaceProducts->prodName }}</h1>
+                <div class="flex-wrap d-flex align-items-center justify-content-between w-100">
+                    <h1 class="mb-0 h2 fw-bold text-break">{{ $marketplaceProducts->prodName }}</h1>
                     <x-status-badge :status="$marketplaceProducts->status->statusName" class="ms-auto" />
                 </div>
 
                 <!-- Additional details -->
                 <p class="py-1 text-muted d-flex justify-content-between align-items-center">
-                    <small>Posted {{ $marketplaceProducts->created_at->diffForHumans() }} • 2 chats </small>
+                    <small>Posted {{ $marketplaceProducts->created_at->diffForHumans() }} •
+                        {{ $marketplaceProducts->offers->count() }} chats </small>
                     @if ($marketplaceProducts->featured == true)
                         <small class="text-white badge bg-primary">Featured</small>
                     @endif
@@ -204,151 +254,191 @@
                 </ul>
 
 
-                <!-- Conditional buttons based on user authentication and ownership -->
+                <!-- Conditional buttons based on user authentication, ownership, and product status -->
                 @if (Auth::check())
                     @if (Auth::user()->id == $marketplaceProducts->author->id)
                         <!-- Show Edit Product Button if the user is the owner -->
                         <div class="mt-4 mb-2 d-lg-block">
-                            {{-- <a href="{{ route('product.edit', $marketplaceProducts->id) }}" --}}
                             <a href="{{ route('listing.edit', $marketplaceProducts->id) }}"
                                 class="btn btn-primary btn-lg w-100">
                                 <i class="fas fa-edit"></i> EDIT PRODUCT
                             </a>
                         </div>
                     @else
-                        <!-- Offer Button for buyers -->
-                        <div class="mt-4 mb-2 d-lg-block">
-                            <a href="#" class="btn btn-outline-primary btn-lg w-100">OFFER
-                                [₱{{ $marketplaceProducts->prodPrice }}]</a>
-                        </div>
+                        @php
+                            $allowedStatuses = ['Available', 'Negotiable', 'Rush'];
+                            $isAvailableForOffers = in_array(
+                                $marketplaceProducts->status->statusName,
+                                $allowedStatuses,
+                            );
+                        @endphp
 
-                        <!-- Chat Button for buyers -->
-                        <div class="mb-2 d-lg-block">
-                            <a href="#" class="btn btn-primary btn-lg w-100">
-                                <i class="fas fa-envelope"></i> CHAT WITH SELLER
-                            </a>
-                        </div>
+                        @if ($isAvailableForOffers)
+                            <!-- Offer Button for buyers -->
+                            <div class="mt-4 mb-2 d-lg-block">
+                                <button class="btn btn-outline-primary btn-lg w-100" data-bs-toggle="modal"
+                                    data-bs-target="#offerModal">
+                                    <i class="fas fa-tags"></i> OFFER
+                                    [₱{{ number_format($marketplaceProducts->prodPrice, 2) }}]
+                                </button>
+                            </div>
 
-                        <!-- Chat Button for buyers -->
-                        {{-- ----- MESSAGE MODAL - components/Message.blade.php --}}
-                        {{-- @include('components.Message') --}}
-                        {{-- END OF MESSAGE MODAL --}}
+                            {{-- LIVEWIRE OFFER-MODAL --}}
+                            @livewire('offer-modal', ['product' => $marketplaceProducts])
+
+                            <!-- Chat Button for buyers -->
+                            <!-- Button to trigger modal -->
+                            <div class="mb-2 d-lg-block">
+                                <a href="#" class="shadow-sm btn btn-primary btn-lg w-100" data-bs-toggle="modal"
+                                    data-bs-target="#chatModal">
+                                    <i class="fas fa-envelope me-2"></i> CHAT WITH SELLER
+                                </a>
+                            </div>
+                            {{-- <div class="mt-2 mb-2 d-lg-block">
+                                @include('components.Message')
+                            </div> --}}
+
+                            <!-- Status-specific messages -->
+                            @if ($marketplaceProducts->status->statusName == 'Rush')
+                                <div class="mt-2 alert alert-warning" role="alert">
+                                    <i class="fas fa-bolt"></i> This is a rush sale! The seller is looking for quick
+                                    offers.
+                                </div>
+                            @elseif($marketplaceProducts->status->statusName == 'Negotiable')
+                                <div class="mt-2 alert alert-info" role="alert">
+                                    <i class="fas fa-handshake"></i> Price is negotiable. Feel free to make an offer!
+                                </div>
+                            @endif
+                        @else
+                            <div class="mt-4 mb-2 d-lg-block">
+                                <div class="alert alert-secondary" role="alert">
+                                    <i class="fas fa-info-circle"></i> This product is currently
+                                    <strong>{{ strtolower($marketplaceProducts->status->statusName) }}</strong>.
+                                    It's not available for new offers or messages at the moment.
+                                </div>
+                            </div>
+                        @endif
                     @endif
                 @else
                     <!-- Show Login Button if not authenticated -->
                     <div class="mt-4 mb-2 d-lg-block">
                         <a href="{{ route('login') }}" class="btn btn-primary btn-lg w-100">
-                            <i class="fas fa-sign-in-alt"></i> LOGIN TO CHAT
+                            <i class="fas fa-sign-in-alt"></i> LOGIN TO INTERACT
                         </a>
                     </div>
                 @endif
-
             </div>
-        </div>
-    </div>
 
-    {{-- CHAT BUTTON (sticky for mobile)  --}}
-    @auth
-        @if (Auth::user()->id == $marketplaceProducts->author->id)
-            <div class="d-lg-none sticky-bottom">
-                <a href="{{ route('listing.edit', $marketplaceProducts->id) }}" class="btn btn-primary btn-lg w-100">
-                    <i class="fas fa-envelope"></i> EDIT PRODUCT
-                </a>
-            </div>
-        @else
-            <div class="d-lg-none sticky-bottom">
-                <a href="#" class="btn btn-primary btn-lg w-100">
-                    <i class="fas fa-envelope"></i> CHAT WITH SELLER
-                </a>
-            </div>
-        @endif
-    @else
-        <div class="d-lg-none sticky-bottom">
-            <a href="{{ route('login') }}" class="btn btn-primary btn-lg w-100">
-                <i class="fas fa-envelope"></i> LOGIN TO CHAT
-            </a>
-        </div>
-    @endauth
-
-
-    {{-- OTHER LISTINGS OF THE USER --}}
-    <div class="container mt-5">
-        <div class="mb-4 row">
-            <div class="col-12 d-flex justify-content-between align-items-center">
-                <h2 class="text-xl font-bold text-center">
-                    Other listings by {{ $marketplaceProducts->author->name }}
-                </h2>
-                <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
-                    class="font-medium text-blue-500 hover-underline">Show All</a>
-            </div>
-        </div>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
-            @if ($hasOtherListings)
-                @foreach ($showOtherListings as $product)
-                    <div class="col">
-                        <a href="/marketplace/product/{{ $product->id }}"
-                            class="card h-100 text-decoration-none text-dark">
-                            <img src="{{ $product->prodImage && file_exists(public_path('storage/' . $product->prodImage))
-                                ? asset('storage/' . $product->prodImage)
-                                : asset('img/NOIMG.jpg') }}"
-                                class="card-img-top fixed-image" alt="{{ $product->prodName }}">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ Str::limit($product->prodName, 40, '...') }}</h5>
-                                <p class="card-text">₱{{ $product->prodPrice }}</p>
-                            </div>
+            <!-- Mobile sticky button -->
+            @auth
+                @if (Auth::user()->id == $marketplaceProducts->author->id)
+                    <div class="d-lg-none sticky-bottom">
+                        <a href="{{ route('listing.edit', $marketplaceProducts->id) }}"
+                            class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-edit"></i> EDIT PRODUCT
                         </a>
                     </div>
-                @endforeach
-            @else
-                <p class="text-center alert alert-primary w-100">No other listings available from this user.</p>
-            @endif
-
-
-
-        </div>
-    </div>
-
-    {{-- RECOMMENDED LISTINGS FOR THE USER --}}
-    <div class="container mt-5">
-        <div class="mb-4 row">
-            <div class="col-12 d-flex justify-content-between align-items-center">
-                <h2 class="text-xl font-bold text-center">Recommended Products in ThriftyTrade</h2>
-                <a href="#" class="font-medium text-blue-500 hover-underline">Show All</a>
-            </div>
-        </div>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
-            @for ($i = 0; $i < 5; $i++)
-                <div class="col">
-                    <a href="/marketplace/product/{{ $marketplaceProducts->id }}"
-                        class="card h-100 text-decoration-none text-dark">
-                        <img src="{{ $marketplaceProducts->prodImage && file_exists(public_path('storage/' . $marketplaceProducts->prodImage))
-                            ? asset('storage/' . $marketplaceProducts->prodImage)
-                            : asset('img/NOIMG.jpg') }}"
-                            class="card-img-top fixed-image" alt="{{ $marketplaceProducts->prodName }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ Str::limit($marketplaceProducts->prodName, 40, '...') }}
-                            </h5>
-                            <p class="card-text">₱{{ $marketplaceProducts->prodPrice }}</p>
+                @else
+                    @if ($isAvailableForOffers)
+                        <div class="d-lg-none sticky-bottom">
+                            <button class="btn btn-primary btn-lg w-100" data-bs-toggle="modal"
+                                data-bs-target="#offerModal">
+                                <i class="fas fa-tags"></i> MAKE OFFER
+                            </button>
                         </div>
+                    @endif
+                @endif
+            @else
+                <div class="d-lg-none sticky-bottom">
+                    <a href="{{ route('login') }}" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-sign-in-alt"></i> LOGIN TO INTERACT
                     </a>
                 </div>
-            @endfor
-        </div>
-    </div>
+            @endauth
 
-    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
-    <script>
-        // Initialize Glide slider
-        new Glide('.glide', {
-            type: 'carousel',
-            perView: 1,
-            focusAt: 'center',
-            keyboard: true,
-            breakpoints: {
-                767: {
-                    perView: 1
-                }
-            }
-        }).mount();
-    </script>
+
+            {{-- OTHER LISTINGS OF THE USER --}}
+            <div class="container mt-5">
+                <div class="mb-4 row">
+                    <div class="col-12 d-flex justify-content-between align-items-center">
+                        <h2 class="text-xl font-bold text-center">
+                            Other listings by {{ $marketplaceProducts->author->name }}
+                        </h2>
+                        <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
+                            class="font-medium text-blue-500 hover-underline">Show All</a>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
+                    @if ($hasOtherListings)
+                        @foreach ($showOtherListings as $product)
+                            <div class="col">
+                                <a href="/marketplace/product/{{ $product->id }}"
+                                    class="card h-100 text-decoration-none text-dark">
+                                    <img src="{{ $product->prodImage && file_exists(public_path('storage/' . $product->prodImage))
+                                        ? asset('storage/' . $product->prodImage)
+                                        : asset('img/NOIMG.jpg') }}"
+                                        class="card-img-top fixed-image" alt="{{ $product->prodName }}">
+                                    <div class="wishlist-icon">
+                                        <i class="far fa-heart"></i>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ Str::limit($product->prodName, 40, '...') }}</h5>
+                                        <p class="card-text">₱{{ $product->prodPrice }}</p>
+                                    </div>
+                                </a>
+                            </div>
+                        @endforeach
+                    @else
+                        <p class="text-center alert alert-primary w-100">No other listings available from this user.
+                        </p>
+                    @endif
+
+
+
+                </div>
+            </div>
+
+            {{-- RECOMMENDED LISTINGS FOR THE USER --}}
+            <div class="container mt-5">
+                <div class="mb-4 row">
+                    <div class="col-12 d-flex justify-content-between align-items-center">
+                        <h2 class="text-xl font-bold text-center">Recommended Products in ThriftyTrade</h2>
+                        <a href="#" class="font-medium text-blue-500 hover-underline">Show All</a>
+                    </div>
+                </div>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
+                    @for ($i = 0; $i < 5; $i++)
+                        <div class="col">
+                            <a href="/marketplace/product/{{ $marketplaceProducts->id }}"
+                                class="card h-100 text-decoration-none text-dark">
+                                <img src="{{ $marketplaceProducts->prodImage && file_exists(public_path('storage/' . $marketplaceProducts->prodImage))
+                                    ? asset('storage/' . $marketplaceProducts->prodImage)
+                                    : asset('img/NOIMG.jpg') }}"
+                                    class="card-img-top fixed-image" alt="{{ $marketplaceProducts->prodName }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ Str::limit($marketplaceProducts->prodName, 40, '...') }}
+                                    </h5>
+                                    <p class="card-text">₱{{ $marketplaceProducts->prodPrice }}</p>
+                                </div>
+                            </a>
+                        </div>
+                    @endfor
+                </div>
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
+            <script>
+                // Initialize Glide slider
+                new Glide('.glide', {
+                    type: 'carousel',
+                    perView: 1,
+                    focusAt: 'center',
+                    keyboard: true,
+                    breakpoints: {
+                        767: {
+                            perView: 1
+                        }
+                    }
+                }).mount();
+            </script>
 </body>

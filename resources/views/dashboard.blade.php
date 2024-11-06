@@ -6,23 +6,10 @@
             color: #4267b2 !important;
         }
 
-        .stat-card-custom {
-            border: solid 1px rgb(38, 41, 237);
-            box-shadow: 5px 5px 10px rgba(88, 122, 255, 0.1);
-        }
-
-        .status-active {
-            color: #011fff;
-        }
-
-        .status-sold {
-            color: #707172;
-        }
-
         .fixed-image {
             width: 100%;
             height: 10rem;
-            object-fit: cover;
+            object-fit: fill;
             border-radius: 0;
         }
 
@@ -101,8 +88,10 @@
                     <div class="container mt-4">
                         @if (Route::currentRouteName() === 'dashboard')
                             @include('dashboard-content')
-                        @elseif (Route::currentRouteName() == 'manage-listing')
+                        @elseif (Route::currentRouteName() === 'manage-listing')
                             @include('components.products.manage-listings')
+                        @elseif (Route::currentRouteName() === 'seller-offers')
+                            @include('seller.offers.index')
                         @endif
                     </div>
 

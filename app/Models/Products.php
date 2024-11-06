@@ -43,6 +43,11 @@ class Products extends Model
         return $this->belongsTo(Status::class);
     }
 
+    public function offers()
+    {
+        return $this->hasMany(Offer::class, 'products_id');
+    }
+
     public function scopeFeatured($query)
     {
         //SHOW FEATURE PRODUCT

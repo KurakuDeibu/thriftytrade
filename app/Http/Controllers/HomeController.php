@@ -11,32 +11,10 @@ use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    // public function __invoke(Request $request)
-    // {
-    //     //VIEW FEATURED PRODUCTS FROM LANDING PAGE
-
-    //     //Added caching to show products
-    //     $featuredProducts = Cache::remember('featuredProducts', Carbon::now()->addHour(5), function () {
-    //     return Products::featured()->latest('created_at')->take(10)->get();
-    //     });
-
-    //     $categories = Category::orderBy('categName', 'asc')->get();
-
-    //     // home.blade.php / landing page
-    //     return view('home', [
-    //         'featuredProducts' => $featuredProducts,
-    //         'categories' => $categories
-    //     ]);
-
-    // }
-
     public function featuredProd()
     {
-        // Fetch only featured products with 'featured' = true, SHOW ONLY 6 PRODUCTS
-        $featuredProducts = Products::where('featured', true)->with('author')->take(6)->get();
+        // Fetch only featured products with 'featured' = true, SHOW ONLY 9 PRODUCTS
+        $featuredProducts = Products::where('featured', true)->with('author')->take(9)->get();
 
         return view('home', [
             'featuredProducts' => $featuredProducts,
