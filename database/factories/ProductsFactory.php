@@ -26,7 +26,7 @@ class ProductsFactory extends Factory
              'prodName' => $this->faker->word,
         'prodPrice' => $this->faker->randomFloat(2, 1, 1000),
         'prodQuantity' => $this->faker->numberBetween(1, 100),
-        'prodCondition' => $this->faker->word,
+        'prodCondition' => $this->faker->randomElement($conditionType),
         'prodImage' => $this->faker->imageUrl(),
         'prodDescription' => $this->faker->paragraph,
         'featured' => $this->faker->boolean,

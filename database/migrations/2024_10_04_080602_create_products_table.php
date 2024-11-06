@@ -36,7 +36,7 @@ return new class extends Migration
             $table->text('prodDescription')->nullable();
             // $table->string('prodRefTag', 10)->unique();
             $table->boolean('featured')->default(false);
-            $table->softDeletes();
+            $table->softDeletes()->nullable();
             $table->timestamps();
 
         });
