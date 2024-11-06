@@ -1,26 +1,224 @@
 @props(['products'])
 
-{{-- @auth --}}
-{{-- @if ($products->user_id == Auth::user()->id) --}}
 <div class="col">
-    <a href="/marketplace/product/{{ $products->id }}">
-        <div class="card h-100 item-card">
-            <img src="{{ $products->prodImage && file_exists(public_path('storage/' . $products->prodImage))
-                ? asset('storage/' . $products->prodImage)
-                : asset('img/NOIMG.jpg') }}"
-                class="card-img-top item-image" alt="{{ $products->prodName }}">
-            @if ($products->featured == true)
-                <div class="top-0 m-2 text-white badge position-absolute end-0 bg-primary">Featured</div>
-            @endif
-            <div class="card-body">
-                <h5 class="card-title item-title">{{ Str::limit($products->prodName, 25, '...') }}</h5>
-                <p class="card-text item-price">₱{{ $products->prodPrice }}</p>
-                {{-- <h5 class="mt-5 card-title"><a href="#"> Posted by: {{$products->author->name }} </a></h5> --}}
-
+    <div
+        class="transition bg-white border-0 shadow-sm card h-100 item-card {{ $products->featured ? 'featured-card' : '' }}">
+        <div class="position-relative">
+            <div class="image-container">
+                <img src="{{ $products->prodImage && file_exists(public_path('storage/' . $products->prodImage))
+                    ? asset('storage/' . $products->prodImage)
+                    : asset('img/NOIMG.jpg') }}"
+                    class="card-img-top item-image" alt="{{ $products->prodName }}">
             </div>
+
+            @if ($products->featured)
+                <div class="top-0 m-2 badge bg-primary position-absolute end-0">Featured</div>
+            @endif
+
+            <button class="btn btn-outline-primary quick-view" data-bs-toggle="modal"
+                data-bs-target="#quickViewModal{{ $products->id }}">
+                <i class="fas fa-search"></i> Quick View
+            </button>
         </div>
-    </a>
+
+        <a href="/marketplace/product/{{ $products->id }}">
+            <div class="card-body d-flex flex-column">
+                <h5 class="mb-2 card-title item-title">{{ Str::limit($products->prodName, 25, '...') }}</h5>
+                <p class="mb-3 text-lg card-text item-title fw-bold">₱{{ number_format($products->prodPrice, 2) }}
+                </p>
+
+                <div class="mt-auto">
+                    <p class="mb-1 card-text text-muted"><i
+                            class="fas fa-tag me-2"></i>{{ $products->category->categName }}
+                    </p>
+                    <p class="card-text text-muted"><i
+                            class="far fa-clock me-2"></i>{{ $products->created_at->diffForHumans() }}</p>
+                </div>
+            </div>
+        </a>
+    </div>
 </div>
 
-{{-- @endif --}}
-{{-- @endauth --}}
+<!-- Quick View Modal -->
+<div class="modal fade" id="quickViewModal{{ $products->id }}" tabindex="-1"
+    aria-labelledby="quickViewModalLabel{{ $products->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-end modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quickViewModalLabel{{ $products->id }}">{{ $products->prodName }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3 image-container">
+                            <img src="{{ $products->prodImage && file_exists(public_path('storage/' . $products->prodImage))
+                                ? asset('storage/' . $products->prodImage)
+                                : asset('img/NOIMG.jpg') }}"
+                                class="rounded img-fluid" alt="{{ $products->prodName }}">
+                        </div>
+                        <div class="seller-info d-flex align-items-center">
+                            <img src="{{ $products->author->profile_photo_url }}" alt="{{ $products->author->name }}"
+                                class="rounded-circle me-2" style="width: 40px; height: 40px;">
+                            <div>
+                                <h6 class="mb-0">{{ $products->author->name }}</h6>
+                                <small class="text-muted">{{ $products->author->userAddress }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="product-details">
+                            <div class="mb-3 d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0 price">₱{{ number_format($products->prodPrice, 2) }}</h4>
+
+                                @if (Auth::check() && Auth::user()->id == $products->author->id)
+                                    <a href="/listing/{{ $products->id }}/edit" class="btn btn-outline-secondary">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                @else
+                                    <button class="btn btn-outline-primary wishlist-btn"
+                                        data-product-id="{{ $products->id }}">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                @endif
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Category:</span>
+                                <span class="detail-value">{{ $products->category->categName }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Status:</span>
+                                <span class="detail-value">{{ $products->status->statusName }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Posted:</span>
+                                <span class="detail-value">{{ $products->created_at->diffForHumans() }}</span>
+                            </div>
+                            <div class="mt-3">
+                                <h6>Description:</h6>
+                                <p>{{ Str::limit($products->prodDescription, 100, '...') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="/marketplace/product/{{ $products->id }}">
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">View Full
+                        Details</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-color: #3498db;
+        --primary-light: #ebf5fb;
+        --text-color: #2c3e50;
+        --light-gray: #ecf0f1;
+    }
+
+    .item-card {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    .item-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .featured-card {
+        background: linear-gradient(145deg, #007bff, #95b7ff);
+        color: white;
+    }
+
+    .image-container {
+        height: 200px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .image-container img {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+    }
+
+    .quick-view {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        background-color: rgba(255, 255, 255, 0.9);
+        border: 1px solid var(--primary-color);
+        color: var(--primary-color);
+    }
+
+    .item-card:hover .quick-view {
+        opacity: 0.5;
+    }
+
+    .quick-view:hover {
+        opacity: 1 !important;
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .modal-dialog-end {
+        position: fixed;
+        margin: auto;
+        width: 90%;
+        max-width: 800px;
+        height: 100%;
+        right: 0;
+        top: 0;
+    }
+
+    .modal-dialog-end .modal-content {
+        height: 100%;
+        border-radius: 0;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-header,
+    .modal-footer {
+        background-color: var(--primary-light);
+        border: none;
+    }
+
+    .modal-body {
+        padding: 2rem;
+        overflow-y: auto;
+    }
+
+    .modal.fade .modal-dialog-end {
+        transform: translateX(100%);
+        transition: transform 0.3s ease-out;
+    }
+
+    .modal.show .modal-dialog-end {
+        transform: translateX(0);
+    }
+
+    .product-details .price {
+        color: var(--primary-color);
+        font-weight: bold;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .detail-row .label {
+        font-weight: bold;
+    }
+</style>
