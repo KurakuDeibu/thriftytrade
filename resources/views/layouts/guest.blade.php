@@ -32,18 +32,27 @@
 
 {{-- <x-banner /> --}}
 
-@include('layouts.partials.header')
-<!-- Page Content -->
-<main class="container mx-auto">
-    {{ $slot }}
-</main>
-@yield('content')
+<body>
 
-@include('layouts.partials.footer')
+    @include('layouts.partials.header')
 
-@stack('modals')
+    {{-- ALERT --}}
+    <x-alerts />
 
-@livewireScripts
+    <!-- Page Content -->
+    <main class="container mx-auto">
+        {{ $slot }}
+    </main>
+    @yield('content')
+
+    @include('layouts.partials.footer')
+
+    @stack('modals')
+
+    @livewireScripts
+
+</body>
+
 
 </html>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"

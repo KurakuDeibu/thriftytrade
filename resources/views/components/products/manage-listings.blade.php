@@ -1,6 +1,6 @@
 {{-- PRODUCT TABS --}}
 <div class="mb-4 d-flex justify-content-between align-items-center">
-    <h1 class="px-2 text-lg navbar-brand">Manage Listings</h1>
+    <h1 class="px-2 text-lg navbar-brand">MANAGE LISTINGS</h1>
     <a href="{{ route('listing.create') }}">
         <h1 class="btn btn-outline-primary">+ Create New </h1>
     </a>
@@ -46,7 +46,9 @@
                     @foreach ($userProducts as $product)
                         <div class="mb-4 col-md-6">
                             <div class="card h-100 text-decoration-none text-dark">
-                                <img src="{{ asset('storage/' . $product->prodImage) }}"
+                                <img src="{{ $product->prodImage && file_exists(public_path('storage/' . $product->prodImage))
+                                    ? asset('storage/' . $product->prodImage)
+                                    : asset('img/NOIMG.jpg') }}"
                                     class="card-img-top fixed-image" alt="{{ $product->prodName }}">
 
                                 <!-- Badge Icon -->
@@ -101,16 +103,20 @@
         <!-- Pending Tab -->
         <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
             <!-- Add pending products content here -->
-            <div class="text-center alert alert-primary" role="alert">
-                No pending products.
+            <div class="p-5 mt-3 text-center " role="alert">
+                <div class="alert alert-primary">
+                    No pending products.
+                </div>
             </div>
         </div>
 
         <!-- Sold Tab -->
         <div class="tab-pane fade" id="sold" role="tabpanel" aria-labelledby="sold-tab">
             <!-- Add sold products content here -->
-            <div class="text-center alert alert-primary" role="alert">
-                No sold products.
+            <div class="p-5 mt-3 text-center " role="alert">
+                <div class="alert alert-primary">
+                    No sold products.
+                </div>
             </div>
         </div>
     </div>
