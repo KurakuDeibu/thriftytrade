@@ -18,7 +18,8 @@
         @endguest
 
         @auth
-            <a wire:navigate href="{{ '/marketplace' }}" class="mt-2 btn btn-light btn-lg">Start your Thrifty Activity!</a>
+            <a href="{{ '/marketplace' }}" class="mt-2 btn btn-light btn-lg">Start your Thrifty
+                Activity!</a>
         @endauth
 
     </div>

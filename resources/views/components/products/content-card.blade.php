@@ -1,14 +1,25 @@
 @props(['products'])
-
 <div class="col">
+    @php
+        // Determine the status class
+        $statusClass = match ($products->status->statusName) {
+            'Available' => 'status-card-available',
+            'Pending' => 'status-card-pending',
+            'Rush' => 'status-card-rush',
+            'Sold' => 'status-card-sold',
+            default => 'status-card-available',
+        };
+    @endphp
+
     <div
-        class="transition bg-white border-0 shadow-sm card h-100 item-card {{ $products->featured ? 'featured-card' : '' }}">
+        class="transition bg-white border-0 shadow-sm card h-100 item-card status-card {{ $statusClass }} {{ $products->featured ? 'featured-card' : '' }}">
         <div class="position-relative">
             <div class="image-container">
-                <img src="{{ $products->prodImage && file_exists(public_path('storage/' . $products->prodImage))
-                    ? asset('storage/' . $products->prodImage)
-                    : asset('img/NOIMG.jpg') }}"
-                    class="card-img-top item-image" alt="{{ $products->prodName }}">
+                <img src="{{ asset('img/lazy-load.jpg') }}"
+                    data-src="{{ $products->prodImage && file_exists(public_path('storage/' . $products->prodImage))
+                        ? asset('storage/' . $products->prodImage)
+                        : asset('img/NOIMG.jpg') }}"
+                    class="card-img-top item-image lazy-load" alt="{{ $products->prodName }}" loading="lazy">
             </div>
 
             @if ($products->featured)
@@ -21,15 +32,15 @@
             </button>
         </div>
 
-        <a href="/marketplace/product/{{ $products->id }}">
+        <a href="/marketplace/product/{{ $products->id }}" class="text-decoration-none">
             <div class="card-body d-flex flex-column">
                 <h5 class="mb-2 card-title item-title">{{ Str::limit($products->prodName, 25, '...') }}</h5>
                 <p class="mb-3 text-lg card-text item-title fw-bold">₱{{ number_format($products->prodPrice, 2) }}
                 </p>
 
                 <div class="mt-auto">
-                    <p class="mb-1 card-text text-muted"><i
-                            class="fas fa-tag me-2"></i>{{ $products->category->categName }}
+                    <p class="mb-1 card-text text-muted">
+                        <x-status-badge :status="$products->status->statusName" />
                     </p>
                     <p class="card-text text-muted"><i
                             class="far fa-clock me-2"></i>{{ $products->created_at->diffForHumans() }}</p>
@@ -96,7 +107,9 @@
                             </div>
                             <div class="mt-3">
                                 <h6>Description:</h6>
-                                <p>{{ Str::limit($products->prodDescription, 100, '...') }}</p>
+                                <div class="description-box mt-3">
+                                    <p>{{ Str::limit($products->prodDescription, 100, '...') }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -144,9 +157,18 @@
     }
 
     .image-container img {
-        object-fit: cover;
+        object-fit: fill;
         width: 100%;
         height: 100%;
+    }
+
+    .description-box {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        max-height: 150px;
+        overflow-x: hidden;
     }
 
     .quick-view {

@@ -115,8 +115,9 @@
             <main>
                 <div class="d-flex justify-content-between align-items-center">
                     <h2 class="mb-2"><strong>Featured Products</strong></h2>
-                    <a href="" class="mb-2 text-primary badge"><strong>View All
-                            ></strong></a>
+                    <a href="{{ route('marketplace', ['featured' => 1]) }}" class="mb-2 text-primary badge">
+                        <strong>View All ></strong>
+                    </a>
                 </div>
                 <div class="mb-4 row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 
@@ -133,32 +134,6 @@
         </div>
         {{-- @include('components.partials.product-card') --}}
         {{-- THE CODE ON TOP IS NOT NEEDED ANYMORE --}}
-
-
-        <!-- CONTENT -->
-        {{-- <div class="col-lg-9">
-            <main>
-                <h2 class="mb-4">Featured Items</h2>
-
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                    <div class="col">
-                        @foreach ($featuredProducts as $products)
-                            <div class="card h-100 item-card">
-                                <img src="https://placehold.co/600x400" alt="Vintage Lamp" class="card-img-top item-image">
-                                <div class="card-body">
-                                    <a href="/product" class="card-title item-title">$</a>
-                                    <p class="card-text item-price">$45</p>
-                                    @guest
-                                        <a href="/login" class="btn btn-outline-primary btn-sm">Login to View</a>
-                                    @endguest
-
-                                </div>
-                        @endforeach
-
-                    </div>
-                </div>
-        </div>
-        </main> --}}
 
     </div>
 

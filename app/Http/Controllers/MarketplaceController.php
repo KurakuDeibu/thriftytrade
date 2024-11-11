@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Products;
+use App\Models\Status;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -15,20 +16,68 @@ class MarketplaceController extends Controller
     public function showMarketplace(Request $request)
     {
         $query = $request->input('query');
+        $categoryFilter = $request->input('category');
+        $conditionFilter = $request->input('condition');
+        $locationFilter = $request->input('location');
+        $sortBy = $request->input('sort', 'latest'); //Default to latest
+        $featuredFilter = $request->input('featured');
+        $statusFilters = $request->input('status', []); // Default to empty array
 
-        if ($query && strlen($query) >= 5) {
-            $marketplaceProducts = Products::where(function($q) use ($query) {
-                    $q->where('prodName', 'like', "%$query%")
-                      ->orWhere('prodDescription', 'like', "%$query%");
-                })
-                ->paginate(15);
-        } else {
-            $marketplaceProducts = Products::latest()->paginate(9);
-        }
+        // MARKETPLACE CONTENTS AND QUERY
+        $marketplaceProducts = Products::when($query, function($q) use ($query) {
+                return $q->where(function($subQ) use ($query) {
+                    $subQ->where('prodName', 'like', "%$query%")
+                        ->orWhere('prodDescription', 'like', "%$query%");
+                });
+            })
+
+            // Category Fitler
+            ->when($categoryFilter, function($q) use ($categoryFilter) {
+                return $q->where('category_id', $categoryFilter);
+            })
+
+            // Condtion Filter
+            ->when($conditionFilter , function($q) use ($conditionFilter) {
+                return $q->where('prodCondition', $conditionFilter);
+            })
+
+            // Featured Filter
+            ->when($featuredFilter, function($q) {
+                return $q->where('featured', true);
+            })
+
+            // Status Filter (multiple status)
+            ->when($statusFilters, function($q) use ($statusFilters) {
+                return $q->whereIn('status', $statusFilters);
+            })
+
+            // SORTING
+            ->when($sortBy, function($q) use ($sortBy) {
+                switch ($sortBy) {
+                    case 'latest':
+                        return $q->latest();
+                    case 'oldest':
+                        return $q->oldest();
+                    case 'price_low':
+                        return $q->orderBy('prodPrice', 'asc');
+                    case 'price_high':
+                        return $q->orderBy('prodPrice', 'desc');
+                    default:
+                        return $q->latest();
+                }
+            })
+
+            // PAGINATE 9 PRODUCTS
+            ->paginate(9);
 
         return view('marketplace.marketplace-auth', [
             'marketplaceProducts' => $marketplaceProducts,
-            'query' => $query  // Pass the query to the view
+            'query' => $query,
+            'categoryFilter' => $categoryFilter,
+            'conditionFilter' => $conditionFilter,
+            'sortBy' => $sortBy,
+            'featuredFilter' => $featuredFilter,
+            'statusFilters' => $statusFilters,
         ]);
     }
 
@@ -40,7 +89,7 @@ class MarketplaceController extends Controller
         $showOtherListings = Products::where('user_id', $marketplaceProducts->user_id)
         ->where('id', '!=', $id) // Exclude the current product
         ->latest() // Order them by latest
-        ->paginate(5); //
+        ->paginate(5); //Paginate 5 otherlistings of the user
 
             // Check if there are any other listings
             $hasOtherListings = $showOtherListings->isNotEmpty();

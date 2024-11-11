@@ -18,6 +18,9 @@ class HomeController extends Controller
 
         return view('home', [
             'featuredProducts' => $featuredProducts,
+            'sortBy' => request('sort', 'latest'),
+            'categoryFilter' => request('category', null),
+            'conditionFilter' => request('condition', null)
         ]);
     }
 

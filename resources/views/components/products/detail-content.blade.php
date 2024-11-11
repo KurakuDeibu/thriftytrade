@@ -1,10 +1,15 @@
 <head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         .glide__slide img {
             width: 100vw;
             height: 25rem;
-            object-fit: cover;
+            object-fit: fill;
             filter: drop-shadow(0 2rem -2rem rgba(0, 0, 0, 0.7));
+        }
+
+        #short-description {
+            display: none;
         }
 
         .seller-info {
@@ -157,7 +162,7 @@
 </head>
 
 <body>
-    <div class="mt-4 container-lg">
+    <div class="mt-2 container-lg">
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><small><a href="{{ url('/') }}">Home</a></small></li>
@@ -175,10 +180,12 @@
                     <div class="glide__track" data-glide-el="track">
                         <ol class="glide__slides">
                             <li class="glide__slide">
-                                <img src="{{ $marketplaceProducts->prodImage && file_exists(public_path('storage/' . $marketplaceProducts->prodImage))
-                                    ? asset('storage/' . $marketplaceProducts->prodImage)
-                                    : asset('img/NOIMG.jpg') }}"
-                                    class="card-img-top fixed-image" alt="{{ $marketplaceProducts->prodName }}">
+                                <img src="{{ asset('img/lazy-load.jpg') }}"
+                                    data-src="{{ $marketplaceProducts->prodImage && file_exists(public_path('storage/' . $marketplaceProducts->prodImage))
+                                        ? asset('storage/' . $marketplaceProducts->prodImage)
+                                        : asset('img/NOIMG.jpg') }}"
+                                    class="card-img-top fixed-image lazy-load"
+                                    alt="{{ $marketplaceProducts->prodName }}" loading="lazy">
 
                             </li>
                         </ol>
@@ -242,8 +249,25 @@
                 </p>
                 <h2 class="py-2 fw-bold h4">₱{{ $marketplaceProducts->prodPrice }}</h2>
 
+
+                @php
+                    $description = $marketplaceProducts->prodDescription;
+                    $limitedDescription = Str::limit($description, 300);
+                @endphp
+
                 <!-- Product description -->
-                <p class="py-2 text-break">{{ $marketplaceProducts->prodDescription }}</p>
+                <p class="py-2 text-break">
+                    <span id="description-text">
+                        {{ $limitedDescription }}
+                    </span>
+
+                    @if (strlen($description) > 300)
+                        <span id="full-description" style="display: none;">
+                            {{ $description }}
+                        </span>
+                        <a href="#" class="text-decoration-none text-primary" id="read-more">Read More</a>
+                    @endif
+                </p>
 
                 <!-- Product details -->
                 <ul class="list-unstyled">
@@ -364,8 +388,10 @@
                         <h2 class="text-xl font-bold text-center">
                             Other listings by {{ $marketplaceProducts->author->name }}
                         </h2>
-                        <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
-                            class="font-medium text-blue-500 hover-underline">Show All</a>
+                        @if ($hasOtherListings && $showOtherListings->count() > 5)
+                            <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
+                                class="font-medium text-blue-500 hover-underline">Show All</a>
+                        @endif
                     </div>
                 </div>
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
@@ -440,5 +466,24 @@
                         }
                     }
                 }).mount();
+            </script>
+
+            <script>
+                $(document).ready(function() {
+                    $('#read-more').click(function(event) {
+                        event.preventDefault();
+
+                        // Toggle between limited and full description
+                        $('#description-text').toggle();
+                        $('#full-description').toggle();
+
+                        // Change link text
+                        if ($('#full-description').is(':visible')) {
+                            $(this).text('Read Less');
+                        } else {
+                            $(this).text('Read More');
+                        }
+                    });
+                });
             </script>
 </body>

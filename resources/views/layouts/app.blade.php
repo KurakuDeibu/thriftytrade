@@ -37,6 +37,14 @@
 
 <body>
 
+    @push('scripts')
+        <script src="{{ asset('js/lazy-load.js') }}"></script>
+    @endpush
+
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/lazy-load.css') }}">
+    @endpush
+
     @include('layouts.partials.header')
 
     {{-- SHOW ALERTS --}}
