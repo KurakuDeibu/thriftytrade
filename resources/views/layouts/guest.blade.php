@@ -34,18 +34,20 @@
 
 <body>
 
-    @include('layouts.partials.header')
+    @if (!in_array(Route::currentRouteName(), ['login', 'register']))
+        @include('layouts.partials.header')
+    @endif
 
     {{-- ALERT --}}
     <x-alerts />
 
     <!-- Page Content -->
-    <main class="container mx-auto">
-        {{ $slot }}
-    </main>
+    {{ $slot }}
     @yield('content')
 
-    @include('layouts.partials.footer')
+    @if (!in_array(Route::currentRouteName(), ['login', 'register']))
+        @include('layouts.partials.footer')
+    @endif
 
     @stack('modals')
 

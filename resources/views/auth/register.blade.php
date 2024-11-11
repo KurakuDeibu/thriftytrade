@@ -1,114 +1,312 @@
 <x-guest-layout>
-    <x-authentication-card>
-        <x-slot name="logo">
-            {{-- <x-authentication-card-logo /> --}}
-            <h1 class="py-2 font-extrabold text-indigo-600 display-5">REGISTRATION</h1>
-        </x-slot>
 
-        {{-- <x-validation-errors class="mb-4" /> --}}
 
-        <form method="POST" action="{{ route('register') }}">
-            @csrf
-
-            <div>
-                <x-label for="firstName" value="{{ __('First Name') }}" />
-                <x-input id="firstName" class="block w-full mt-1" type="text" name="firstName" :value="old('firstName')" autofocus autocomplete="firstName" />
-                @error('firstName')
-                    <small class="mt-1 text-xsm text-red-600 font-semibold">{{$message}}</small>
-                @enderror
-
-                <x-label for="middleName" value="{{ __('Middle Name') }}" />
-                <x-input id="middleName" class="block w-full mt-1" type="text" name="middleName" :value="old('middleName')" autofocus autocomplete="middleName" />
-                @error('middleName')
-                    <small class="mt-1 text-xsm text-red-600 font-semibold">{{$message}}</small>
-                @enderror
-
-                <x-label for="lastName" value="{{ __('Last Name') }}" />
-                <x-input id="lastName" class="block w-full mt-1" type="text" name="lastName" :value="old('lastName')" autofocus autocomplete="lastName" />
-                @error('lastName')
-                    <small class="mt-1 text-xsm text-red-600 font-semibold">{{$message}}</small>
-                @enderror                
+    <div class="register-container">
+        <div class="register-wrapper">
+            <!-- Image Section -->
+            <div class="register-image">
+                {{-- Optional: Add content or message --}}
             </div>
 
-            <div class="mt-4">
-                <x-label for="name" value="{{ __('Username') }}" />
-                <x-input id="name" class="block w-full mt-1" type="text" name="name" :value="old('name')" autocomplete="name" />
-                @error('name')
-                    <small class="mt-1 text-xsm text-red-600 font-semibold">{{$message}}</small>
-                @enderror
+            <!-- Register Form Section -->
+            <div class="register-form">
+                <div class="form-content">
+                    <a href="{{ route('home') }}">
+                        <img src="{{ asset('img/thriftytrade-logo.png') }}" alt="Logo" class="logo">
+                    </a>
+                    <h2 class="mb-2 text-2xl text-center fw-bold">Create Your Account</h2>
+                    <p class="mb-4 text-center text-gray-600">Join our community today</p>
 
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="block w-full mt-1" type="email" name="email" :value="old('email')" autocomplete="email" />
-                @error('email')
-                    <small class="mt-1 text-xsm text-red-600 font-semibold">{{$message}}</small>
-                @enderror
-            </div>
+                    <form method="POST" action="{{ route('register') }}">
+                        @csrf
 
-            <div class="mt-4">
-                <x-label for="birthDay" value="{{ __('Birth Date') }}" />
-                <x-input id="birthDay" class="block w-full mt-1" type="date" name="birthDay" :value="old('birthDay')" autocomplete="birthDay" />
-                @error('birthDay')
-                    <small class="mt-1 text-xsm text-red-600 font-semibold">{{$message}}</small>
-                @enderror
+                        <div class="mb-4 name-row">
+                            <div>
+                                <input type="text" name="firstName"
+                                    class="form-input @error('firstName') error @enderror" placeholder="First Name"
+                                    value="{{ old('firstName') }}" autofocus>
+                                @error('firstName')
+                                    <div class="text-sm error-message">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-                <x-label for="userAddress" value="{{ __('Address') }}" />
-                <x-input id="userAddress" class="block w-full mt-1" type="text" name="userAddress" :value="old('userAddress')" autocomplete="userAddress" />
-                @error('userAddress')
-                    <small class="mt-1 text-xsm text-red-600 font-semibold">{{$message}}</small>
-                @enderror
+                            <div>
+                                <input type="text" name="middleName"
+                                    class="form-input @error('middleName') error @enderror"
+                                    placeholder="Middle Name (Optional)" value="{{ old('middleName') }}">
+                                @error('middleName')
+                                    <div class="text-sm error-message">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-                <x-label for="phoneNum" value="{{ __('Phone Number') }}" />
-                <x-input id="phoneNum" class="block w-full mt-1" type="tel" name="phoneNum" :value="old('phoneNum')" autocomplete="phoneNum" />
-                @error('phoneNum')
-                    <small class="mt-1 text-xsm text-red-600 font-semibold">{{$message}}</small>
-                @enderror
-            </div>
-
-            <div class="mt-4">
-                <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block w-full mt-1" type="password" name="password" autocomplete="new-password" />
-                @error('password')
-                    <small class="mt-1 text-xsm text-red-600 font-semibold">{{$message}}</small>
-                @enderror
-            </div>
-
-            <div class="mt-4">
-                <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
-                <x-input id="password_confirmation" class="block w-full mt-1" type="password" name="password_confirmation" autocomplete="new-password" />
-                @error('password_confirmation')
-                    <small class="mt-1 text-xsm text-red-600 font-semibold">{{$message}}</small>
-                @enderror
-            </div>
-
-            @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
-                <div class="mt-4">
-                    <x-label for="terms">
-                        <div class="flex items-center">
-                            <x-checkbox name="terms" id="terms" />
-
-                            <div class="ms-2">
-                                {!! __('I agree to the :terms_of_service and :privacy_policy', [
-                                        'terms_of_service' => '<a target="_blank" href="'.route('terms.show').'" class="text-sm text-gray-600 underline rounded-md hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">'.__('Terms of Service').'</a>',
-                                        'privacy_policy' => '<a target="_blank" href="'.route('policy.show').'" class="text-sm text-gray-600 underline rounded-md hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">'.__('Privacy Policy').'</a>',
-                                ]) !!}
+                            <div>
+                                <input type="text" name="lastName"
+                                    class="form-input @error('lastName') error @enderror" placeholder="Last Name"
+                                    value="{{ old('lastName') }}">
+                                @error('lastName')
+                                    <div class="text-sm error-message">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
-                    </x-label>
-                    @error('terms')
-                        <small class="mt-1 text-xsm text-red-600 font-semibold">{{$message}}</small>
-                    @enderror
+
+                        <div class="mb-4 name-row">
+                            <div>
+                                <input type="text" name="name" class="form-input @error('name') error @enderror"
+                                    placeholder="Username" value="{{ old('name') }}">
+                                @error('name')
+                                    <div class="text-sm error-message">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div>
+                                <input type="email" name="email" class="form-input @error('email') error @enderror"
+                                    placeholder="Email Address" value="{{ old('email') }}">
+                                @error('email')
+                                    <div class="text-sm error-message">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mb-4 name-row">
+                            <div>
+                                <input type="date" name="birthDay"
+                                    class="form-input @error('birthDay') error @enderror" value="{{ old('birthDay') }}"
+                                    placeholder="Birth Date">
+                                @error('birthDay')
+                                    <div class="text-sm error-message">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <input type="tel" name="phoneNum"
+                                    class="form-input @error('phoneNum') error @enderror" placeholder="Phone Number"
+                                    value="{{ old('phoneNum') }}">
+                                @error('phoneNum')
+                                    <div class="text-sm error-message">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mb-4 form-group">
+                            <input type="text" name="userAddress"
+                                class="form-input @error('userAddress') error @enderror" placeholder="Address"
+                                value="{{ old('userAddress') }}">
+                            @error('userAddress')
+                                <div class="text-sm error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4 name-row">
+                            <div>
+                                <input type="password" name="password"
+                                    class="form-input @error('password') error @enderror" placeholder="Password">
+                                @error('password')
+                                    <div class="text-sm error-message">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <input type="password" name="password_confirmation"
+                                    class="form-input @error('password_confirmation') error @enderror"
+                                    placeholder="Confirm Password">
+                                @error('password_confirmation')
+                                    <div class="error-message">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
+                            <div class="flex items-center mb-2 text-sm">
+                                <input type="checkbox" id="terms" name="terms">
+                                <label for="terms" class="ml-2 text-gray-600">
+                                    &nbsp I agree to the <a href="{{ route('terms.show') }}"
+                                        class="text-sm text-indigo-600 hover:underline">Terms of Service</a> and <a
+                                        href="{{ route('policy.show') }}"
+                                        class="text-sm text-indigo-600 hover:underline">Privacy Policy</a>
+                                </label>
+                            </div>
+                            @error('terms')
+                                <small class="text-sm error-message">{{ $message }}</small>
+                            @enderror
+                        @endif
+
+                        <button type="submit" class="register-button">Register</button>
+                    </form>
+
+                    <div class="form-footer">
+                        <p class="text-gray-600">Already have an account? <a href="{{ route('login') }}"
+                                class="text-indigo-600 hover:underline">Login here</a>
+                            |
+                            <a href="{{ route('home') }}" class="text-indigo-600 text-decoration-none">
+                                Home
+                            </a>
+                        </p>
+                    </div>
                 </div>
-            @endif
-
-            <div class="flex items-center justify-end mt-4">
-                <a class="text-sm text-gray-600 underline rounded-md hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
-                </a>
-
-                <x-button class="ms-4">
-                    {{ __('Register') }}
-                </x-button>
             </div>
-        </form>
-    </x-authentication-card>
+        </div>
+    </div>
+    <style>
+        :root {
+            --primary-color: #4267B2;
+            --secondary-color: #365899;
+            --background-light: #f4f4f4;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            background-color: var(--background-light);
+        }
+
+        .form-input.error {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2);
+        }
+
+        .register-container {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+
+        .register-wrapper {
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+
+        }
+
+        .register-image {
+            flex: 1;
+            min-width: 40%;
+            max-width: 50%;
+            background: linear-gradient(rgba(255, 255, 255, 0.323), rgba(72, 85, 231, 0.427)),
+                url('{{ asset('img/TT-COVER.png') }}');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .register-form {
+            flex: 1;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .form-content {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .logo {
+            width: fit-content;
+            margin-bottom: 1.5rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(66, 103, 178, 0.2);
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin-top: 0.2rem;
+        }
+
+        .name-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .name-row>div {
+            flex: 1;
+        }
+
+        /* Mobile Responsiveness */
+        @media screen and (max-width: 768px) {
+            .register-container {
+                flex-direction: column;
+            }
+
+            .register-wrapper {
+                flex-direction: column;
+            }
+
+            .register-image {
+                display: none;
+            }
+
+            .register-form {
+                padding: 1rem;
+            }
+
+            .form-content {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .name-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .logo {
+                width: 100px;
+            }
+        }
+    </style>
 </x-guest-layout>
