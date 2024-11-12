@@ -58,6 +58,10 @@ class ProductController extends Controller
         // Fetch categories and order them alphabetically by name
         $categories = Category::orderBy('categName', 'asc')->get();
         $stats = Status::orderBy('statusName', 'asc')->get();
+
+        if (auth()->user() && !auth()->user()->hasVerifiedEmail()) {
+            return redirect()->route('home')->with('error', 'You must verify your email address before you can sell products.');
+        }
         return view('listing.create', compact('categories', 'stats'));
     }
 

@@ -36,17 +36,18 @@
 </style>
 
 <body>
-
     @push('scripts')
         <script src="{{ asset('js/lazy-load.js') }}"></script>
     @endpush
 
     @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/lazy-load.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/lazy-load.css') }}"> <!--lazy-load css-->
     @endpush
 
     @include('layouts.partials.header')
 
+    {{-- VERIFICATION LINK BANNER FOR USERS TO VERIFY --}}
+    @include('components.verify-banner')
     {{-- SHOW ALERTS --}}
     <x-alerts />
     <!-- Page Content -->
