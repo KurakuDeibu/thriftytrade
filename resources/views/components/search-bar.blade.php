@@ -29,9 +29,10 @@
                     <input type="hidden" name="featured" value="{{ request('featured') }}">
                 @endif
 
-                @if (request('featured'))
-                    <input type="hidden" name="featured" value="{{ request('featured') }}">
+                @if (request('sort'))
+                    <input type="hidden" name="sort" value="{{ request('sort') }}">
                 @endif
+
                 <button class="btn btn-light" type="submit">Search</button>
             </form>
             @include('marketplace.search-results')
