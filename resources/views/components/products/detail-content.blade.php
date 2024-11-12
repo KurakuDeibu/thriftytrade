@@ -388,7 +388,7 @@
                         <h2 class="text-xl font-bold text-center">
                             Other listings by {{ $marketplaceProducts->author->name }}
                         </h2>
-                        @if ($hasOtherListings && $showOtherListings->count() > 5)
+                        @if ($hasOtherListings && $showOtherListings->count() > 4)
                             <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
                                 class="font-medium text-blue-500 hover-underline">Show All</a>
                         @endif
@@ -425,32 +425,33 @@
             </div>
 
             {{-- RECOMMENDED LISTINGS FOR THE USER --}}
-            <div class="container mt-5">
-                <div class="mb-4 row">
-                    <div class="col-12 d-flex justify-content-between align-items-center">
-                        <h2 class="text-xl font-bold text-center">Recommended Products in ThriftyTrade</h2>
-                        <a href="#" class="font-medium text-blue-500 hover-underline">Show All</a>
+            @if ($recommendedListings->count() > 0)
+                <div class="mt-5 recommended-listings">
+                    <h3 class="mb-4">Recommended Listings</h3>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
+                        @foreach ($recommendedListings->shuffle() as $recommendedProduct)
+                            <div class="col">
+                                <a href="/marketplace/product/{{ $recommendedProduct->id }}"
+                                    class="card h-100 text-decoration-none text-dark">
+                                    <img src="{{ $recommendedProduct->prodImage && file_exists(public_path('storage/' . $recommendedProduct->prodImage))
+                                        ? asset('storage/' . $recommendedProduct->prodImage)
+                                        : asset('img/NOIMG.jpg') }}"
+                                        class="card-img-top fixed-image" alt="{{ $recommendedProduct->prodName }}">
+                                    <div class="wishlist-icon">
+                                        <i class="far fa-heart"></i>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            {{ Str::limit($recommendedProduct->prodName, 40, '...') }}</h5>
+                                        <p class="card-text">₱{{ $recommendedProduct->prodPrice }}</p>
+                                    </div>
+                                </a>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
-                    @for ($i = 0; $i < 5; $i++)
-                        <div class="col">
-                            <a href="/marketplace/product/{{ $marketplaceProducts->id }}"
-                                class="card h-100 text-decoration-none text-dark">
-                                <img src="{{ $marketplaceProducts->prodImage && file_exists(public_path('storage/' . $marketplaceProducts->prodImage))
-                                    ? asset('storage/' . $marketplaceProducts->prodImage)
-                                    : asset('img/NOIMG.jpg') }}"
-                                    class="card-img-top fixed-image" alt="{{ $marketplaceProducts->prodName }}">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ Str::limit($marketplaceProducts->prodName, 40, '...') }}
-                                    </h5>
-                                    <p class="card-text">₱{{ $marketplaceProducts->prodPrice }}</p>
-                                </div>
-                            </a>
-                        </div>
-                    @endfor
-                </div>
-            </div>
+            @endif
+
 
             <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
             <script>

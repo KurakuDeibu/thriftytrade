@@ -95,11 +95,19 @@ class MarketplaceController extends Controller
             $hasOtherListings = $showOtherListings->isNotEmpty();
 
         // dd($showOtherListings);
+        $recommendedListings = Products::where('category_id', $marketplaceProducts->category_id)
+        ->where('id', '!=', $marketplaceProducts->id)
+        ->where('prodQuantity', '>', 0) // Ensure the product is in stock
+        ->with('author', 'category') // Eager load relationships for performance
+        ->take(10) // Limit to 4 recommended products
+        ->get();
+
 
         return view('products.product-details')->with([
             'marketplaceProducts' => $marketplaceProducts,
             'showOtherListings' => $showOtherListings,
             'hasOtherListings' => $hasOtherListings, // Pass the condition to the view
+            'recommendedListings' => $recommendedListings,
         ]);
     }
 

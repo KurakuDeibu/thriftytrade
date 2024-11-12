@@ -1,8 +1,13 @@
 @extends('layouts.app')
 
+@if (session()->has('message'))
+    <div class="alert alert-success">
+        {{ session('message') }}
+    </div>
+@endif
 
 @section('content')
-    <x-products.detail-content :marketplaceProducts="$marketplaceProducts" :showOtherListings="$showOtherListings" :hasOtherListings="$hasOtherListings" />
+    <x-products.detail-content :marketplaceProducts="$marketplaceProducts" :showOtherListings="$showOtherListings" :hasOtherListings="$hasOtherListings" :recommendedListings="$recommendedListings" />
 @endsection
 
 {{-- DESIGN IS STILL NOT RESPONSIVE --}}
