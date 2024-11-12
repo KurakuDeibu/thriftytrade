@@ -23,8 +23,12 @@
                 <h4>Browse Categories</h4>
                 <ul class="mt-2 list-group">
                     @foreach (\App\Models\Category::all() as $category)
-                        <li wire:model="category" class="list-group-item"><a href="/category/"
-                                class="text-decoration-none">{{ $category->categName }}</a></li>
+                        <li wire:model="category" class="list-group-item">
+                            <a href="{{ route('marketplace', ['category' => $category->id]) }}"
+                                class="text-decoration-none">
+                                {{ $category->categName }}
+                            </a>
+                        </li>
                     @endforeach
                 </ul>
             </div>
