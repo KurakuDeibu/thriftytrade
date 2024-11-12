@@ -32,7 +32,7 @@
                </div>
                <div class="border-t border-gray-200"></div>
 
-               <x-dropdown-link wire:navigate href="{{ route('profile.user-listing', Auth::user()->id) }}">
+               <x-dropdown-link href="{{ route('profile.user-listing', Auth::user()->id) }}">
                    {{ __('My Listings') }}
                </x-dropdown-link>
 
@@ -40,11 +40,11 @@
                    {{ __('My Wishlists') }}
                </x-dropdown-link> --}}
 
-               <x-dropdown-link wire:navigate href="{{ route('profile.show') }}">
+               <x-dropdown-link href="{{ route('profile.show') }}">
                    {{ __('Edit Profile') }}
                </x-dropdown-link>
 
-               <x-dropdown-link wire:navigate href="{{ route('dashboard') }}">
+               <x-dropdown-link href="{{ route('dashboard') }}">
                    {{ __('History') }}
                </x-dropdown-link>
 
