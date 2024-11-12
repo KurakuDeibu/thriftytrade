@@ -192,7 +192,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <label class="flex items-center cursor-pointer">
                                 <x-checkbox id="remember_me" name="remember" />
-                                <span class="text-sm text-gray-600"> Remember me</span>
+                                <span class="text-sm text-gray-600">&nbsp; Remember me</span>
                             </label>
 
                             @if (Route::has('password.request'))
