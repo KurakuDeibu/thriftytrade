@@ -72,13 +72,16 @@
 
         {{-- LOGO --}}
         <a class="navbar-brand" id="logo" href="/"></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="navbar-nav-wrapper d-flex align-items-center">
+            {{-- SEARCH ICON - TOGGLE SEARCH --}}
+            <div class="navbar-search-icon me-3" onclick="toggleSearchHeader()" id="search-bar">
+                <i class="bi bi-search"></i>
+            </div>
 
-        {{-- SEARCH ICON - TOGGEL SEARCH --}}
-        <div class="navbar-search-icon" onclick="toggleSearchHeader()" id="search-bar">
-            <i class="bi bi-search"></i>
+            {{-- MOBILE TOGGLE BUTTON --}}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
         </div>
 
 
@@ -86,9 +89,10 @@
         <div class="search-header" id="searchHeader">
             <div class="search-header-container">
                 <div class="search-header-input">
-                    <form action="{{ route('marketplace') }}" method="GET">
+                    <form action="{{ route('marketplace') }}" method="GET" class="d-flex">
                         <input type="search" name="query" placeholder="What are you looking for?"
-                            class="form-control" id="searchHeaderInput" value="{{ request()->input('query') }}">
+                            class="form-control search-input" id="searchHeaderInput"
+                            value="{{ request()->input('query') }}">
 
                         <!-- Hidden inputs for preserving current filters -->
                         @if (request('category'))
@@ -132,20 +136,20 @@
                             <i class="bi bi-shop"></i> Marketplace
                         </a>
                     </li> --}}
-                {{-- @auth --}}
+                {{-- @auth
 
-                {{-- <li class="nav-item">
+                    <li class="nav-item">
                         <x-nav-link href="{{ url('marketplace') }}" :active="request()->routeIs('marketplace')"><i class="bi bi-shop">
                                 {{ __('Marketplace') }}</i>
                         </x-nav-link>
-                    </li> --}}
+                    </li>
 
-                {{-- <li class="nav-item">
+                    <li class="nav-item">
                         <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')"><i class="bi bi-heart">
                                 {{ __('Wishlist') }}</i>
                         </x-nav-link>
-                    </li> --}}
-                {{-- @endauth --}}
+                    </li>
+                @endauth --}}
 
             </ul>
 
@@ -202,20 +206,17 @@
     </div>
 </nav>
 
-
 <script>
     function toggleSearchHeader() {
         const searchHeader = document.getElementById('searchHeader');
         const searchInput = document.getElementById('searchHeaderInput');
 
-        // Toggle active class
         searchHeader.classList.toggle('active');
 
-        // Focus on input if opened
         if (searchHeader.classList.contains('active')) {
             setTimeout(() => {
                 searchInput.focus();
-            }, 300);
+            }, 400);
         }
     }
 
@@ -236,14 +237,12 @@
         const searchHeader = document.getElementById('searchHeader');
         const searchIcon = document.querySelector('.navbar-search-icon');
 
-        // Check if search header is active and click is outside
         if (searchHeader.classList.contains('active') &&
             !searchHeader.contains(event.target) &&
             !searchIcon.contains(event.target)) {
             closeSearchHeader();
         }
     });
-
     // Prevent closing when interacting with search header
     document.getElementById('searchHeader').addEventListener('click', function(event) {
         event.stopPropagation();
