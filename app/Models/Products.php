@@ -48,6 +48,11 @@ class Products extends Model
         return $this->hasMany(Offer::class, 'products_id');
     }
 
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
     public function scopeFeatured($query)
     {
         //SHOW FEATURE PRODUCT
@@ -61,8 +66,4 @@ class Products extends Model
         return ($isURL) ? $this->prodImage : Storage::url($this->prodImage);
     }
 
-    public function prodCount()
-    {
-
-    }
 }

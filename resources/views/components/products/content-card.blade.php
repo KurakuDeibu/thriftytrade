@@ -87,10 +87,28 @@
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
                                 @else
-                                    <button class="btn btn-outline-primary wishlist-btn"
-                                        data-product-id="{{ $products->id }}">
-                                        <i class="far fa-heart"></i>
-                                    </button>
+                                    <!-- Wishlist Icon in Quick View -->
+                                    @php
+                                        $isInWishlist =
+                                            Auth::check() &&
+                                            $products->wishlists()->where('user_id', Auth::id())->exists();
+                                    @endphp
+
+                                    <form
+                                        action="{{ $isInWishlist ? route('wishlist.remove', $products->wishlists->where('user_id', Auth::id())->first()->id) : route('wishlist.add', $products->id) }}"
+                                        method="POST" style="display: inline;">
+                                        @csrf
+                                        @if ($isInWishlist)
+                                            @method('DELETE')
+                                            <button type="submit" class="wishlist-icon" title="Remove from Wishlist">
+                                                <i class="fas fa-heart" style="color: red ;"></i>
+                                            </button>
+                                        @else
+                                            <button type="submit" class="wishlist-icon" title="Add to Wishlist">
+                                                <i class="far fa-heart"></i>
+                                            </button>
+                                        @endif
+                                    </form>
                                 @endif
                             </div>
                             <div class="detail-row">
@@ -107,7 +125,7 @@
                             </div>
                             <div class="mt-3">
                                 <h6>Description:</h6>
-                                <div class="description-box mt-3">
+                                <div class="mt-3 description-box">
                                     <p>{{ Str::limit($products->prodDescription, 100, '...') }}</p>
                                 </div>
                             </div>

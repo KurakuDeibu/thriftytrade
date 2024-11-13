@@ -190,9 +190,29 @@
                             </li>
                         </ol>
                     </div>
-                    <div class="wishlist-icon">
-                        <i class="far fa-heart"></i>
-                    </div>
+
+                    {{-- WISHLIST-LOGIC --}}
+                    @php
+                        $isInWishlist =
+                            Auth::check() && $marketplaceProducts->wishlists()->where('user_id', Auth::id())->exists();
+                    @endphp
+
+                    <form
+                        action="{{ $isInWishlist ? route('wishlist.remove', $marketplaceProducts->wishlists->where('user_id', Auth::id())->first()->id) : route('wishlist.add', $marketplaceProducts->id) }}"
+                        method="POST" style="display: inline;">
+                        @csrf
+                        @if ($isInWishlist)
+                            @method('DELETE')
+                            <button type="submit" class="wishlist-icon" title="Remove from Wishlist">
+                                <i class="fas fa-heart" style="color: red;"></i>
+                            </button>
+                        @else
+                            <button type="submit" class="wishlist-icon" title="Add to Wishlist">
+                                <i class="far fa-heart"></i>
+                            </button>
+                        @endif
+                    </form>
+
                     <!-- Glide arrows -->
                     <div class="glide__arrows" data-glide-el="controls">
                         <button class="glide__arrow glide__arrow--left" data-glide-dir="<"><i
@@ -454,6 +474,7 @@
 
 
             <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
+
             <script>
                 // Initialize Glide slider
                 new Glide('.glide', {
@@ -487,4 +508,6 @@
                     });
                 });
             </script>
+
+
 </body>
