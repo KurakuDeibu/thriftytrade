@@ -1,0 +1,17 @@
+Step 1: Moved(cut/paste) all the files in C:\xampp\mysql\data to desired backup location.
+
+Step 2: After that copied all the files from C:\xampp\mysql\backup to C:\xampp\mysql\data
+
+Step 3: Restarted mysql and checked the phpmyadmin url, it worked.
+
+Step 4: After that stopped mysql and copied ibdata1 file from backup location to C:\xampp\mysql\data
+
+Step 5: Restarted mysql
+
+Step 6: After that copied all database folders and checked all the tables, It worked.
+
+
+OPTION 2-
+1. Just copy all files from C:\xampp\mysql\backup to C:\xampp\mysql\data
+2. Make sure to take backup of your data folder to avoid any further problems.
+3. If you see any error related to table engine then you can copy file ibdata1 from your backup data folder to current data folder.

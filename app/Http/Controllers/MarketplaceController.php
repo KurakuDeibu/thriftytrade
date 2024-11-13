@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
+use App\Models\Category;
 use App\Models\Products;
 use App\Models\Status;
 use App\Models\User;
@@ -14,72 +14,76 @@ class MarketplaceController extends Controller
 
     // VIEW PRODUCTS, AND SEARCH RESULTS
     public function showMarketplace(Request $request)
-    {
-        $query = $request->input('query');
-        $categoryFilter = $request->input('category');
-        $conditionFilter = $request->input('condition');
-        $locationFilter = $request->input('location');
-        $sortBy = $request->input('sort', 'latest'); //Default to latest
-        $featuredFilter = $request->input('featured');
-        $statusFilters = $request->input('status', []); // Default to empty array
+{
+    // Fetch all categories
+    $categories = Category::all();
 
-        // MARKETPLACE CONTENTS AND QUERY
-        $marketplaceProducts = Products::when($query, function($q) use ($query) {
-                return $q->where(function($subQ) use ($query) {
-                    $subQ->where('prodName', 'like', "%$query%")
-                        ->orWhere('prodDescription', 'like', "%$query%");
-                });
-            })
+    // Initialize query builder for products
+    $query = Products::query();
 
-            // Category Fitler
-            ->when($categoryFilter, function($q) use ($categoryFilter) {
-                return $q->where('category_id', $categoryFilter);
-            })
+    // Handle search query
+    $query->when($request->input('query'), function ($q) use ($request) {
+        $q->where(function ($subQ) use ($request) {
+            $subQ->where('prodName', 'like', '%' . $request->input('query') . '%')
+                 ->orWhere('prodDescription', 'like', '%' . $request->input('query') . '%');
+        });
+    });
 
-            // Condtion Filter
-            ->when($conditionFilter , function($q) use ($conditionFilter) {
-                return $q->where('prodCondition', $conditionFilter);
-            })
-
-            // Featured Filter
-            ->when($featuredFilter, function($q) {
-                return $q->where('featured', true);
-            })
-
-            // Status Filter (multiple status)
-            ->when($statusFilters, function($q) use ($statusFilters) {
-                return $q->whereIn('status', $statusFilters);
-            })
-
-            // SORTING
-            ->when($sortBy, function($q) use ($sortBy) {
-                switch ($sortBy) {
-                    case 'latest':
-                        return $q->latest();
-                    case 'oldest':
-                        return $q->oldest();
-                    case 'price_low':
-                        return $q->orderBy('prodPrice', 'asc');
-                    case 'price_high':
-                        return $q->orderBy('prodPrice', 'desc');
-                    default:
-                        return $q->latest();
-                }
-            })
-
-            // PAGINATE 9 PRODUCTS
-            ->paginate(9);
-
-        return view('marketplace.marketplace-auth', [
-            'marketplaceProducts' => $marketplaceProducts,
-            'query' => $query,
-            'categoryFilter' => $categoryFilter,
-            'conditionFilter' => $conditionFilter,
-            'sortBy' => $sortBy,
-            'featuredFilter' => $featuredFilter,
-            'statusFilters' => $statusFilters,
-        ]);
+    // Handle category filter
+    if ($request->has('category') && !empty($request->category)) {
+        $category = Category::find($request->category);
+        if (!$category) {
+            return redirect()->route('marketplace')->withErrors(['category' => 'Selected category does not exist.']);
+        }
+        $query->where('category_id', $category->id);
     }
+
+    // Handle condition filter
+    if ($request->has('condition') && !empty($request->condition)) {
+        $query->where('prodCondition', $request->input('condition'));
+    }
+
+    // Handle featured filter
+    if ($request->has('featured')) {
+        $query->where('featured', true);
+    }
+
+    // Handle status filters
+    if ($request->has('status') && is_array($request->status)) {
+        $query->whereIn('status', $request->status);
+    }
+
+    // Handle sorting - default latest
+    $sortBy = $request->input('sort', 'latest');
+    switch ($sortBy) {
+        case 'latest':
+            $query->latest();
+            break;
+        case 'oldest':
+            $query->oldest();
+            break;
+        case 'price_low':
+            $query->orderBy('prodPrice', 'asc');
+            break;
+        case 'price_high':
+            $query->orderBy('prodPrice', 'desc');
+            break;
+    }
+
+    // Paginate results
+    $marketplaceProducts = $query->paginate(9);
+
+    return view('marketplace.marketplace-auth', [
+        'marketplaceProducts' => $marketplaceProducts,
+        'categories' => $categories,
+        'query' => $request->input('query'),
+        'categoryFilter' => $request->input('category'),
+        'conditionFilter' => $request->input('condition'),
+        'sortBy' => $sortBy,
+        'featuredFilter' => $request->input('featured'),
+        'statusFilters' => $request->input('status', []),
+    ]);
+}
 
     // SHOW PRODUCT DETAILS
     public function showDetails($id)
@@ -95,7 +99,7 @@ class MarketplaceController extends Controller
             $hasOtherListings = $showOtherListings->isNotEmpty();
 
         // dd($showOtherListings);
-        $recommendedListings = Products::where('category_id', $marketplaceProducts->category_id)
+        $similarListings = Products::where('category_id', $marketplaceProducts->category_id)
         ->where('id', '!=', $marketplaceProducts->id)
         ->where('prodQuantity', '>', 0) // Ensure the product is in stock
         ->with('author', 'category') // Eager load relationships for performance
@@ -107,7 +111,7 @@ class MarketplaceController extends Controller
             'marketplaceProducts' => $marketplaceProducts,
             'showOtherListings' => $showOtherListings,
             'hasOtherListings' => $hasOtherListings, // Pass the condition to the view
-            'recommendedListings' => $recommendedListings,
+            'similarListings' => $similarListings,
         ]);
     }
 

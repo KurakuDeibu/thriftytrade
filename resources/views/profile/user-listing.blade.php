@@ -104,7 +104,7 @@
                             @if (Auth::check() && Auth::id() === $user->id)
                                 <div class="mt-2 mt-md-0">
                                     <a href="{{ route('profile.show') }}" class="btn btn-primary btn-sm me-2">
-                                        <i class="fas fa-user-edit"></i> Edit Profile
+                                        <i class="fas fa-user-edit"></i> Profile Settings
                                     </a>
                                     <a href="{{ route('dashboard') }}" class="btn btn-secondary btn-sm">
                                         <i class="fas fa-tachometer-alt"></i> Dashboard
