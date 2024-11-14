@@ -13,7 +13,7 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="active-tab" data-bs-toggle="tab" data-bs-target="#active" type="button"
                 role="tab" aria-controls="active" aria-selected="true">
-                Active ({{ $activeProducts }})
+                Active ({{ $userProducts->count() }})
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -38,9 +38,11 @@
         <!-- Active Products Tab -->
         <div class="tab-pane fade show active" id="active" role="tabpanel" aria-labelledby="active-tab">
             <div class="row">
-                @if ($activeProducts == 0)
-                    <div class="text-center alert alert-primary" role="alert">
-                        No active products.
+                @if (count($userProducts) == 0)
+                    <div class="p-5 mt-3 text-center" role="alert">
+                        <div class="alert alert-primary">
+                            No active products.
+                        </div>
                     </div>
                 @else
                     @foreach ($userProducts as $product)
@@ -103,9 +105,8 @@
         <!-- Pending Tab -->
         <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
             <!-- Add pending products content here -->
-            <div class="p-5 mt-3 text-center " role="alert">
-                <div class="alert alert-primary">
-                    No pending products.
+            <div class="p-5 mt-3 text-center" role="alert">
+                <div class="alert alert-primary">No pending products.
                 </div>
             </div>
         </div>

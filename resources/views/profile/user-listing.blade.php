@@ -82,7 +82,14 @@
 
         {{-- USER LISTING  --}}
         <div class="container mt-2">
-            <h2 class="p-2 fw-bold">{{ $user->name }}'s Listings</h2>
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><small><a href="{{ url('/') }}">Home</a></small></li>
+                    <li class="breadcrumb-item"><small><a href="{{ route('marketplace') }}">Marketplace</a></small></li>
+                    <li class="breadcrumb-item active"><small>{{ $user->name }}'s' Listings</small>
+                    </li>
+                </ol>
+            </nav>
 
             <div class="profile-header">
                 <div class="row align-items-start">

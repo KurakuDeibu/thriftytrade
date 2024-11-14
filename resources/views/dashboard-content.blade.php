@@ -14,7 +14,7 @@
                 </a>
             </div>
             <div class="mb-2 text-muted">Active Listings</div>
-            <div class="mb-0 h3">{{ $activeProducts }}</div>
+            <div class="mb-0 h3">{{ $userProducts->count() }}</div>
         </div>
     </div>
 

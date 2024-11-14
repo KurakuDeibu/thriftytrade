@@ -43,8 +43,8 @@
 
         .login-image {
             flex: 1;
-            background: linear-gradient(rgba(255, 255, 255, 0.323), rgba(72, 85, 231, 0.427)),
-                url('{{ asset('img/TT-COVER.png') }}');
+            background: linear-gradient(rgba(241, 238, 255, 0.167), rgba(129, 139, 255, 0.427)),
+                url('{{ asset('img/TT-COVER' . rand(1, 4) . '.png') }}');
             background-size: cover;
             background-position: center;
             display: flex;

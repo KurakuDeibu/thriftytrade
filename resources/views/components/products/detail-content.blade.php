@@ -204,7 +204,7 @@
                         @if ($isInWishlist)
                             @method('DELETE')
                             <button type="submit" class="wishlist-icon" title="Remove from Wishlist">
-                                <i class="fas fa-heart" style="color: red;"></i>
+                                <i class="fas fa-heart" style="color: blue;"></i>
                             </button>
                         @else
                             <button type="submit" class="wishlist-icon" title="Add to Wishlist">
@@ -352,6 +352,10 @@
                                 <div class="mt-2 alert alert-info" role="alert">
                                     <i class="fas fa-handshake"></i> Price is negotiable. Feel free to make an offer!
                                 </div>
+                            @elseif($marketplaceProducts->status->statusName == 'Available')
+                                <div class="mt-2 alert alert-success" role="alert">
+                                    <i class="fas fa-check-circle"></i> This listing is available for transaction.
+                                </div>
                             @endif
                         @else
                             <div class="mt-4 mb-2 d-lg-block">
@@ -427,6 +431,7 @@
                                     <div class="wishlist-icon">
                                         <i class="far fa-heart"></i>
                                     </div>
+
                                     <div class="card-body">
                                         <h5 class="card-title">{{ Str::limit($product->prodName, 40, '...') }}</h5>
                                         <p class="card-text">₱{{ $product->prodPrice }}</p>

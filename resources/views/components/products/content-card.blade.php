@@ -26,6 +26,28 @@
                 <div class="top-0 m-2 badge bg-primary position-absolute end-0">Featured</div>
             @endif
 
+            @php
+                $isInWishlist = Auth::check() && $products->wishlists()->where('user_id', Auth::id())->exists();
+            @endphp
+
+            <div class="position-relative">
+                <form
+                    action="{{ $isInWishlist ? route('wishlist.remove', $products->wishlists->where('user_id', Auth::id())->first()->id) : route('wishlist.add', $products->id) }}"
+                    method="POST" class="top-0 m-2 position-absolute end-0">
+                    @csrf
+                    @if ($isInWishlist)
+                        @method('DELETE')
+                        <button type="submit" class="wishlist-icon" title="Remove from Wishlist">
+                            <i class="p-2 fas fa-heart" style="color: blue;"></i>
+                        </button>
+                    @else
+                        <button type="submit" class="wishlist-icon" title="Add to Wishlist">
+                            <i class="p-2 far fa-heart"></i>
+                        </button>
+                    @endif
+                </form>
+            </div>
+
             <button class="btn btn-outline-primary quick-view" data-bs-toggle="modal"
                 data-bs-target="#quickViewModal{{ $products->id }}">
                 <i class="fas fa-search"></i> Quick View
@@ -101,7 +123,7 @@
                                         @if ($isInWishlist)
                                             @method('DELETE')
                                             <button type="submit" class="wishlist-icon" title="Remove from Wishlist">
-                                                <i class="fas fa-heart" style="color: red ;"></i>
+                                                <i class="fas fa-heart" style="color: blue ;"></i>
                                             </button>
                                         @else
                                             <button type="submit" class="wishlist-icon" title="Add to Wishlist">

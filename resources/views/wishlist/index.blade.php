@@ -1,8 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="py-4 container-fluid bg-light">
+    <div class="py-2 container-fluid bg-light">
         <div class="container">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><small><a href="{{ url('/') }}">Home</a></small></li>
+                    <li class="breadcrumb-item"><small><a href="{{ route('marketplace') }}">Marketplace</a></small></li>
+                    <li class="breadcrumb-item active"><small>Wishlists</small></li>
+                </ol>
+            </nav>
             <div class="mb-4 row align-items-center">
                 <div class="col-12 d-flex justify-content-between align-items-center">
                     <h1 class="text-indigo-600 h2 fw-bold">Your Wishlists</h1>
@@ -59,7 +66,7 @@
                                             </a>
                                         </div>
                                         <div class="text-indigo-600 fw-bold">
-                                            ${{ number_format($wishlist->product->prodPrice, 2) }}
+                                            ₱{{ number_format($wishlist->product->prodPrice, 2) }}
                                         </div>
                                     </div>
 

@@ -69,9 +69,16 @@
 </head>
 @extends('layouts.app')
 @section('content')
-    <div class="container mt-4">
+    <div class="container mt-2">
 
         <div class="row">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><small><a href="{{ url('/') }}">Home</a></small></li>
+                    <li class="breadcrumb-item"><small><a href="{{ route('marketplace') }}">Marketplace</a></small></li>
+                    <li class="breadcrumb-item active"><small>Dashboard</small></li>
+                </ol>
+            </nav>
             @auth
                 @include('layouts.side-bar.side-bar-auth')
             @else
