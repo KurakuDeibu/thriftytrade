@@ -48,7 +48,7 @@
                                         <span class="text-white border-0 input-group-text bg-primary">₱</span>
                                         <input type="number" class="form-control" id="offerPrice"
                                             wire:model.defer="offerPrice" required min="1" step="0.01"
-                                            placeholder="Enter your offer">
+                                            placeholder="{{ $product->prodPrice }}">
                                     </div>
                                     @error('offerPrice')
                                         <span class="text-danger">{{ $message }}</span>

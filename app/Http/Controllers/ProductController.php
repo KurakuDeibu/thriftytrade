@@ -19,7 +19,10 @@ class ProductController extends Controller
     {
         // Fetch the products that belong to the logged-in user
         $userProducts = Products::where('user_id', auth()->id())->get();
-        $activeProducts = $userProducts->count();
+        $soldProducts = $userProducts->where('status', 'Sold');
+        $pendingProducts = $userProducts->where('status', 'Pending');
+        $activeProducts = $userProducts->where('status', 'Available');
+
           // Get all offers for products where the authenticated user is the seller
           $offers = Offer::whereHas('product', function ($query) {
             $query->where('user_id', Auth::id());
@@ -48,7 +51,9 @@ class ProductController extends Controller
             'acceptedOffers',
             'rejectedOffers',
             'userProducts',
+            'soldProducts',
             'activeProducts',
+            'pendingProducts',
         ));
     }
 
@@ -57,12 +62,11 @@ class ProductController extends Controller
     {
         // Fetch categories and order them alphabetically by name
         $categories = Category::orderBy('categName', 'asc')->get();
-        $stats = Status::orderBy('statusName', 'asc')->get();
 
         if (auth()->user() && !auth()->user()->hasVerifiedEmail()) {
             return redirect()->route('home')->with('error', 'You must verify your email address before you can sell products.');
         }
-        return view('listing.create', compact('categories', 'stats'));
+        return view('listing.create', compact('categories'));
     }
 
     //Add seller's product in the database
@@ -71,7 +75,9 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string|min:3|max:255',
             'category_id' => 'required|exists:category,id',
-            'status_id' => 'required|exists:status,id',
+            'status' => 'nullable|in:Available,Pending,Sold',
+            'price_type' => 'required|in:Fixed,Negotiable',
+            'location' => 'required|in:Lapu-Lapu City,Mandaue City',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|numeric|min:0',
@@ -91,7 +97,9 @@ class ProductController extends Controller
         Products::create([
             'user_id' => auth()->id(),
             'category_id' => $request->category_id,
-            'status_id' => $request->status_id,
+            'status' => 'Available', //set to available
+            'price_type' => $request->price_type,
+            'location' => $request->location,
             'prodName' => $request->name,
             'prodDescription' => $request->description,
             'prodPrice' => $request->price,
@@ -100,8 +108,6 @@ class ProductController extends Controller
             'prodImage' => $imagePath,
             'featured' => $request->has('featured')
         ]);
-
-        // SHOW THE DD() of the created product
 
         return redirect()->route('listing.create')->with('success', 'Product listing created successfully.');
     }
@@ -113,9 +119,8 @@ class ProductController extends Controller
             return redirect()->route('manage-listing')->with('error', 'Unauthorized access.');
         }
         $categories = Category::orderBy('categName', 'asc')->get();
-        $stats = Status::orderBy('statusName', 'asc')->get();
 
-        return view('listing.edit', compact('product', 'categories', 'stats'));
+        return view('listing.edit', compact('product', 'categories'));
     }
 
     // Update seller's product in the database
@@ -124,7 +129,8 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:category,id',
-            'status_id' => 'required|exists:status,id',
+            'price_type' => 'required|in:Fixed,Negotiable',
+            'location' => 'required|in:Lapu-Lapu City,Mandaue City',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|numeric|min:0',
@@ -137,7 +143,8 @@ class ProductController extends Controller
             'prodName' => $request->name,
             'prodDescription' => $request->description,
             'category_id' => $request->category_id,
-            'status_id' => $request->status_id,
+            'price_type' => $request->price_type,
+            'location' => $request->location,
             'prodPrice' => $request->price,
             'prodQuantity' => $request->quantity,
             'prodCondition' => $request->condition,
@@ -162,7 +169,7 @@ class ProductController extends Controller
         // Update the product with all the data
         $product->update($updateData);
 
-        return redirect()->route('manage-listing')->with('success', 'Product updated successfully.');
+        return redirect()->route('manage-listing')->with('success', 'Listing updated successfully.');
     }
 
     //Delete the seller's product in the database
@@ -182,10 +189,12 @@ class ProductController extends Controller
     // Delete the product from the database
     $product->delete();
 
-    return redirect()->route('manage-listing')->with('success', 'Product deleted successfully.');
+    return redirect()->route('manage-listing')->with('success', 'Listing deleted successfully.');
         }
 
         // --------------------END OF PRODUCT CRUD-----------------------//
+
+
 
 
         // ------------------START OF PRODUCT OFFERS------------------//
@@ -193,7 +202,7 @@ class ProductController extends Controller
     public function showProductOffers(Products $product)
     {
         // Verify that the authenticated user is the seller of the product
-        if ($product->user_id !== Auth::id()) {
+        if ($product->user_id !== auth()->user()->id()) {
             return back()->with('error', 'Unauthorized action.');
         }
 
@@ -209,8 +218,14 @@ class ProductController extends Controller
             'status' => 'required|in:accepted,rejected',
         ]);
 
-        // Verify that the authenticated user is the seller of the product
-        if ($offer->product->user_id !== Auth::id()) {
+        // check if the offer exists
+        if (!$offer) {
+            return back()->with('error', 'Offer not found.');
+        }
+
+        $offer->load('product');
+
+        if (!$offer->product || $offer->product->user_id !== Auth::id()) {
             return back()->with('error', 'Unauthorized action.');
         }
 
@@ -229,4 +244,34 @@ class ProductController extends Controller
             return redirect()->route('seller-offers')->with('error', 'An error occurred while updating the offer status.');
         }
     }
+
+    public function markAsSold($id)
+    {
+        $product = Products::findOrFail($id);
+
+        // Ensure the product belongs to the current user
+        if ($product->user_id !== auth()->id()) {
+            return redirect()->back()->with('error', 'You are not authorized to mark this listing as sold.');
+        }
+
+        $product->status = 'Sold';
+        $product->save();
+
+        return redirect()->back()->with('success', 'Listing marked as sold.');
+    }
+
+    public function markAsUnsold($id)
+    {
+        $product = Products::findOrFail($id);
+
+        if ($product->user_id !== auth()->id()) {
+            return redirect()->back()->with('error', 'You are not authorized to mark this listing as unsold.');
+        }
+
+        $product->status = 'Available';
+        $product->save();
+
+        return redirect()->back()->with('success', 'Listing marked as unsold.');
+    }
+
 }

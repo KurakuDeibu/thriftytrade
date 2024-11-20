@@ -1,4 +1,11 @@
 <style>
+    .hero-section {
+        background: linear-gradient(rgba(11, 66, 177, 0.8), rgba(66, 103, 178, 0.9)), url('img/hero-img.png');
+        background-size: cover;
+        padding: 60px 0;
+        margin-bottom: 15px;
+    }
+
     .sidebar {
         background-color: white;
         border-radius: 8px;
@@ -61,125 +68,51 @@
                 @include('layouts.side-bar.side-bar-guest')
             @endguest
 
-            @include('components.search-bar')
+            {{-- @include('components.search-bar') --}}
 
-            {{-- SHOW ACTIVE FILTERS REQUESTS --}}
-            @php
-                $activeFilters = [];
-
-                if (request('category')) {
-                    $category = \App\Models\Category::find(request('category'));
-                    $activeFilters['category'] = [
-                        'name' => $category->categName,
-                        'type' => 'category',
-                    ];
-                }
-
-                if (request('condition')) {
-                    $activeFilters['condition'] = [
-                        'name' => request('condition'),
-                        'type' => 'condition',
-                    ];
-                }
-
-                if (request('featured')) {
-                    $activeFilters['featured'] = [
-                        'name' => 'Featured listings only',
-                        'type' => 'featured',
-                    ];
-                }
-                if (request('location')) {
-                    $activeFilters['location'] = [
-                        'name' => request('location'),
-                        'type' => 'location',
-                    ];
-                }
-
-            @endphp
-
-
-
-
-            {{-- SHOW ACTIVE FILTER NAMES --}}
-            @if (!empty($activeFilters))
-                <div class="mb-3 col-12">
-                    <div class="alert alert-primary d-flex justify-content-between align-items-center">
-                        <span class="fw-bold">Your Active Filters:</span>
-                        <div class="flex-wrap gap-2 d-flex">
-                            @foreach ($activeFilters as $key => $filter)
-                                <div class="badge bg-primary d-flex align-items-center" style="font-size: 0.9rem;">
-                                    <span class="me-2">{{ $filter['name'] }}</span>
-                                    <a href="{{ request()->fullUrlWithQuery([$filter['type'] => null]) }}"
-                                        class="text-white" style="text-decoration: none; margin-left: 5px;">
-                                        <i class="bi bi-x-circle-fill"></i>
-                                    </a>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
+            {{-- SEARCH - INCLUDES PAGINATION&FILTERS --}}
+            @livewire('search-products', [
+                'category' => request('category'),
+                'condition' => request('condition'),
+                'featured' => request('featured'),
+                'sort' => request('sort'),
+                'search' => request('query'),
+            ])
+            <!-- Hidden inputs for preserving current filters -->
+            @if (request('category'))
+                <input type="hidden" name="category" value="{{ request('category') }}">
             @endif
-            {{-- End of Active Fitlers --}}
 
-            <!-- CONTENT -->
-            <main class="col-lg-12">
-                @if ($marketplaceProducts->count() > 0)
-                    <div class="py-2 row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                        @foreach ($marketplaceProducts as $products)
-                            <x-products.content-card :products="$products" />
-                        @endforeach
-                    </div>
-                @else
-                    <div class="p-4 text-center d-flex flex-column justify-content-center align-items-center">
-                        <div class="mb-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor"
-                                class="bi bi-search text-muted" viewBox="0 0 16 16">
-                                <path
-                                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                            </svg>
-                        </div>
-                        <h2 class="mb-3 text-muted">No Listings Found</h2>
-                        <p class="mb-4 text-muted">
-                            We couldn't find any listing matching your search and filter criteria.
-                        </p>
+            @if (request('condition'))
+                <input type="hidden" name="condition" value="{{ request('condition') }}">
+            @endif
 
-                        <div class="gap-3 d-flex">
-                            <a href="{{ route('marketplace') }}" class="btn btn-outline-primary">
-                                <i class="bi bi-arrow-clockwise me-2"></i>Clear Filters
-                            </a>
-                            <a href="{{ route('listing.create') }}" class="btn btn-primary">
-                                <i class="bi bi-plus-circle me-2"></i>Create New Listing
-                            </a>
-                        </div>
+            @if (request('featured'))
+                <input type="hidden" name="featured" value="{{ request('featured') }}">
+            @endif
 
-                        @if (!empty($activeFilters))
-                            <div class="mt-4">
-                                <h5 class="mb-3 text-muted">Your Current Filters:</h5>
-                                <div class="flex-wrap gap-2 d-flex justify-content-center">
-                                    @foreach ($activeFilters as $key => $filter)
-                                        <span class="badge bg-secondary">
-                                            {{ $filter['name'] }}
-                                        </span>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-                @endif
-            </main>
+            @if (request('sort'))
+                <input type="hidden" name="sort" value="{{ request('sort') }}">
+            @endif
+
+
             <!-- END OF CONTENT -->
         </div>
 
         {{-- APPENDS ALL THE FILTERS WITH THE PAGINATION --}}
         {{-- PAGINATION --}}
-        {{ $marketplaceProducts->appends([
+        {{-- {{ $marketplaceProducts->appends([
                 'query' => request('query'),
                 'category' => request('category'),
                 'condition' => request('condition'),
                 'featured' => request('featured'),
                 'sort' => request('sort'),
-            ])->links() }}
+                'location' => request('location'),
+                'price_type' => request('price_type'),
+            ])->links() }} --}}
     </div>
+    </div>
+    @include('layouts.partials.footer-top')
 @endsection
 
 <style>

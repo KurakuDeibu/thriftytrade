@@ -1,6 +1,18 @@
 <!-- FILTER DIV -->
-<div>
-    <h4>Filters <i class="bis bi-filter"></i></h4>
+<!-- Mobile Filter Toggle Button -->
+<button class="mobile-filter-toggle btn btn-outline-primary" onclick="toggleMobileFilters()">
+    <i class="bi bi-filter me-2"></i>Filters
+</button>
+
+<!-- Existing Filter Content with Mobile Wrapper -->
+<div class="filter-content">
+    <div class="filter-mobile-header d-none">
+        <h4>Filters</h4>
+        <button class="filter-mobile-close" onclick="toggleMobileFilters()">
+            <i class="bi bi-x"></i>
+        </button>
+    </div>
+
     <form id="marketplace-filter-form" action="{{ route('marketplace') }}" method="GET">
 
         <!-- Product Filters -->
@@ -19,9 +31,16 @@
         <div class="mb-3">
             <label for="location" class="form-label">Location:</label>
             <select id="location" name="location" class="form-select" onchange="this.form.submit()">
-                <option value="">All Locations</option>
-                <option value="local" {{ request('location') == 'local' ? 'selected' : '' }}>Lapu-Lapu City</option>
-                <option value="city" {{ request('location') == 'city' ? 'selected' : '' }}>Mandaue City</option>
+                <optgroup label="All Location">
+
+                    <option value="">All Locations</option>
+                    <option value="Lapu-Lapu City" {{ request('location') == 'Lapu-Lapu City' ? 'selected' : '' }}>
+                        Lapu-Lapu City
+                    </option>
+                    <option value="Mandaue City" {{ request('location') == 'Mandaue City' ? 'selected' : '' }}>
+                        Mandaue City
+                    </option>
+                </optgroup>
             </select>
         </div>
 
@@ -60,24 +79,7 @@
             </div>
         </div>
 
-        <style>
-            .category-radio-group {
-                max-height: 300px;
-                overflow-y: auto;
-                border: 1px solid #ddd;
-                padding: 10px;
-                border-radius: 4px;
-            }
 
-            .form-check {
-                margin-bottom: 5px;
-            }
-
-            .form-check-input:checked {
-                background-color: #4267B2;
-                border-color: #4267B2;
-            }
-        </style>
 
 
 
@@ -87,17 +89,32 @@
                 <optgroup label="Condition">
                     <option value="">Any Condition</option>
                     <option value="New" {{ request('condition') == 'New' ? 'selected' : '' }}>New</option>
-                    <option value="Likely-New" {{ request('condition') == 'Likely-New' ? 'selected' : '' }}>Likely New
+                    <option value="Likely-New" {{ request('condition') == 'Likely-New' ? 'selected' : '' }}>Likely
+                        New
                     </option>
                     <option value="Used" {{ request('condition') == 'Used' ? 'selected' : '' }}>Used</option>
-                    <option value="Likely-Used" {{ request('condition') == 'Likely-Used' ? 'selected' : '' }}>Likely
+                    <option value="Likely-Used" {{ request('condition') == 'Likely-Used' ? 'selected' : '' }}>
+                        Likely
                         Used
                     </option>
                 </optgroup>
             </select>
         </div>
 
-        {{-- <button type="submit" class="btn btn-outline-primary w-100">Apply Filters</button> --}}
+
+        <div class="mb-3">
+            <label for="price_type" class="form-label">Price Type:</label>
+            <select id="price_type" name="price_type" onchange="this.form.submit()" class="form-select">
+                <optgroup label="Price Type">
+                    <option value="">Any Price Type</option>
+                    <option value="Fixed" {{ request('price_type') == 'Fixed' ? 'selected' : '' }}>Fixed</option>
+                    <option value="Negotiable" {{ request('price_type') == 'Negotiable' ? 'selected' : '' }}>Negotiable
+                    </option>
+                </optgroup>
+            </select>
+        </div>
+
+
 
         <label for="condition" class="form-label">Sort By: </label>
         <div class="row align-items-center">
@@ -132,18 +149,137 @@
 </div>
 <!-- END OF FILTER-DIV -->
 
+
+<script>
+    function toggleMobileFilters() {
+        const filterContent = document.querySelector('.filter-content');
+        const filterMobileHeader = document.querySelector('.filter-mobile-header');
+
+        // Toggle visibility
+        filterContent.classList.toggle('show');
+
+        // Toggle mobile header visibility
+        if (window.innerWidth <= 991.98) {
+            filterMobileHeader.classList.toggle('d-none');
+
+            // Prevent body scrolling
+            if (filterContent.classList.contains('show')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = 'auto';
+            }
+        }
+    }
+
+    // Close filter when clicking outside
+    document.addEventListener('click', function(event) {
+        const filterContent = document.querySelector('.filter-content');
+        const filterToggle = document.querySelector('.mobile-filter-toggle');
+        const filterMobileHeader = document.querySelector('.filter-mobile-header');
+
+        if (window.innerWidth <= 991.98 &&
+            filterContent.classList.contains('show') &&
+            !filterContent.contains(event.target) &&
+            !filterToggle.contains(event.target)) {
+
+            filterContent.classList.remove('show');
+            filterMobileHeader.classList.add('d-none');
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(event) {
+        const filterContent = document.querySelector('.filter-content');
+        const filterMobileHeader = document.querySelector('.filter-mobile-header');
+
+        if (event.key === 'Escape' &&
+            window.innerWidth <= 991.98 &&
+            filterContent.classList.contains('show')) {
+
+            filterContent.classList.remove('show');
+            filterMobileHeader.classList.add('d-none');
+            document.body.style.overflow = 'auto';
+        }
+    });
+</script>
+
+
 <style>
-    .input-group-text {
-        background-color: transparent !important;
+    /* Mobile Filter Toggle */
+    .mobile-filter-toggle {
+        display: none;
     }
 
-    select optgroup {
-        font-weight: bold;
-        color: #4267B2;
+    @media (max-width: 991.98px) {
+        .mobile-filter-toggle {
+            display: block;
+            width: 100%;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .sidebar .filter-content {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            z-index: 1050;
+            overflow-y: auto;
+            padding: 20px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .sidebar .filter-content.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .filter-mobile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-mobile-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<style>
+    .category-radio-group {
+        max-height: 300px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 4px;
     }
 
-    select option {
-        font-weight: normal;
-        color: #333;
+    .form-check {
+        margin-bottom: 5px;
+    }
+
+    .form-check-input:checked {
+        background-color: #4267B2;
+        border-color: #4267B2;
     }
 </style>

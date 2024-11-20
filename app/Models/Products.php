@@ -17,7 +17,7 @@ class Products extends Model
     protected $fillable = [
         'user_id',
         'category_id',
-        'status_id',
+        'location',
         'prodName',
         'prodPrice',
         'prodQuantity',
@@ -25,8 +25,16 @@ class Products extends Model
         'prodImage',
         'prodDescription',
         'featured',
-        // 'is'
+        'status', // added status, deleted status database instead
+        'price_type' // added price type ,- fixed, negotiable
     ];
+
+    const STATUS_AVAILABLE = 'Available';
+    const STATUS_PENDING = 'Pending';
+    const STATUS_SOLD = 'Sold';
+
+    const PRICE_TYPE_FIXED = 'Fixed';
+    const PRICE_TYPE_NEGOTIABLE = 'Negotiable';
 
     public function author()
     {
@@ -38,11 +46,6 @@ class Products extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function status()
-    {
-        return $this->belongsTo(Status::class);
-    }
-
     public function offers()
     {
         return $this->hasMany(Offer::class, 'products_id');
@@ -51,6 +54,11 @@ class Products extends Model
     public function wishlists()
     {
         return $this->hasMany(Wishlist::class);
+    }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class, 'products_id');
     }
 
     public function scopeFeatured($query)

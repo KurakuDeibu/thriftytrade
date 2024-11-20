@@ -57,7 +57,7 @@ class MarketplaceController extends Controller
     $query->where('price_type', $request->input('price_type'));
     }
 
-    // Handle sorting - default latest
+    // Handle sorting - default to latest
     $sortBy = $request->input('sort', 'latest');
     switch ($sortBy) {
         case 'latest':
@@ -96,9 +96,9 @@ class MarketplaceController extends Controller
         $marketplaceProducts = Products::findOrFail($id);
 
         $showOtherListings = Products::where('user_id', $marketplaceProducts->user_id)
-        ->where('id', '!=', $id) // Exclude the current product
-        ->latest() // Order them by latest
-        ->paginate(5); //Paginate 5 otherlistings of the user
+        ->where('id', '!=', $id) // Exclude the current product that is showing
+        ->latest()
+        ->paginate(5);
 
             // Check if there are any other listings
             $hasOtherListings = $showOtherListings->isNotEmpty();
@@ -110,6 +110,7 @@ class MarketplaceController extends Controller
         ->with('author', 'category') // Eager load relationships for performance
         ->take(10) // Limit to 4 recommended products
         ->get();
+
 
 
         return view('products.product-details')->with([
@@ -126,12 +127,10 @@ class MarketplaceController extends Controller
         $user = User::findOrFail($userId);
         // Fetch the products listed by the user
         $userProducts = Products::where('user_id', $userId)->latest()->paginate(15);
-        $totalProducts = $userProducts->count();
 
         return view('profile.user-listing', [
             'user' => $user,
             'userProducts' => $userProducts,
-            'totalProducts' => $totalProducts
         ]);
     }
 

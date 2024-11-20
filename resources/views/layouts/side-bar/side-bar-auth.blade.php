@@ -1,7 +1,6 @@
 <!-- SIDE-BAR-AUTH -->
 <div class="row">
     <div class="mb-4 col-lg-3">
-
         <aside class="p-3 sidebar">
             <div class="mb-4 text-center">
                 {{-- <img src="https://placehold.co/400x400" alt="User Avatar" class="mb-2 user-avatar"> --}}
@@ -42,6 +41,10 @@
                     {{-- <div class="mb-2 card bg-light"><a href="{{ url('/user/wishlists') }}"
                             class="btn btn-outline-primary">My
                             Wishlists</a></div> --}}
+
+                    <div class="mb-2 card bg -light">
+                        <a href="" class="btn btn-outline-primary">View Transactions</a>
+                    </div>
 
                     {{-- BUYING --}}
                     <div class="mb-2 card bg-light"><a href="{{ url('/user/buying') }}"

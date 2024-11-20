@@ -144,6 +144,7 @@
 
     @include('components.howitworks')
     </div>
+    @include('layouts.partials.footer-top')
 @endsection
 
 <script>

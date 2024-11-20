@@ -17,15 +17,13 @@ return new class extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->unsignedBigInteger('category_id');
-            $table->unsignedBigInteger('status_id');
-
             // $table->unsignedInteger('productimages_id');
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('category_id')->references('id')->on('category')->cascadeOnDelete();
-            $table->foreign('status_id')->references('id')->on('status')->cascadeOnDelete();
-
-            // $table->foreign('productimages_id')->references('id')->on('productimages')->cascadeOnDelete();
+            $table->enum('location', ['Lapu-Lapu City', 'Mandaue City'])->nullable();
+            $table->enum('status', ['Available', 'Pending', 'Sold'])->default('Available'); //added enum for status
+            $table->enum('price_type', ['Fixed', 'Negotiable'])->nullable(); //added enum for price type
 
             $table->string('prodName', 255);
             $table->string('prodCondition', 20);
