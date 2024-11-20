@@ -18,7 +18,8 @@
                         <!-- Image Upload Section -->
                         <div class="mb-4 col-12 col-lg-5 mb-lg-0">
                             <div class="image-preview-container">
-                                <label for="images" class="form-label">Upload image</label>
+                                <label for="images" class="form-label">Upload image <span
+                                        class="text-danger">*</span></label>
                                 <input type="file" class="form-control @error('images') is-invalid @enderror"
                                     id="images" name="images" accept="images" onchange="previewImage(this)">
                                 <small class="mt-1 form-text text-muted d-block">Upload a clear image of your
@@ -37,7 +38,8 @@
                             <div class="row g-3">
                                 <!-- Product Name -->
                                 <div class="col-12">
-                                    <label for="name" class="form-label">Product Name</label>
+                                    <label for="name" class="form-label">Listing Title <span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
                                         id="name" name="name" value="{{ old('name') }}">
                                     @error('name')
@@ -45,9 +47,25 @@
                                     @enderror
                                 </div>
 
+
+
+
+
+                                <!-- Description -->
+                                <div class="col-12">
+                                    <label for="description" class="form-label"> Description <span
+                                            class="text-danger">*</span></label>
+                                    <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
+                                        rows="10">{{ old('description') }}</textarea>
+                                    @error('description')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
                                 <!-- Category -->
                                 <div class="col-12 col-sm-6">
-                                    <label for="category" class="form-label">Category</label>
+                                    <label for="category" class="form-label">Category <span
+                                            class="text-danger">*</span></label>
                                     <select class="form-select @error('category_id') is-invalid @enderror" id="category"
                                         name="category_id">
                                         <option value="">Select a category</option>
@@ -63,57 +81,10 @@
                                     @enderror
                                 </div>
 
-                                <div class="col-12 col-sm-6">
-                                    <label for="status" class="form-label">Status</label>
-                                    <select class="form-select @error('status_id') is-invalid @enderror" id="status"
-                                        name="status_id">
-                                        <option value="">Select a status</option>
-                                        @foreach ($stats as $status)
-                                            <option value="{{ $status->id }}"
-                                                {{ old('status_id') == $status->id ? 'selected' : '' }}>
-                                                {{ $status->statusName }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('status_id')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                <!-- Description -->
-                                <div class="col-12">
-                                    <label for="description" class="form-label">Product Description</label>
-                                    <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
-                                        rows="4">{{ old('description') }}</textarea>
-                                    @error('description')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                <!-- Price -->
-                                <div class="col-12 col-sm-3">
-                                    <label for="price" class="form-label">Price (₱)</label>
-                                    <input type="number" class="form-control @error('price') is-invalid @enderror"
-                                        id="price" name="price" min="0" step="0.01"
-                                        value="{{ old('price') }}">
-                                    @error('price')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                <div class="col-12 col-sm-3">
-                                    <label for="quantity" class="form-label">Quantity</label>
-                                    <input type="number" class="form-control @error('quantity') is-invalid @enderror"
-                                        id="quantity" name="quantity" min="0" step="1"
-                                        value="{{ old('quantity') }}">
-                                    @error('quantity')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-
                                 <!-- Condition -->
                                 <div class="col-12 col-sm-6">
-                                    <label for="condition" class="form-label">Condition</label>
+                                    <label for="condition" class="form-label">Condition <span
+                                            class="text-danger">*</span></label>
                                     <select class="form-select @error('condition') is-invalid @enderror" id="condition"
                                         name="condition">
                                         <option value="">Select condition</option>
@@ -128,6 +99,71 @@
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
+
+                                <!-- Price -->
+                                <div class="col-12 col-sm-6">
+                                    <label for="price" class="form-label">Price (₱) <span
+                                            class="text-danger">*</span></label>
+                                    <input type="number" class="form-control @error('price') is-invalid @enderror"
+                                        id="price" name="price" min="0" step="0.01"
+                                        value="{{ old('price') }}">
+                                    @error('price')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                {{-- QUANTITY --}}
+                                <div class="col-12 col-sm-2">
+                                    <label for="quantity" class="form-label">Quantity <span
+                                            class="text-danger">*</span></label>
+                                    <input type="number" class="form-control @error('quantity') is-invalid @enderror"
+                                        id="quantity" name="quantity" min="0" step="1"
+                                        value="{{ old('quantity') }}">
+                                    @error('quantity')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                {{-- PRICE TYPE --}}
+                                <div class="col-12 col-sm-4">
+                                    <label for="price_type" class="form-label">Price Type <span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select @error('price_type') is-invalid @enderror" id="price_type"
+                                        name="price_type" required>
+                                        <option value="">Select price type</option>
+                                        <option value="{{ \App\Models\Products::PRICE_TYPE_FIXED }}"
+                                            {{ old('price_type') == \App\Models\Products::PRICE_TYPE_FIXED ? 'selected' : '' }}>
+                                            Fixed</option>
+                                        <option value="{{ \App\Models\Products::PRICE_TYPE_NEGOTIABLE }}"
+                                            {{ old('price_type') == \App\Models\Products::PRICE_TYPE_NEGOTIABLE ? 'selected' : '' }}>
+                                            Negotiable</option>
+                                    </select>
+                                    @error('price_type')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                {{-- LOCATION --}}
+                                <div class="mb-2 col-12 col-sm-12">
+                                    <label for="location" class="form-label">Location <span
+                                            class="text-danger">*</span></label>
+                                    <select class="form-select @error('location') is-invalid @enderror" id="location"
+                                        name="location">
+                                        <option value="">Select Location</option>
+                                        <option value="Lapu-Lapu City"
+                                            {{ old('location') == 'Lapu-Lapu City' ? 'selected' : '' }}>
+                                            Lapu-Lapu City
+                                        </option>
+                                        <option value="Mandaue City"
+                                            {{ old('location') == 'Mandaue City' ? 'selected' : '' }}>
+                                            Mandaue City
+                                        </option>
+                                    </select>
+                                    @error('location')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
 
                                 <!-- Submit Button -->
                                 <div class="mt-4 col-12">
@@ -163,4 +199,7 @@
     </script>
 
     <script src="{{ asset('js/listings-validation.js') }}"></script>
+
+    @include('layouts.partials.footer-top')
+
 @endsection

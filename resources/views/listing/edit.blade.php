@@ -78,9 +78,15 @@
                     <div class="col-12 col-lg-7">
                         <!-- Product Name -->
                         <div class="mb-3">
-                            <label for="prodName" class="form-label">Product Name:</label>
+                            <label for="prodName" class="form-label">Listing Title:</label>
                             <input type="text" class="form-control" id="prodName" name="name"
                                 value="{{ $product->prodName }}">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <textarea class="form-control" id="description" name="description" rows="10">{{ $product->prodDescription }}</textarea>
                         </div>
 
                         <!-- Category -->
@@ -95,38 +101,6 @@
                                         </option>
                                     @endforeach
                                 </select>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <label for="status" class="form-label">Status</label>
-                                <select class="form-select" id="status_id" name="status_id">
-                                    @foreach ($stats as $status)
-                                        <option value="{{ $status->id }}"
-                                            {{ $status->id == $product->status_id ? 'selected' : '' }}>
-                                            {{ $status->statusName }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        {{-- @dd($product->category->category_id) --}}
-
-                        <!-- Description -->
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Product Description:</label>
-                            <textarea class="form-control" id="description" name="description" rows="4">{{ $product->prodDescription }}</textarea>
-                        </div>
-
-                        <!-- Price and Condition -->
-                        <div class="row g-3">
-                            <div class="col-12 col-sm-3">
-                                <label for="price" class="form-label">Price (₱)</label>
-                                <input type="number" class="form-control" id="price" name="price" min="0"
-                                    step="0.01" value="{{ $product->prodPrice }}">
-                            </div>
-                            <div class="col-12 col-sm-3">
-                                <label for="quantity" class="form-label">Quantity</label>
-                                <input type="number" class="form-control" id="quantity" name="quantity" min="0"
-                                    step="1" value="{{ $product->prodQuantity }}">
                             </div>
 
                             <div class="col-12 col-sm-6">
@@ -146,7 +120,54 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
+
+                            <!-- Price , Quantity, and Price Type-->
+                            <div class="col-12 col-sm-6">
+                                <label for="price" class="form-label">Price (₱)</label>
+                                <input type="number" class="form-control" id="price" name="price" min="0"
+                                    step="0.01" value="{{ $product->prodPrice }}">
+                            </div>
+                            <div class="col-12 col-sm-2">
+                                <label for="quantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="quantity" name="quantity" min="0"
+                                    step="1" value="{{ $product->prodQuantity }}">
+                            </div>
+
+                            <div class="col-12 col-sm-4">
+                                {{-- CHANGE THIS INTO PRICE TYPE INSTEAD OF STATUS --}}
+                                <label for="price_type" class="form-label">Price Type</label>
+                                <select class="form-select" id="price_type" name="price_type">
+                                    <option value="{{ \App\Models\Products::PRICE_TYPE_FIXED }}"
+                                        {{ $product->price_type == 'Fixed' ? 'selected' : '' }}>Fixed
+                                    </option>
+                                    <option value="{{ \App\Models\Products::PRICE_TYPE_NEGOTIABLE }}"
+                                        {{ $product->price_type == 'Negotiable' ? 'selected' : '' }}>Negotiable</option>
+                                </select>
+                                @error('price_type')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-12 col-sm-12">
+                                <label for="location" class="form-label">Location</label>
+                                <select class="form-select @error('location') is-invalid @enderror" id="location"
+                                    name="location">
+                                    <option value="">Select Location</option>
+                                    <option value="Lapu-Lapu City"
+                                        {{ $product->location == 'Lapu-Lapu City' ? 'selected' : '' }}>
+                                        Lapu-Lapu City
+                                    </option>
+                                    <option value="Mandaue City"
+                                        {{ $product->location == 'Mandaue City' ? 'selected' : '' }}>
+                                        Mandaue City
+                                    </option>
+                                </select>
+                                @error('location')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
                         </div>
+
 
                         <!-- Submit Button -->
                         <div class="mt-4">
@@ -157,4 +178,5 @@
             </form>
         </div>
     </div>
+    @include('layouts.partials.footer-top')
 @endsection

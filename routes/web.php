@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\SendMessageController;
 use App\Http\Controllers\WishlistController;
@@ -36,6 +37,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'remove'])->name('wishlist.remove');
 });
 
+// --------------------REPORTCONTROLLER-------------------------//
+Route::middleware(['auth'])->group(function () {
+    Route::post('/marketplace/product/{productId}/report', [ReportController::class, 'store'])->name('product.report');
+});
+
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -65,6 +72,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/listing/{product}/edit', [ProductController::class, 'edit'])->name('listing.edit');
     Route::put('/listing/{product}', [ProductController::class, 'update'])->name('listing.update');
     Route::delete('/listing/{product}', [ProductController::class, 'destroy'])->name('listing.destroy');
+    Route::patch('/listing/{id}/mark-as-sold', [ProductController::class, 'markAsSold'])->name('listing.markAsSold');
+    Route::patch('/listing/{id}/mark-as-unsold', [ProductController::class, 'markAsUnsold'])->name('listing.markAsUnsold');
+
 });
 
 // ---------------------DASHBOARD VIEW-------------------------//
@@ -74,6 +84,6 @@ Route::middleware(['auth', 'verified'])->group( function () {
     Route::get('/user/offers', [ProductController::class, 'dashboard'])->name('seller-offers');
     // ---------------UPDATE THE STATUS---------------//
     Route::patch('/user/offers/{offer}/status', [ProductController::class, 'updateOfferStatus'])->name('seller.offers.update-status');
-    Route::patch('/user/offers/product/{product}', [ProductController::class, 'updateOfferStatus'])->name('seller.offers.update-status');
+    // Route::patch('/user/offers/product/{product}', [ProductController::class, 'updateOfferStatus'])->name('seller.offers.update-status');
 
 });
