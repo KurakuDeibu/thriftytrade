@@ -26,6 +26,7 @@ class UserSeeder extends Seeder
             'birthDay' => '1990-01-01',
             'userAddress' => '123 Admin St, Admin City',
             'phoneNum' => '123-456-7890',
+            'email_verified_at' => now(),
         ]);
     }
 }

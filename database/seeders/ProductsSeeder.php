@@ -16,13 +16,11 @@ class ProductsSeeder extends Seeder
      */
     public function run(): void
     {
-             // Ensure we have users, categories, and statuses
-                User::factory(5)->create();
                 // Create 50 products
-             Products::factory(50)->create([
+             Products::factory(10)->create([
                  'user_id' => fn() => User::inRandomOrder()->first()->id,
                  'category_id' => fn() => Category::inRandomOrder()->first()->id,
-                 'status_id' => fn() => Status::inRandomOrder()->first()->id,
              ]);
+
     }
 }

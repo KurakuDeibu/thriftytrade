@@ -20,13 +20,19 @@ class ProductsFactory extends Factory
      */
     public function definition(): array
     {
-        $conditionType = ['New', 'Likely New', 'Used', 'Likely Used'];
+        $conditionType = ['New', 'Likely-New', 'Used', 'Likely-Used'];
+        $locations = ['Lapu-Lapu City', 'Mandaue City'];
+        $status = ['Available', 'Pending', 'Sold'];
+        $priceType = ['Fixed', 'Negotiable'];
 
         return [
-             'prodName' => $this->faker->word,
+        'prodName' => $this->faker->word,
         'prodPrice' => $this->faker->randomFloat(2, 1, 1000),
         'prodQuantity' => $this->faker->numberBetween(1, 100),
         'prodCondition' => $this->faker->randomElement($conditionType),
+        'location' => $this->faker->randomElement($locations),
+        'status' => $this->faker->randomElement($status),
+        'price_type' => $this->faker->randomElement($priceType),
         'prodImage' => $this->faker->imageUrl(),
         'prodDescription' => $this->faker->paragraph,
         'featured' => $this->faker->boolean,
@@ -35,9 +41,6 @@ class ProductsFactory extends Factory
         },
         'category_id' => function () {
             return Category::inRandomOrder()->first()->id;
-        },
-        'status_id' => function () {
-            return Status::inRandomOrder()->first()->id;
-        }];
+               }];
     }
 }
