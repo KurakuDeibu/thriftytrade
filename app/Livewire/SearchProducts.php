@@ -17,6 +17,7 @@ class SearchProducts extends Component
     public $featured = false;
     public $sort = 'latest';
     public $price_type = null;
+    public $location = null;
 
 
     protected $queryString = [
@@ -26,6 +27,7 @@ class SearchProducts extends Component
         'featured' => ['except' => false],
         'sort' => ['except' => 'latest'],
         'price_type' => ['except' => null],
+        'location' => ['except' => null],
 
     ];
 
@@ -37,6 +39,7 @@ class SearchProducts extends Component
         $this->featured = request('featured', false);
         $this->sort = request('sort', 'latest');
         $this->price_type = request('price_type');
+        $this->location = request('location');
     }
 
     public function search()
@@ -76,6 +79,11 @@ class SearchProducts extends Component
           // Price Type filter
           if ($this->price_type) {
             $query->where('price_type', $this->price_type);
+        }
+
+         // Location filter
+         if ($this->location) {
+            $query->where('location', $this->location);
         }
 
         // Sorting

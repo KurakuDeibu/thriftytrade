@@ -77,6 +77,7 @@
                 'featured' => request('featured'),
                 'sort' => request('sort'),
                 'search' => request('query'),
+                'location' => request('location'),
             ])
             <!-- Hidden inputs for preserving current filters -->
             @if (request('category'))
