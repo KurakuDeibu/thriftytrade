@@ -1,5 +1,8 @@
 <head>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript"
+        src="https://platform-api.sharethis.com/js/sharethis.js#property=673c27e404dba600122bb512&product=inline-share-buttons&source=platform"
+        async="async"></script>
     <style>
         .glide__slide img {
             width: 100vw;
@@ -134,23 +137,27 @@
             font-weight: 600;
         }
 
-        .wishlist-icon {
+        .wishlist-report-container {
             position: absolute;
             top: 10px;
             right: 10px;
+            z-index: 1;
+        }
+
+        .wishlist-icon,
+        .report-icon {
             background-color: rgba(249, 248, 255, 0.736);
             padding: 8px;
-            z-index: 10;
             width: 40px;
             height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s ease;
+            border: none;
         }
 
         .wishlist-icon:hover {
@@ -158,7 +165,23 @@
             color: white;
             background-color: rgb(100, 121, 255);
         }
+
+        .report-icon:hover {
+            transform: scale(0.8);
+            color: white;
+            background-color: rgb(255, 100, 100);
+        }
+
+        .icon-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
     </style>
+
+    {{-- DYNAMIC TITLE FOR THE PAGE --}}
+    @section('title', $marketplaceProducts->prodName . ' | ' . config('app.name'))
+
 </head>
 
 <body>
@@ -167,12 +190,13 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><small><a href="{{ url('/') }}">Home</a></small></li>
                 <li class="breadcrumb-item"><small><a href="{{ url('marketplace') }}">Marketplace</a></small></li>
-                <li class="breadcrumb-item active" aria-current="page"><small>{{ $marketplaceProducts->prodName }}</small>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <small>{{ $marketplaceProducts->prodName }}</small>
                 </li>
             </ol>
         </nav>
 
-        <div class="border-b-2 row">
+        <div class="row">
             <!-- Product Image Slider Column -->
             <div class="mb-4 col-lg-6">
                 <!-- Glide slider container -->
@@ -180,12 +204,11 @@
                     <div class="glide__track" data-glide-el="track">
                         <ol class="glide__slides">
                             <li class="glide__slide">
-                                <img src="{{ asset('img/lazy-load.jpg') }}"
-                                    data-src="{{ $marketplaceProducts->prodImage && file_exists(public_path('storage/' . $marketplaceProducts->prodImage))
-                                        ? asset('storage/' . $marketplaceProducts->prodImage)
-                                        : asset('img/NOIMG.jpg') }}"
-                                    class="card-img-top fixed-image lazy-load"
-                                    alt="{{ $marketplaceProducts->prodName }}" loading="lazy">
+                                <img src="{{ $marketplaceProducts->prodImage && file_exists(public_path('storage/' . $marketplaceProducts->prodImage))
+                                    ? asset('storage/' . $marketplaceProducts->prodImage)
+                                    : asset('img/NOIMG.jpg') }}"
+                                    class="card-img-top fixed-image" alt="{{ $marketplaceProducts->prodName }}"
+                                    loading="lazy">
 
                             </li>
                         </ol>
@@ -197,21 +220,41 @@
                             Auth::check() && $marketplaceProducts->wishlists()->where('user_id', Auth::id())->exists();
                     @endphp
 
-                    <form
-                        action="{{ $isInWishlist ? route('wishlist.remove', $marketplaceProducts->wishlists->where('user_id', Auth::id())->first()->id) : route('wishlist.add', $marketplaceProducts->id) }}"
-                        method="POST" style="display: inline;">
-                        @csrf
-                        @if ($isInWishlist)
-                            @method('DELETE')
-                            <button type="submit" class="wishlist-icon" title="Remove from Wishlist">
-                                <i class="fas fa-heart" style="color: blue;"></i>
-                            </button>
-                        @else
-                            <button type="submit" class="wishlist-icon" title="Add to Wishlist">
-                                <i class="far fa-heart"></i>
-                            </button>
-                        @endif
-                    </form>
+                    <div class="wishlist-report-container">
+                        <div class="icon-row">
+                            <form
+                                action="{{ $isInWishlist ? route('wishlist.remove', $marketplaceProducts->wishlists->where('user_id', Auth::id())->first()->id) : route('wishlist.add', $marketplaceProducts->id) }}"
+                                method="POST" style="display: inline;">
+                                @csrf
+                                @if ($isInWishlist)
+                                    @method('DELETE')
+                                    <button type="submit" class="wishlist-icon" title="Remove from Wishlist">
+                                        <i class="fas fa-heart" style="color: blue;"></i>
+                                    </button>
+                                @else
+                                    <button type="submit" class="wishlist-icon" title="Add to Wishlist">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                @endif
+                            </form>
+
+                            <!-- Report Button -->
+                            @if (Auth::check())
+                                <button class="report-icon" data-bs-toggle="modal" data-bs-target="#reportModal"
+                                    title="Report Product">
+                                    <i class="fas fa-flag"></i>
+                                </button>
+                            @else
+                                <a href="{{ route('login', ['redirect' => url()->current() . '#report']) }}"
+                                    class="report-icon" title="Report Product">
+                                    <i class="fas fa-flag"></i>
+                                </a>
+                            @endif
+
+                        </div>
+                    </div>
+
+                    @include('components.products.report-listing-form')
 
                     <!-- Glide arrows -->
                     <div class="glide__arrows" data-glide-el="controls">
@@ -245,8 +288,8 @@
                         <div class="text-muted">{{ $marketplaceProducts->author->userAddress }}</div>
                     </div>
                 </div>
-                <div class="border-b-2 d-block d-lg-none">
-                </div>
+                <hr class="mt-2 d-block">
+                <hr class="border-b-2 d-block d-lg-none">
             </div>
 
             <!-- Product Details Column -->
@@ -255,9 +298,11 @@
                 <!-- Seller information -->
                 {{-- SHOW STATUS IF SOLD OR NOT --}}
                 <div class="flex-wrap d-flex align-items-center justify-content-between w-100">
-                    <h1 class="mb-0 h2 fw-bold text-break">{{ $marketplaceProducts->prodName }}</h1>
-                    <x-status-badge :status="$marketplaceProducts->status->statusName" class="ms-auto" />
+                    <h1 class="mb-0 h2 fw-bold text-break">{{ $marketplaceProducts->prodName }}
+                    </h1>
+                    <x-status-badge :status="$marketplaceProducts->status" class="ms-auto" />
                 </div>
+
 
                 <!-- Additional details -->
                 <p class="py-1 text-muted d-flex justify-content-between align-items-center">
@@ -267,7 +312,11 @@
                         <small class="text-white badge bg-primary">Featured</small>
                     @endif
                 </p>
-                <h2 class="py-2 fw-bold h4">₱{{ $marketplaceProducts->prodPrice }}</h2>
+
+
+                <h2 class="py-2 fw-bold h4">₱{{ $marketplaceProducts->prodPrice }} <span
+                        class="text-sm text-secondary">/ {{ $marketplaceProducts->price_type }}</span>
+                </h2>
 
 
                 @php
@@ -294,6 +343,7 @@
 
                     <li class="mb-2"><strong>Condition:</strong> {{ $marketplaceProducts->prodCondition }}</li>
                     <li class="mb-2"><strong>Category:</strong> {{ $marketplaceProducts->category->categName }}
+                    <li class="mb-2"><strong>Location:</strong> {{ $marketplaceProducts->location }}</li>
                     </li>
                 </ul>
 
@@ -310,11 +360,8 @@
                         </div>
                     @else
                         @php
-                            $allowedStatuses = ['Available', 'Negotiable', 'Rush'];
-                            $isAvailableForOffers = in_array(
-                                $marketplaceProducts->status->statusName,
-                                $allowedStatuses,
-                            );
+                            $allowedStatuses = ['Available', 'Negotiable', 'Sold'];
+                            $isAvailableForOffers = in_array($marketplaceProducts->status, $allowedStatuses);
                         @endphp
 
                         @if ($isAvailableForOffers)
@@ -333,8 +380,8 @@
                             <!-- Chat Button for buyers -->
                             <!-- Button to trigger modal -->
                             <div class="mb-2 d-lg-block">
-                                <a href="#" class="shadow-sm btn btn-primary btn-lg w-100" data-bs-toggle="modal"
-                                    data-bs-target="#chatModal">
+                                <a href="#" class="shadow-sm btn btn-primary btn-lg w-100"
+                                    data-bs-toggle="modal" data-bs-target="#chatModal">
                                     <i class="fas fa-envelope me-2"></i> CHAT WITH SELLER
                                 </a>
                             </div>
@@ -343,16 +390,12 @@
                             </div> --}}
 
                             <!-- Status-specific messages -->
-                            @if ($marketplaceProducts->status->statusName == 'Rush')
-                                <div class="mt-2 alert alert-warning" role="alert">
-                                    <i class="fas fa-bolt"></i> This is a rush sale! The seller is looking for quick
-                                    offers.
-                                </div>
-                            @elseif($marketplaceProducts->status->statusName == 'Negotiable')
+                            @if ($marketplaceProducts->price_type == 'Negotiable')
                                 <div class="mt-2 alert alert-info" role="alert">
-                                    <i class="fas fa-handshake"></i> Price is negotiable. Feel free to make an offer!
+                                    <i class="fas fa-handshake"></i> Price is negotiable. Feel free to make an
+                                    offer!
                                 </div>
-                            @elseif($marketplaceProducts->status->statusName == 'Available')
+                            @elseif($marketplaceProducts->status == 'Available')
                                 <div class="mt-2 alert alert-success" role="alert">
                                     <i class="fas fa-check-circle"></i> This listing is available for transaction.
                                 </div>
@@ -361,12 +404,14 @@
                             <div class="mt-4 mb-2 d-lg-block">
                                 <div class="alert alert-secondary" role="alert">
                                     <i class="fas fa-info-circle"></i> This product is currently
-                                    <strong>{{ strtolower($marketplaceProducts->status->statusName) }}</strong>.
+                                    <strong>{{ strtolower($marketplaceProducts->status) }}</strong>.
                                     It's not available for new offers or messages at the moment.
                                 </div>
                             </div>
                         @endif
                     @endif
+                    <!-- ShareThis BEGIN -->
+                    <div class="sharethis-inline-share-buttons"></div><!-- ShareThis END -->
                 @else
                     <!-- Show Login Button if not authenticated -->
                     <div class="mt-4 mb-2 d-lg-block">
@@ -374,6 +419,8 @@
                             <i class="fas fa-sign-in-alt"></i> LOGIN TO INTERACT
                         </a>
                     </div>
+                    <!-- ShareThis BEGIN -->
+                    <div class="sharethis-inline-share-buttons"></div><!-- ShareThis END -->
                 @endif
             </div>
 
@@ -405,114 +452,51 @@
             @endauth
 
 
-            {{-- OTHER LISTINGS OF THE USER --}}
-            <div class="container mt-5">
-                <div class="mb-4 row">
-                    <div class="col-12 d-flex justify-content-between align-items-center">
-                        <h2 class="text-xl font-bold text-center">
-                            Other listings by {{ $marketplaceProducts->author->name }}
-                        </h2>
-                        @if ($hasOtherListings && $showOtherListings->count() > 4)
-                            <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
-                                class="font-medium text-blue-500 hover-underline">Show All</a>
-                        @endif
-                    </div>
-                </div>
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
-                    @if ($hasOtherListings)
-                        @foreach ($showOtherListings as $product)
-                            <div class="col">
-                                <a href="/marketplace/product/{{ $product->id }}"
-                                    class="card h-100 text-decoration-none text-dark">
-                                    <img src="{{ $product->prodImage && file_exists(public_path('storage/' . $product->prodImage))
-                                        ? asset('storage/' . $product->prodImage)
-                                        : asset('img/NOIMG.jpg') }}"
-                                        class="card-img-top fixed-image" alt="{{ $product->prodName }}">
-                                    <div class="wishlist-icon">
-                                        <i class="far fa-heart"></i>
-                                    </div>
 
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ Str::limit($product->prodName, 40, '...') }}</h5>
-                                        <p class="card-text">₱{{ $product->prodPrice }}</p>
-                                    </div>
-                                </a>
-                            </div>
-                        @endforeach
-                    @else
-                        <p class="text-center alert alert-primary w-100">No other listings available from this user.
-                        </p>
-                    @endif
+            {{-- HAS OTHER LISTING | MARKETPLACECONTROLLER --}}
+            @include('components.products.other-listing')
+
+            {{-- SIMILAR LISTINGS / SAME CATEGORY LISTINGS | MARKETPLACECONTROLLER --}}
+            @include('components.products.similar-listing')
+
+        </div>
+    </div>
 
 
 
-                </div>
-            </div>
 
-            {{-- RECOMMENDED LISTINGS FOR THE USER --}}
-            @if ($similarListings->count() > 0)
-                <div class="mt-5 recommended-listings">
-                    <h3 class="mb-4">Similar Listings</h3>
-                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
-                        @foreach ($similarListings->shuffle() as $similarProduct)
-                            <div class="col">
-                                <a href="/marketplace/product/{{ $similarProduct->id }}"
-                                    class="card h-100 text-decoration-none text-dark">
-                                    <img src="{{ $similarProduct->prodImage && file_exists(public_path('storage/' . $similarProduct->prodImage))
-                                        ? asset('storage/' . $similarProduct->prodImage)
-                                        : asset('img/NOIMG.jpg') }}"
-                                        class="card-img-top fixed-image" alt="{{ $similarProduct->prodName }}">
-                                    <div class="wishlist-icon">
-                                        <i class="far fa-heart"></i>
-                                    </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">
-                                            {{ Str::limit($similarProduct->prodName, 40, '...') }}</h5>
-                                        <p class="card-text">₱{{ $similarProduct->prodPrice }}</p>
-                                    </div>
-                                </a>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
 
+    <script>
+        // Initialize Glide slider
+        new Glide('.glide', {
+            type: 'carousel',
+            perView: 1,
+            focusAt: 'center',
+            keyboard: true,
+            breakpoints: {
+                767: {
+                    perView: 1
+                }
+            }
+        }).mount();
+    </script>
 
-            <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
+    <script>
+        $(document).ready(function() {
+            $('#read-more').click(function(event) {
+                event.preventDefault();
 
-            <script>
-                // Initialize Glide slider
-                new Glide('.glide', {
-                    type: 'carousel',
-                    perView: 1,
-                    focusAt: 'center',
-                    keyboard: true,
-                    breakpoints: {
-                        767: {
-                            perView: 1
-                        }
-                    }
-                }).mount();
-            </script>
+                // Toggle between limited and full description
+                $('#description-text').toggle();
+                $('#full-description').toggle();
 
-            <script>
-                $(document).ready(function() {
-                    $('#read-more').click(function(event) {
-                        event.preventDefault();
-
-                        // Toggle between limited and full description
-                        $('#description-text').toggle();
-                        $('#full-description').toggle();
-
-                        // Change link text
-                        if ($('#full-description').is(':visible')) {
-                            $(this).text('Read Less');
-                        } else {
-                            $(this).text('Read More');
-                        }
-                    });
-                });
-            </script>
-
-
-</body>
+                // Change link text
+                if ($('#full-description').is(':visible')) {
+                    $(this).text('Read Less');
+                } else {
+                    $(this).text('Read More');
+                }
+            });
+        });
+    </script>

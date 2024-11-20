@@ -14,11 +14,16 @@ return new class extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
+            $table->unsignedInteger('products_id');
 
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->string('reportType', 30);
-            $table->text('reportData')->nullable();
-            $table->timestamp('reportGeneratedAt');
+            $table->enum('reason', ['inappropriate','fraud','spam','misleading','duplicate','other'])->nullable();
+            $table->text('details')->nullable();
+            $table->enum('status', ['pending','reviewed','resolved','dismissed'])->default('pending');
+
+            $table->foreign('products_id') ->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->timestamps();
+
         });
     }
 
