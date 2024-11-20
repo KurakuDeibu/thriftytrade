@@ -6,21 +6,13 @@
             'class' => 'bg-success',
             'icon' => 'fas fa-check-circle',
         ],
-        'Negotiable' => [
-            'class' => 'bg-warning',
-            'icon' => 'fas fa-handshake',
-        ],
         'Pending' => [
-            'class' => 'bg-primary',
+            'class' => 'bg-warning',
             'icon' => 'fas fa-clock',
         ],
         'Sold' => [
             'class' => 'bg-secondary',
             'icon' => 'fas fa-tag',
-        ],
-        'Rush' => [
-            'class' => 'bg-danger',
-            'icon' => 'fas fa-money-bill-wave',
         ],
     ];
 

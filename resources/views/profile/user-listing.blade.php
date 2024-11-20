@@ -100,7 +100,18 @@
                     <div class="col-md">
                         <div class="d-flex flex-column flex-md-row justify-content-between">
                             <div>
-                                <h3 class="mb-1 text-center text-md-start">{{ $user->name }}</h3>
+                                <div class="d-flex align-items-center justify-content-center justify-content-md-start">
+                                    <h3 class="mb-1 text-center me-2 text-md-start">{{ $user->name }}</h3>
+                                    @if ($user->hasVerifiedEmail())
+                                        <span class="text-green-600 text-xsm">
+                                            <i class="fas fa-check-circle"></i> {{ __('Verified') }}
+                                        </span>
+                                    @else
+                                        <span class="text-sm text-red-600">
+                                            <i class="fas fa-times-circle"></i> {{ __('Unverified') }}
+                                        </span>
+                                    @endif
+                                </div>
                                 <p class="mb-2 text-center text-md-start">
                                     <i class="fas fa-map-marker-alt" style="color: blue;"></i> {{ $user->userAddress }}
                                 </p>
@@ -117,6 +128,15 @@
                                         <i class="fas fa-tachometer-alt"></i> Dashboard
                                     </a>
                                 </div>
+                            @else
+                                <div class="mt-2 mt-md-0">
+                                    <a href="{{ route('chat.chat-message') }}" class="btn btn-primary btn-sm me-2">
+                                        <i class="fas fa-message"></i> Message
+                                    </a>
+                                    <a href="" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-flag"></i> Report
+                                    </a>
+                                </div>
                             @endif
                         </div>
                     </div>
@@ -127,19 +147,17 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="items-tab" data-bs-toggle="tab" data-bs-target="#items"
                         type="button" role="tab" aria-controls="items" aria-selected="true">Items for sale
-                        ({{ $totalProducts }})</button>
-                    {{-- <!-- In Laravel, use: Items for sale ({{ $userProducts->product->count() }}) --> --}}
+                        ({{ $userProducts->count() }})</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button"
                         role="tab" aria-controls="reviews" aria-selected="false">Reviews (0)</button>
-                    {{-- <!-- In Laravel, use: Reviews ({{ $user->reviews->count() }}) --> --}}
                 </li>
             </ul>
 
             <div class="tab-content" id="profileTabsContent">
                 <div class="tab-pane fade show active" id="items" role="tabpanel" aria-labelledby="items-tab">
-                    @if ($totalProducts > 0)
+                    @if (count($userProducts) > 0)
                         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
                             @foreach ($userProducts as $product)
                                 <div class="col">
@@ -166,66 +184,13 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
-                {{-- <!-- In Laravel, use:
-                @if ($user->reviews->count() > 0)
-                    @foreach ($user->reviews as $review)
-                    <div class="mb-3 card">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $review->title }}</h5>
-                            <p class="card-text">{{ $review->content }}</p>
-                            <p class="card-text"><small class="text-muted">By {{ $review->reviewer->name }} on {{ $review->created_at->format('M d, Y') }}</small></p>
-                        </div>
-                    </div>
-                    @endforeach
-                @else
-                --> --}}
                 <p class="p-5 text-center">No reviews yet.</p>
-                {{-- <!-- @endif --> --}}
             </div>
         </div>
         </div>
 
-        {{-- FOOTER --}}
-        {{-- <footer class="mt-auto">
-            <div class="container">
-                <div class="row">
-                    <div class="mb-4 col-md-4 mb-md-0">
-                        <div class="mb-3 footer-logo">
-                            <img src="" alt="ThriftyTrade Logo">
-                        </div>
-                        <p>Your gateway to easier thrifting, buying, and selling locally.</p>
-                    </div>
-                    <div class="mb-4 col-md-2 mb-md-0">
-                        <h5>Quick Links</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="#" class="text-decoration-none">Home</a></li>
-                            <li><a href="#" class="text-decoration-none">MarketPlace</a></li>
-                            <li><a href="#" class="text-decoration-none">Sell</a></li>
-                        </ul>
-                    </div>
-                    <div class="mb-4 col-md-2 mb-md-0">
-                        <h5>Support</h5>
-                        <ul class="list-unstyled">
-                            <li><a href="#" class="text-decoration-none">Terms of Service</a></li>
-                            <li><a href="#" class="text-decoration-none">Privacy Policy</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4">
-                        <h5>Connect With Us</h5>
-                        <div class="d-flex">
-                            <a href="#" class="me-3 text-decoration-none"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#" class="me-3 text-decoration-none"><i class="fab fa-twitter"></i></a>
-                            <a href="#" class="me-3 text-decoration-none"><i class="fab fa-instagram"></i></a>
-                            <a href="#" class="text-decoration-none"><i class="fab fa-linkedin-in"></i></a>
-                        </div>
-                        <div class="mt-3">
-                        </div>
-                    </div>
-                </div>
-                <hr>
+        @include('layouts.partials.footer-top')
 
-            </div>
-        </footer> --}}
     @endsection
 </body>
 

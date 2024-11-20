@@ -2,10 +2,9 @@
 <div class="col">
     @php
         // Determine the status class
-        $statusClass = match ($products->status->statusName) {
+        $statusClass = match ($products->status) {
             'Available' => 'status-card-available',
             'Pending' => 'status-card-pending',
-            'Rush' => 'status-card-rush',
             'Sold' => 'status-card-sold',
             default => 'status-card-available',
         };
@@ -15,11 +14,10 @@
         class="transition bg-white border-0 shadow-sm card h-100 item-card status-card {{ $statusClass }} {{ $products->featured ? 'featured-card' : '' }}">
         <div class="position-relative">
             <div class="image-container">
-                <img src="{{ asset('img/lazy-load.jpg') }}"
-                    data-src="{{ $products->prodImage && file_exists(public_path('storage/' . $products->prodImage))
-                        ? asset('storage/' . $products->prodImage)
-                        : asset('img/NOIMG.jpg') }}"
-                    class="card-img-top item-image lazy-load" alt="{{ $products->prodName }}" loading="lazy">
+                <img src="{{ $products->prodImage && file_exists(public_path('storage/' . $products->prodImage))
+                    ? asset('storage/' . $products->prodImage)
+                    : asset('img/NOIMG.jpg') }}"
+                    class="card-img-top item-image" alt="{{ $products->prodName }}" loading="lazy">
             </div>
 
             @if ($products->featured)
@@ -62,7 +60,7 @@
 
                 <div class="mt-auto">
                     <p class="mb-1 card-text text-muted">
-                        <x-status-badge :status="$products->status->statusName" />
+                        <x-status-badge :status="$products->status" />
                     </p>
                     <p class="card-text text-muted"><i
                             class="far fa-clock me-2"></i>{{ $products->created_at->diffForHumans() }}</p>
@@ -102,7 +100,8 @@
                     <div class="col-md-6">
                         <div class="product-details">
                             <div class="mb-3 d-flex justify-content-between align-items-center">
-                                <h4 class="mb-0 price">₱{{ number_format($products->prodPrice, 2) }}</h4>
+                                <h4 class="mb-0 price">₱{{ number_format($products->prodPrice, 2) }} <span
+                                        class="text-sm text-secondary">/ {{ $products->price_type }}</span></h4>
 
                                 @if (Auth::check() && Auth::user()->id == $products->author->id)
                                     <a href="/listing/{{ $products->id }}/edit" class="btn btn-outline-secondary">
@@ -139,11 +138,15 @@
                             </div>
                             <div class="detail-row">
                                 <span class="detail-label">Status:</span>
-                                <span class="detail-value">{{ $products->status->statusName }}</span>
+                                <span class="detail-value">{{ $products->status }}</span>
                             </div>
                             <div class="detail-row">
                                 <span class="detail-label">Posted:</span>
                                 <span class="detail-value">{{ $products->created_at->diffForHumans() }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Location:</span>
+                                <span class="detail-value">{{ $products->location }}</span>
                             </div>
                             <div class="mt-3">
                                 <h6>Description:</h6>

@@ -1,8 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mt-4">
-
+    <div class="container mt-2">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><small><a href="{{ url('/') }}">Home</a></small></li>
+                <li class="breadcrumb-item"><small><a href="{{ route('marketplace') }}">Marketplace</a></small></li>
+                <li class="breadcrumb-item active"><small><a href="{{ route('profile.show') }}">Profile</a></small></li>
+                </li>
+            </ol>
+        </nav>
 
         <div class="card">
             <div class="card-header">
@@ -56,4 +63,5 @@
             });
         </script>
     @endpush
+    @include('layouts.partials.footer-top')
 @endsection

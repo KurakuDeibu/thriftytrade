@@ -404,7 +404,7 @@
                             from {{ $offer->user->name }}?
                         </div>
                         <div class="modal-footer">
-                            <form action="{{ route('seller.offers.update-status', $offer) }}" method="POST">
+                            <form action="{{ route('seller.offers.update-status', $offer->id) }}" method="POST">
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="status" value="accepted">
@@ -432,7 +432,7 @@
                             from {{ $offer->user->name }}?
                         </div>
                         <div class="modal-footer">
-                            <form action="{{ route('seller.offers.update-status', $offer) }}" method="POST">
+                            <form action="{{ route('seller.offers.update-status', $offer->id) }}" method="POST">
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="status" value="rejected">

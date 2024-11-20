@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Products;
-use App\Models\Status;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -33,7 +32,7 @@ class MarketplaceController extends Controller
     if ($request->has('category') && !empty($request->category)) {
         $category = Category::find($request->category);
         if (!$category) {
-            return redirect()->route('marketplace')->withErrors(['category' => 'Selected category does not exist.']);
+            return redirect()->back()->withErrors(['category' => 'Selected category does not exist.']);
         }
         $query->where('category_id', $category->id);
     }
@@ -43,14 +42,19 @@ class MarketplaceController extends Controller
         $query->where('prodCondition', $request->input('condition'));
     }
 
+    // Handle location filter
+    if ($request->has('location') && !empty($request->location)) {
+        $query->where('location', $request->location);
+    }
+
     // Handle featured filter
     if ($request->has('featured')) {
         $query->where('featured', true);
     }
 
-    // Handle status filters
-    if ($request->has('status') && is_array($request->status)) {
-        $query->whereIn('status', $request->status);
+   // Handle price type filter
+   if ($request->has('price_type') && !empty($request->price_type)) {
+    $query->where('price_type', $request->input('price_type'));
     }
 
     // Handle sorting - default latest
@@ -80,8 +84,9 @@ class MarketplaceController extends Controller
         'categoryFilter' => $request->input('category'),
         'conditionFilter' => $request->input('condition'),
         'sortBy' => $sortBy,
+        'locationFilter' => $request->input('location'),
         'featuredFilter' => $request->input('featured'),
-        'statusFilters' => $request->input('status', []),
+        'priceTypeFilter' => $request->input('price_type'),
     ]);
 }
 

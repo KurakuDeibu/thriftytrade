@@ -8,6 +8,8 @@
 
 @section('content')
     <x-products.detail-content :marketplaceProducts="$marketplaceProducts" :showOtherListings="$showOtherListings" :hasOtherListings="$hasOtherListings" :similarListings="$similarListings" />
+
+    @include('layouts.partials.footer-top')
 @endsection
 
 {{-- DESIGN IS STILL NOT RESPONSIVE --}}

@@ -39,18 +39,11 @@
                     @foreach ($wishlists as $wishlist)
                         <div class="col">
                             <div class="overflow-hidden transition shadow-sm card h-100 position-relative hover:shadow">
-                                <div class="gap-2 position-absolute top-2 end-2 d-flex">
-                                    <span class="text-indigo-600 badge bg-indigo-50 rounded-pill">
-                                        {{ $wishlist->product->category->categName }}
-                                    </span>
-                                    @if ($wishlist->product->status)
-                                        <span class="badge bg-success-50 text-success-600 rounded-pill">
-                                            {{ $wishlist->product->status->statusName }}
-                                        </span>
-                                    @endif
-                                </div>
 
-                                <img src="{{ $wishlist->product->prodImage ? asset('storage/' . $wishlist->product->prodImage) : asset('img/NOIMG.jpg') }}"
+
+                                <img src="{{ $wishlist->product->prodImage && file_exists(public_path('storage/' . $wishlist->product->prodImage))
+                                    ? asset('storage/' . $wishlist->product->prodImage)
+                                    : asset('img/NOIMG.jpg') }}"
                                     class="card-img-top object-fit-cover" style="height: 200px;">
 
                                 <div class="card-body">
@@ -122,4 +115,7 @@
             box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1) !important;
         }
     </style>
+
+    @include('layouts.partials.footer-top')
+
 @endsection
