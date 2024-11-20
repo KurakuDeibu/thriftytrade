@@ -33,18 +33,19 @@ class SearchProducts extends Component
 
     public function mount()
     {
+        // Only set values if they are actually passed in the request
         $this->query = request('query', '');
-        $this->category = request('category');
-        $this->condition = request('condition');
-        $this->featured = request('featured', false);
+        $this->category = request('category') ?: null;
+        $this->condition = request('condition') ?: null;
+        $this->featured = request('featured') ?: null;
         $this->sort = request('sort', 'latest');
-        $this->price_type = request('price_type');
-        $this->location = request('location');
+        $this->price_type = request('price_type') ?: null;
+        $this->location = request('location') ?: null;
     }
 
     public function search()
     {
-        $this->resetPage();
+        $this->render();
     }
 
     public function render()
@@ -86,7 +87,7 @@ class SearchProducts extends Component
             $query->where('location', $this->location);
         }
 
-        // Sorting
+        // Sorting - CASE
         switch ($this->sort) {
             case 'latest':
                 $query->latest();
@@ -102,11 +103,92 @@ class SearchProducts extends Component
                 break;
         }
 
+        //  // Sorting - IF ELSE
+        //  if ($this->sort === 'latest') {
+        //     $query->latest();
+        // } elseif ($this->sort === 'oldest') {
+        //     $query->oldest();
+        // } elseif ($this->sort === 'price_low') {
+        //     $query->orderBy('prodPrice', 'asc');
+        // } elseif ($this->sort === 'price_high') {
+        //     $query->orderBy('prodPrice', 'desc');
+        // }
+
         $marketplaceProducts = $query->paginate(9);
 
         return view('livewire.search-products', [
             'marketplaceProducts' => $marketplaceProducts,
             'categories' => $categories,
+            'activeFilters' => $this->getActiveFilters(),
         ]);
+    }
+
+    // Method to get active activeFilters for display
+    public function getActiveFilters()
+    {
+        $filters = [];
+
+        if ($this->featured) {
+            $filters['featured'] = [
+                'name' => 'Featured Listings',
+                'type' => 'featured'
+            ];
+        }
+
+        if ($this->category) {
+            $category = Category::find($this->category);
+            $filters['category'] = [
+                'name' => $category->categName,
+                'type' => 'category'
+            ];
+        }
+
+        if ($this->condition) {
+            $filters['condition'] = [
+                'name' => $this->condition,
+                'type' => 'condition'
+            ];
+        }
+
+        if ($this->location) {
+            $filters['location'] = [
+                'name' => $this->location,
+                'type' => 'location'
+            ];
+        }
+
+        if ($this->price_type) {
+            $filters['price_type'] = [
+                'name' => $this->price_type,
+                'type' => 'price_type'
+            ];
+        }
+
+        return $filters;
+    }
+
+    // Method to remove a specific filter
+    public function removeFilter($filterType)
+    {
+        switch ($filterType) {
+            case 'featured':
+                $this->featured = null;
+                break;
+            case 'category':
+                $this->category = null;
+                break;
+            case 'condition':
+                $this->condition = null;
+                break;
+            case 'location':
+                $this->location = null;
+                break;
+            case 'price_type':
+                $this->price_type = null;
+                break;
+            case 'sort':
+                $this->sort = null;
+                break;
+        }
     }
 }

@@ -16,52 +16,9 @@
         </div>
     </div>
 
-    {{-- SHOW ACTIVE FILTERS REQUESTS --}}
-    @php
-        $activeFilters = [];
 
-        if (request('category')) {
-            $category = \App\Models\Category::find(request('category'));
-            $activeFilters['category'] = [
-                'name' => $category->categName,
-                'type' => 'category',
-            ];
-        }
-
-        if (request('condition')) {
-            $activeFilters['condition'] = [
-                'name' => request('condition'),
-                'type' => 'condition',
-            ];
-        }
-
-        if (request('featured')) {
-            $activeFilters['featured'] = [
-                'name' => 'Featured listings only',
-                'type' => 'featured',
-            ];
-        }
-        if (request('location')) {
-            $activeFilters['location'] = [
-                'name' => request('location'),
-                'type' => 'location',
-            ];
-        }
-
-        if (request('price_type')) {
-            $activeFilters['price_type'] = [
-                'name' => request('price_type'),
-                'type' => 'price_type',
-            ];
-        }
-
-    @endphp
-    {{-- End of Active Fitlers --}}
-
-
-
+    {{-- SHOW ACTIVE FILTERS --}}
     @if (!empty($activeFilters))
-        {{-- SHOW ACTIVE FILTER NAMES --}}
         <div class="mt-3 mb-3 col-12">
             <div class="alert alert-primary d-flex justify-content-between align-items-center">
                 <span class="fw-bold">Your Active Filters:</span>
@@ -69,8 +26,8 @@
                     @foreach ($activeFilters as $key => $filter)
                         <div class="badge bg-primary d-flex align-items-center" style="font-size: 0.9rem;">
                             <span class="me-2">{{ $filter['name'] }}</span>
-                            <a href="{{ request()->fullUrlWithQuery([$filter['type'] => null]) }}" class="text-white"
-                                style="text-decoration: none; margin-left: 5px;">
+                            <a wire:click="removeFilter('{{ $filter['type'] }}')" class="text-white"
+                                style="text-decoration: none; margin-left: 5px; cursor: pointer;">
                                 <i class="bi bi-x-circle-fill"></i>
                             </a>
                         </div>
@@ -79,6 +36,8 @@
             </div>
         </div>
     @endif
+
+
     {{-- Search Results --}}
     <div class="my-3 text-center justify-content-between align-items-center">
         {{-- Loading Indicator --}}
