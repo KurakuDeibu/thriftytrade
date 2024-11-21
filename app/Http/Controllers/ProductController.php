@@ -64,7 +64,7 @@ class ProductController extends Controller
         $categories = Category::orderBy('categName', 'asc')->get();
 
         if (auth()->user() && !auth()->user()->hasVerifiedEmail()) {
-            return redirect()->route('home')->with('error', 'You must verify your email address before you can sell products.');
+            return redirect()->route('home')->with('error', 'You must verify your email address before you can sell.');
         }
         return view('listing.create', compact('categories'));
     }
@@ -82,7 +82,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|numeric|min:0',
             'condition' => 'required|string|max:20',
-            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'images' => 'required|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
 
@@ -265,13 +265,13 @@ class ProductController extends Controller
         $product = Products::findOrFail($id);
 
         if ($product->user_id !== auth()->id()) {
-            return redirect()->back()->with('error', 'You are not authorized to mark this listing as unsold.');
+            return redirect()->back()->with('error', 'You are not authorized to mark this listing as available.');
         }
 
         $product->status = 'Available';
         $product->save();
 
-        return redirect()->back()->with('success', 'Listing marked as unsold.');
+        return redirect()->back()->with('success', 'Listing marked as available.');
     }
 
 }
