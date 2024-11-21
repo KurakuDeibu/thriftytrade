@@ -123,13 +123,11 @@
                                                                 <i class="bi bi-chat-text me-1"></i>Message
                                                             </button>
                                                             <button type="button" class="btn btn-sm btn-success"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#acceptOfferModal{{ $offer->id }}">
+                                                                onclick="updateOfferStatus({{ $offer->id }}, 'accepted')">
                                                                 <i class="bi bi-check-circle me-1"></i>Accept
                                                             </button>
                                                             <button type="button" class="btn btn-sm btn-danger"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#rejectOfferModal{{ $offer->id }}">
+                                                                onclick="updateOfferStatus({{ $offer->id }}, 'rejected')">
                                                                 <i class="bi bi-x-circle me-1"></i>Reject
                                                             </button>
                                                         </div>
@@ -388,64 +386,63 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Accept Offer Modal -->
-            <div class="modal fade" id="acceptOfferModal{{ $offer->id }}" tabindex="-1"
-                aria-labelledby="acceptOfferModalLabel{{ $offer->id }}" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="acceptOfferModalLabel{{ $offer->id }}">Accept Offer</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to accept this offer of ₱{{ number_format($offer->offer_price, 2) }}
-                            from {{ $offer->user->name }}?
-                        </div>
-                        <div class="modal-footer">
-                            <form action="{{ route('seller.offers.update-status', $offer->id) }}" method="POST">
-                                @csrf
-                                @method('PATCH')
-                                <input type="hidden" name="status" value="accepted">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-success">Accept</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Reject Offer Modal -->
-            <div class="modal fade" id="rejectOfferModal{{ $offer->id }}" tabindex="-1"
-                aria-labelledby="rejectOfferModalLabel{{ $offer->id }}" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="rejectOfferModalLabel{{ $offer->id }}">Reject Offer</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to reject this offer of ₱{{ number_format($offer->offer_price, 2) }}
-                            from {{ $offer->user->name }}?
-                        </div>
-                        <div class="modal-footer">
-                            <form action="{{ route('seller.offers.update-status', $offer->id) }}" method="POST">
-                                @csrf
-                                @method('PATCH')
-                                <input type="hidden" name="status" value="rejected">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-danger">Reject</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
         @endforeach
     @endforeach
+
+
+
+    {{-- <!-- Accept Offer Modal -->
+    <div class="modal fade" id="acceptOfferModal{{ $offer->id }}" tabindex="-1"
+        aria-labelledby="acceptOfferModalLabel{{ $offer->id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="acceptOfferModalLabel{{ $offer->id }}">Accept Offer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to accept this offer of ₱{{ number_format($offer->offer_price, 2) }}
+                    from {{ $offer->user->name }}?
+                </div>
+                <div class="modal-footer">
+                    <form action="{{ route('seller.offers.update-status', $offer->id) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="status" value="accepted">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Accept</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reject Offer Modal -->
+    <div class="modal fade" id="rejectOfferModal{{ $offer->id }}" tabindex="-1"
+        aria-labelledby="rejectOfferModalLabel{{ $offer->id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rejectOfferModalLabel{{ $offer->id }}">Reject Offer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to reject this offer of ₱{{ number_format($offer->offer_price, 2) }}
+                    from {{ $offer->user->name }}?
+                </div>
+                <div class="modal-footer">
+                    <form action="{{ route('seller.offers.update-status', $offer->id) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="status" value="rejected">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger">Reject</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> --}}
+
 </div>
 
 <style>
@@ -455,3 +452,70 @@
         }
     }
 </style>
+
+@push('scripts')
+    <script>
+        function updateOfferStatus(offerId, status) {
+            const statusText = status === 'accepted' ?
+                'accept this offer' :
+                'reject this offer';
+
+            const buttonClass = status === 'accepted' ?
+                'btn-success' :
+                'btn-danger';
+
+            swal({
+                title: `${status.charAt(0).toUpperCase() + status.slice(1)} Offer`,
+                text: `Are you sure you want to ${statusText}?`,
+                icon: "warning",
+                buttons: {
+                    cancel: {
+                        text: "Cancel",
+                        value: null,
+                        visible: true,
+                        className: "btn-secondary"
+                    },
+                    confirm: {
+                        text: status.charAt(0).toUpperCase() + status.slice(1),
+                        value: true,
+                        visible: true,
+                        className: buttonClass
+                    }
+                },
+                dangerMode: status === 'rejected',
+            }).then((willProceed) => {
+                if (willProceed) {
+                    // Create a form to submit the status update
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = "{{ route('seller.offers.update-status', ':id') }}".replace(':id', offerId);
+
+                    // Add CSRF token
+                    const csrfField = document.createElement('input');
+                    csrfField.type = 'hidden';
+                    csrfField.name = '_token';
+                    csrfField.value = '{{ csrf_token() }}';
+                    form.appendChild(csrfField);
+
+                    // Add method field to indicate PATCH
+                    const methodField = document.createElement('input');
+                    methodField.type = 'hidden';
+                    methodField.name = '_method';
+                    methodField.value = 'PATCH';
+                    form.appendChild(methodField);
+
+                    // Add status field
+                    const statusField = document.createElement('input');
+                    statusField.type = 'hidden';
+                    statusField.name = 'status';
+                    statusField.value = status;
+                    form.appendChild(statusField);
+
+                    // Append the form to the body and submit it
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+    </script>
+@endpush

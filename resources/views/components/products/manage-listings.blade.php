@@ -41,7 +41,9 @@
                 <div class="row row-cols-1 g-4">
                     @forelse ($products as $product)
                         <div class="col-lg-12">
-                            <div class="card listing-card position-relative">
+                            <div
+                                class="card listing-card position-relative
+                                {{ $product->status == 'Sold' ? 'border-danger sold-listing' : ($product->status == 'Pending' ? 'border-warning pending-listing' : 'border-primary active-listing') }}">
                                 <div class="row g-0">
                                     <!-- Product Image and Status Icons -->
                                     <div class="col-md-4 position-relative">
@@ -72,9 +74,32 @@
 
                                                     <!-- Status Icon -->
                                                     <span
-                                                        class="badge bg-{{ $product->status == 'Available' ? 'success' : ($product->status == 'Pending' ? 'warning' : 'secondary') }}"
+                                                        class="badge
+                                                    {{ $product->status == 'Available'
+                                                        ? 'bg-success'
+                                                        : ($product->status == 'Pending'
+                                                            ? 'bg-warning'
+                                                            : ($product->status == 'Sold'
+                                                                ? 'bg-secondary'
+                                                                : 'bg-info')) }}"
                                                         data-bs-toggle="tooltip"
                                                         title="{{ ucfirst($product->status) }}">
+                                                        @switch($product->status)
+                                                            @case('Available')
+                                                                <i class="bi bi-check-circle me-1"></i>
+                                                            @break
+
+                                                            @case('Pending')
+                                                                <i class="bi bi-hourglass-split me-1"></i>
+                                                            @break
+
+                                                            @case('Sold')
+                                                                <i class="bi bi-bag-x me-1"></i>
+                                                            @break
+
+                                                            @default
+                                                                <i class="bi bi-question-circle me-1"></i>
+                                                        @endswitch
                                                         {{ ucfirst($product->status) }}
                                                     </span>
                                                 </div>
@@ -112,18 +137,11 @@
                                                     </a>
 
                                                     <!-- Delete Product -->
-                                                    <a class="btn btn-outline-danger" data-bs-toggle="tooltip"
-                                                        title="Delete Listing">
-                                                        <form action="{{ route('listing.destroy', $product->id) }}"
-                                                            method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit"
-                                                                onclick="return confirm('Are you sure you want to delete this listing?');">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </a>
+                                                    <button class="btn btn-outline-danger"
+                                                        onclick="confirmDelete({{ $product->id }})"
+                                                        data-bs-toggle="tooltip" title="Delete Listing">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
                                                 </div>
                                             </div>
 
@@ -148,27 +166,18 @@
 
                                             @if ($product->status != 'Sold')
                                                 <div class="mt-4">
-                                                    <form action="{{ route('listing.markAsSold', $product->id) }}"
-                                                        method="POST">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <button type="submit" class="btn btn-outline-success w-100"
-                                                            onclick="return confirm('Mark this listing as sold?');">
-                                                            <i class="bi bi-check-circle me-1"></i>Mark as Sold
-                                                        </button>
-                                                    </form>
+                                                    <button onclick="updateProductStatus({{ $product->id }}, 'Sold')"
+                                                        class="btn btn-outline-secondary w-100">
+                                                        <i class="bi bi-check-circle me-1"></i>Mark as Sold
+                                                    </button>
                                                 </div>
                                             @else
                                                 <div class="mt-4">
-                                                    <form action="{{ route('listing.markAsUnsold', $product->id) }}"
-                                                        method="POST">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <button type="submit" class="btn btn-outline-secondary w-100"
-                                                            onclick="return confirm('Mark this listing as unsold?');">
-                                                            <i class="bi bi-check-circle me-1"></i>Mark as Unsold
-                                                        </button>
-                                                    </form>
+                                                    <button
+                                                        onclick="updateProductStatus({{ $product->id }}, 'Available')"
+                                                        class="btn btn-outline-success w-100">
+                                                        <i class="bi bi-check-circle me-1"></i>Unmark as Sold
+                                                    </button>
                                                 </div>
                                             @endif
                                         </div>
@@ -176,52 +185,195 @@
                                 </div>
                             </div>
                         </div>
-                    @empty
-                        <div class="p-5 mt-3 col-12">
-                            <div class="text-center alert alert-primary">
-                                No listings in this category.
+                        @empty
+                            <div class="p-5 mt-3 col-12">
+                                <div class="text-center alert alert-primary">
+                                    No listings in this category.
+                                </div>
                             </div>
-                        </div>
-                    @endforelse
+                        @endforelse
+                    </div>
                 </div>
-            </div>
-        @endforeach
+            @endforeach
+        </div>
     </div>
-</div>
 
-<style>
-    .listing-card {
-        transition: all 0.3s ease;
-        border: 1px solid #e0e0e0;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+    <style>
+        .listing-card {
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-    .listing-image-container {
-        position: relative;
-        overflow: hidden;
-    }
+        .listing-image-container {
+            position: relative;
+            overflow: hidden;
+        }
 
-    .listing-image {
-        width: 100%;
-        height: 250px;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
+        .sold-listing {
+            background-color: rgba(49, 54, 64, 0.05) !important;
+            border-color: #5f5f5fc1 !important;
+            opacity: 0.8;
+        }
 
-    .listing-actions {
-        display: flex;
-        gap: 5px;
-    }
+        .active-listing {
+            background-color: rgba(0, 255, 38, 0.05) !important;
+            border-color: #03c90d !important;
+        }
 
-    .btn-group .btn {
-        transition: background-color 0.3s ease, color 0.3s ease;
-        width: 100%;
-        /* Ensures all buttons are the same width */
-    }
+        .pending-listing {
+            background-color: rgba(208, 223, 5, 0.05) !important;
+            border-color: #fffc32 !important;
+        }
 
-    .btn-group .btn:hover {
-        background-color: rgba(0, 123, 255, 0.1);
-        color: #0d6efd;
-    }
-</style>
+        .listing-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .listing-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-group .btn {
+            transition: background-color 0.3s ease, color 0.3s ease;
+            width: 100%;
+            /* Ensures all buttons are the same width */
+        }
+
+        .btn-group .btn:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+            color: #0d6efd;
+        }
+    </style>
+
+    {{-- SWEET ALERT DIALOG - DELETE --}}
+    @push('scripts')
+        <script>
+            function confirmDelete(productId) {
+                swal({
+                    title: "Delete Listing",
+                    text: "Are you sure you want to delete this listing? This action cannot be undone.",
+                    icon: "warning",
+                    buttons: {
+                        cancel: {
+                            text: "Cancel",
+                            value: null,
+                            visible: true,
+                            className: "btn-secondary"
+                        },
+                        confirm: {
+                            text: "Delete",
+                            value: true,
+                            visible: true,
+                            className: "btn-danger"
+                        }
+                    },
+                    dangerMode: true,
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = "{{ route('listing.destroy', ':id') }}".replace(':id', productId);
+
+                        const csrfField = document.createElement('input');
+                        csrfField.type = 'hidden';
+                        csrfField.name = '_token';
+                        csrfField.value = '{{ csrf_token() }}';
+                        form.appendChild(csrfField);
+
+                        const methodField = document.createElement('input');
+                        methodField.type = 'hidden';
+                        methodField.name = '_method';
+                        methodField.value = 'DELETE';
+                        form.appendChild(methodField);
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            }
+        </script>
+
+        <script>
+            function updateProductStatus(productId, status) {
+                console.log("Updating status for product ID:", productId, "to status:", status); // Debug log
+
+                const statusConfig = {
+                    'Sold': {
+                        title: 'Mark as Sold',
+                        text: 'If you mark this listing as sold, it will be removed from the active listings, and you will no longer receive offers. Are you sure you want to proceed?',
+                        icon: 'success',
+                        buttonText: 'Mark as Sold',
+                        buttonClass: 'btn-secondary'
+                    },
+                    'Available': {
+                        title: 'Unmark as Sold',
+                        text: 'Caution: You are about to mark this listing as unsold and available. This action will make the item active for potential buyers. Are you sure you want to proceed?',
+                        icon: 'warning',
+                        buttonText: 'Unmark as Sold',
+                        buttonClass: 'btn-success'
+                    }
+                };
+
+                const config = statusConfig[status];
+
+                if (!config) {
+                    console.error("Invalid status:", status);
+                    return;
+                }
+
+                swal({
+                    title: config.title,
+                    text: config.text,
+                    icon: config.icon,
+                    buttons: {
+                        cancel: {
+                            text: "Cancel",
+                            value: null,
+                            visible: true,
+                            className: "btn-secondary"
+                        },
+                        confirm: {
+                            text: config.buttonText,
+                            value: true,
+                            visible: true,
+                            className: config.buttonClass
+                        }
+                    },
+                    dangerMode: status === 'Sold',
+                }).then((willProceed) => {
+                    if (willProceed) {
+                        // Create a form to submit the status update
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = status === 'Sold' ?
+                            "{{ route('listing.markAsSold', ':id') }}".replace(':id', productId) :
+                            "{{ route('listing.markAsUnsold', ':id') }}".replace(':id', productId);
+
+                        // Add CSRF token
+                        const csrfField = document.createElement('input');
+                        csrfField.type = 'hidden';
+                        csrfField.name = '_token';
+                        csrfField.value = '{{ csrf_token() }}';
+                        form.appendChild(csrfField);
+
+                        // Add method field to indicate PATCH
+                        const methodField = document.createElement('input');
+                        methodField.type = 'hidden';
+                        methodField.name = '_method';
+                        methodField.value = 'PATCH';
+                        form.appendChild(methodField);
+
+                        // Append the form to the body and submit it
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            }
+        </script>
+    @endpush

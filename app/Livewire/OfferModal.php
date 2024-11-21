@@ -40,6 +40,10 @@ class OfferModal extends Component
             'message' => $this->message,
         ]);
 
+        $this->product->status = 'Pending';
+        $this->product->save();
+
+
         $this->reset(['offerPrice', 'meetupLocation', 'meetupTime', 'message']);
         $this->dispatch('offerSubmitted');
         session()->flash('success', 'Your offer has been submitted successfully!');
