@@ -360,7 +360,7 @@
                         </div>
                     @else
                         @php
-                            $allowedStatuses = ['Available', 'Negotiable', 'Sold'];
+                            $allowedStatuses = ['Available', 'Negotiable', 'Fixed'];
                             $isAvailableForOffers = in_array($marketplaceProducts->status, $allowedStatuses);
                         @endphp
 
@@ -396,6 +396,10 @@
                                     offer!
                                 </div>
                             @elseif($marketplaceProducts->status == 'Available')
+                                <div class="mt-2 alert alert-success" role="alert">
+                                    <i class="fas fa-check-circle"></i> This listing is available for transaction.
+                                </div>
+                            @elseif($marketplaceProducts->price_type == 'Fixed')
                                 <div class="mt-2 alert alert-success" role="alert">
                                     <i class="fas fa-check-circle"></i> This listing is available for transaction.
                                 </div>
