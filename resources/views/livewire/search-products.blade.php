@@ -2,17 +2,19 @@
 {{-- Hero Section Search --}}
 <div x-data="{ query: @entangle('query').live }" id="search-box" class="px-2 col-lg-9">
     <div class="px-4 py-4 hero-section card">
-        <h1 class="mb-1 text-white display-6">THRIFT&TRADE PRODUCTS IN YOUR LOCAL AREAS!</h1>
+        <h1 class="mb-1 text-white display-6">THRIFT&TRADE IN YOUR LOCAL AREAS!</h1>
         <div class="mt-2">
             <div class="d-flex">
                 <input x-model="query" wire:model.live="query" wire:keydown.enter="search"
                     class="py-2 form-control rounded-0 me-2" type="text" placeholder="Search...">
                 <button wire:click="search" class="btn btn-primary">
-                    Search
+                    <i class="bi bi-search"></i> <!-- Search icon -->
+                </button>
+                {{-- Clear Search Button --}}
+                <button x-show="query" @click="query = ''" class="btn btn-secondary ms-2">
+                    <i class="bi bi-x-circle"></i> <!-- Clear icon -->
                 </button>
             </div>
-
-
         </div>
     </div>
 
@@ -41,11 +43,11 @@
     {{-- Search Results --}}
     <div class="my-3 text-center justify-content-between align-items-center">
         {{-- Loading Indicator --}}
-        <div wire:loading class="my-3 text-center justify-content-between align-items-center">
+        <div wire:loading class="my-5 mt-5 p-5 text-center justify-content-between align-items-center">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
-            <p class="p-2 text-sm">Searching products...</p>
+            <p class="p-2 text-sm">Searching...</p>
         </div>
     </div>
 
@@ -68,7 +70,7 @@
                 </div>
                 <h2 class="mb-3 text-muted">No Listings Found</h2>
                 <p class="mb-4 text-muted">
-                    We couldn't find any listing matching your search and filter criteria.
+                    We couldn't find any listing matching your search or filter criteria.
                 </p>
 
                 <div class="gap-3 d-flex">
