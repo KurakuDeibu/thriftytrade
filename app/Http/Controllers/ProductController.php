@@ -18,7 +18,7 @@ class ProductController extends Controller
     public function dashboard()
     {
         // Fetch the products that belong to the logged-in user
-        $userProducts = Products::where('user_id', auth()->id())->get();
+        $userProducts = Products::where('user_id', auth()->id())->orderBy('updated_at', 'desc')->get();
         $soldProducts = $userProducts->where('status', 'Sold');
         $pendingProducts = $userProducts->where('status', 'Pending');
         $activeProducts = $userProducts->where('status', 'Available');
@@ -35,7 +35,7 @@ class ProductController extends Controller
         $groupedOffers = $offers->groupBy('products_id');
 
         // Get total number of pending offers
-        $pendingOffersCount = $offers->where('status', 'pending')->count();
+        $pendingOffers = $offers->where('status', 'pending');
         $acceptedOffers = $offers->where('status', 'accepted');
         $rejectedOffers = $offers->where('status', 'rejected');
 
@@ -46,7 +46,7 @@ class ProductController extends Controller
 
         return view('dashboard', compact(
             'groupedOffers',
-            'pendingOffersCount',
+            'pendingOffers',
             'productsWithNoOffers',
             'acceptedOffers',
             'rejectedOffers',
@@ -92,7 +92,6 @@ class ProductController extends Controller
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('products/images', $imageName, 'public');
         }
-
         // Creating product listing
         Products::create([
             'user_id' => auth()->id(),
@@ -108,6 +107,7 @@ class ProductController extends Controller
             'prodImage' => $imagePath,
             'featured' => $request->has('featured')
         ]);
+
 
         return redirect()->route('listing.create')->with('success', 'Product listing created successfully.');
     }
@@ -189,7 +189,7 @@ class ProductController extends Controller
     // Delete the product from the database
     $product->delete();
 
-    return redirect()->route('manage-listing')->with('success', 'Listing deleted successfully.');
+    return redirect()->back()->with('success', 'Listing deleted successfully.');
         }
 
         // --------------------END OF PRODUCT CRUD-----------------------//
@@ -238,6 +238,9 @@ class ProductController extends Controller
                 Offer::where('products_id', $offer->products_id)
                     ->where('id', '!=', $offer->id)
                     ->update(['status' => 'rejected']);
+
+
+
             }
             return redirect()->route('seller-offers')->with('success', 'Offer updated successfully.');
         } catch (\Exception $e) {
