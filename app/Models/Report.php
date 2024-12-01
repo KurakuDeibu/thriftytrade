@@ -13,8 +13,10 @@ class Report extends Model
     protected $table = "reports";
 
     protected $fillable = [
-        'products_id',
         'user_id',
+        'products_id',
+        'reported_user_id',
+        'report_type',
         'reason',
         'details',
         'status'
@@ -28,6 +30,11 @@ class Report extends Model
     public function reporter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function reportedUser()
+    {
+        return $this->belongsTo(User::class, 'reported_user_id');
     }
 
     // Scopes
