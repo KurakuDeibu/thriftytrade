@@ -3,11 +3,12 @@
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
+use App\Http\Controllers\OfferController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\SellerController;
 use App\Http\Controllers\SendMessageController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WishlistController;
 use App\Models\Wishlist;
 use Illuminate\Support\Facades\Route;
@@ -24,10 +25,10 @@ Route::get('/marketplace/user/{userId}/listings', [MarketplaceController::class,
 
 // ---------------------SENDMESSAGECONTROLLER - CHAT CONTROLLER --------------------------//
 Route::get('/marketplace/chat', [ChatController::class, 'index'])->name('chat.chat-message');
-// Route::get('/marketplace/chat', [SendMessageController::class, 'index'])->name('chat.chat-message');
-// Route::post('/send/messages', [SendMessageController::class, 'store']);
-// Route::get('/users', [SendMessageController::class, 'showUsers']);
-// Route::get('/messages/user/{userId}', [SendMessageController::class, 'showMessages']);
+Route::get('/marketplace/chat', [SendMessageController::class, 'index'])->name('chat.chat-message');
+Route::post('/send/messages', [SendMessageController::class, 'store']);
+Route::get('/users', [SendMessageController::class, 'showUsers']);
+Route::get('/messages/user/{userId}', [SendMessageController::class, 'showMessages']);
 
 
 // --------------------WISHLISTCONTROLLER-------------------------//
@@ -39,7 +40,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 // --------------------REPORTCONTROLLER-------------------------//
 Route::middleware(['auth'])->group(function () {
-    Route::post('/marketplace/product/{productId}/report', [ReportController::class, 'store'])->name('product.report');
+    Route::post('/marketplace/product/{productId}/report', [ReportController::class, 'store'])->name('product.report'); //Listing Report
+    Route::post('/user/{userId}/report', [ReportController::class, 'store'])->name('user.report'); // User Report
 });
 
 
@@ -67,23 +69,28 @@ Route::middleware([
 
 // ---------------------- SELLER ProductController -----------------//
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    // -------------------MANAGE LISTINGS--------------------//
     Route::get('/listing/create', [ProductController::class, 'create'])->name('listing.create');
     Route::post('/listing/create', [ProductController::class, 'store'])->name('listing.store');
     Route::get('/listing/{product}/edit', [ProductController::class, 'edit'])->name('listing.edit');
     Route::put('/listing/{product}', [ProductController::class, 'update'])->name('listing.update');
     Route::delete('/listing/{product}', [ProductController::class, 'destroy'])->name('listing.destroy');
-    Route::patch('/listing/{id}/mark-as-sold', [ProductController::class, 'markAsSold'])->name('listing.markAsSold');
-    Route::patch('/listing/{id}/mark-as-unsold', [ProductController::class, 'markAsUnsold'])->name('listing.markAsUnsold');
-
 });
 
 // ---------------------DASHBOARD VIEW-------------------------//
 Route::middleware(['auth', 'verified'])->group( function () {
+    // ------MANAGE LISTINGS
     Route::get('/user/dashboard', [ProductController::class, 'dashboard'])->name('dashboard');
     Route::get('/user/manage-listing', [ProductController::class, 'dashboard'])->name('manage-listing');
-    Route::get('/user/offers', [ProductController::class, 'dashboard'])->name('seller-offers');
-    // ---------------UPDATE THE STATUS---------------//
-    Route::patch('/user/offers/{offer}/status', [ProductController::class, 'updateOfferStatus'])->name('seller.offers.update-status');
-    // Route::patch('/user/offers/product/{product}', [ProductController::class, 'updateOfferStatus'])->name('seller.offers.update-status');
+    Route::patch('/listing/{id}/mark-as-sold', [ProductController::class, 'markAsSold'])->name('listing.markAsSold');
+    Route::patch('/listing/{id}/mark-as-unsold', [ProductController::class, 'markAsUnsold'])->name('listing.markAsUnsold');
+
+    // ------MANAGE OFFERS------//
+    Route::get('/user/offers', [OfferController::class, 'offerdashboard'])->name('seller-offers');
+    Route::patch('/user/offers/{offer}/status', [OfferController::class, 'updateOfferStatus'])->name('seller.offers.update-status');
+
+    // -------MY TRANSACTIONS-----//
+    Route::get('/user/transactions', [TransactionController::class, 'index'])->name('user.transactions');
+    Route::get('/user/transaction/{offer}/review', [TransactionController::class, 'showReviewModal'])->name('transaction.review');
 
 });
