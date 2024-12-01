@@ -60,17 +60,24 @@
                     <!-- Image Section -->
                     <div class="col-12 col-lg-5">
                         <div class="image-container">
-                            <label for="images">Image:</label>
-                            @if ($product->prodImage)
-                                <input type="file" class="mb-3 form-control" id="images" name="images">
-                                <img src="{{ asset('storage/' . $product->prodImage) }}" alt="Product Image"
-                                    class="img-fluid">
-                            @else
-                                <input type="file" class="mb-3 form-control" id="images" name="images">
-                            @endif
-                            @error('images')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
+                            <div class="image-container">
+                                <label for="images">Image:</label>
+                                <input type="file" class="mb-3 form-control" id="images" name="images"
+                                    onchange="previewImage(this)">
+
+                                @if ($product->prodImage)
+                                    <img src="{{ asset('storage/' . $product->prodImage) }}" alt="Product Image"
+                                        class="img-fluid" id="current-image">
+                                @endif
+
+                                @error('images')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+
+                                <div id="image-preview" class="image-preview">
+                                    <span class="placeholder-text"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -179,4 +186,32 @@
         </div>
     </div>
     @include('layouts.partials.footer-top')
+
+    <script>
+        function previewImage(input) {
+            const preview = document.getElementById('image-preview');
+            const currentImage = document.getElementById('current-image');
+
+            preview.innerHTML = '';
+
+            if (currentImage) {
+                currentImage.style.display = 'none';
+            }
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.classList.add('img-fluid');
+                    preview.appendChild(img);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.innerHTML = '<span class="placeholder-text">Image preview will appear here</span>';
+            }
+        }
+    </script>
 @endsection

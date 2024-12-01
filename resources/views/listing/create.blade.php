@@ -101,7 +101,7 @@
                                 </div>
 
                                 <!-- Price -->
-                                <div class="col-12 col-sm-6">
+                                <div class="col-12 col-sm-4">
                                     <label for="price" class="form-label">Price (₱) <span
                                             class="text-danger">*</span></label>
                                     <input type="number" class="form-control @error('price') is-invalid @enderror"
@@ -113,7 +113,7 @@
                                 </div>
 
                                 {{-- QUANTITY --}}
-                                <div class="col-12 col-sm-2">
+                                <div class="col-12 col-sm-3">
                                     <label for="quantity" class="form-label">Quantity <span
                                             class="text-danger">*</span></label>
                                     <input type="number" class="form-control @error('quantity') is-invalid @enderror"
@@ -125,7 +125,7 @@
                                 </div>
 
                                 {{-- PRICE TYPE --}}
-                                <div class="col-12 col-sm-4">
+                                <div class="col-12 col-sm-5">
                                     <label for="price_type" class="form-label">Price Type <span
                                             class="text-danger">*</span></label>
                                     <select class="form-select @error('price_type') is-invalid @enderror" id="price_type"
