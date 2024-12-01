@@ -39,7 +39,7 @@
                     @foreach ($wishlists as $wishlist)
                         <div class="col">
                             <div class="overflow-hidden transition shadow-sm card h-100 position-relative hover:shadow">
-                                @if ($wishlist->product)
+                                @if ($wishlist?->product)
                                     <img src="{{ $wishlist->product->prodImage && file_exists(public_path('storage/' . $wishlist->product->prodImage))
                                         ? asset('storage/' . $wishlist->product->prodImage)
                                         : asset('img/NOIMG.jpg') }}"
@@ -77,11 +77,40 @@
                                         </div>
                                     </div>
                                 @else
-                                    <div class="card-body text-center">
-                                        <h5 class="card-title text-truncate" style="max-width: 250px;">
-                                            Product not available
-                                        </h5>
-                                        <p class="text-muted">This product is no longer available.</p>
+                                    <div class="col">
+                                        <div class="overflow-hidden transition shadow-sm card h-100 position-relative">
+                                            <img src="{{ asset('img/NOIMG.jpg') }}" class="card-img-top object-fit-cover"
+                                                style="height: 200px; filter: grayscale(100%);">
+                                            <div class="card-body">
+                                                <div class="mb-3 d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <h5 class="card-title text-truncate text-muted"
+                                                            style="max-width: 250px;">
+                                                            Product Unavailable
+                                                        </h5>
+                                                        <p class="text-muted small">
+                                                            This product has been removed
+                                                        </p>
+                                                    </div>
+                                                    <div class="text-muted fw-bold">
+                                                        ₱-
+                                                    </div>
+                                                </div>
+
+                                                <div class="pt-3 d-flex justify-content-between border-top">
+                                                    <span class="text-muted text-decoration-none d-flex align-items-center">
+                                                        <i class="bi bi-eye-slash me-2"></i>
+                                                        Cannot View Details
+                                                    </span>
+
+                                                    <button onclick="confirmRemoveWishlist({{ $wishlist->id }})"
+                                                        class="p-0 btn btn-link text-danger d-flex align-items-center">
+                                                        <i class="bi bi-heart-fill me-2"></i>
+                                                        Remove
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 @endif
                             </div>
