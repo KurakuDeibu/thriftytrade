@@ -45,6 +45,8 @@
                             @include('components.products.manage-listings')
                         @elseif (Route::currentRouteName() === 'seller-offers')
                             @include('seller.offers.index')
+                        @elseif (Route::currentRouteName() === 'user.transactions')
+                            @include('transactions.index')
                         @endif
                     </div>
 
