@@ -29,24 +29,43 @@ class OfferModal extends Component
 
     public function submitOffer()
     {
-        $this->validate();
 
-        $offer = Offer::create([
-            'user_id' => Auth::id(),
-            'products_id' => $this->product->id,
-            'offer_price' => $this->offerPrice,
-            'meetup_location' => $this->meetupLocation,
-            'meetup_time' => $this->meetupTime,
-            'message' => $this->message,
-        ]);
+          // If it's a fixed-price item, set the offer price to the product price
+          if ($this->product->price_type == 'Fixed') {
+            $this->offerPrice = $this->product->prodPrice;
+        }
 
-        $this->product->status = 'Pending';
-        $this->product->save();
+        $this->validate([
+            'meetupLocation' => 'required|string',
+            'meetupTime' => 'required|date',
+            'message' => 'nullable|string',
+            'offerPrice' => $this->product->price_type == 'Fixed'
+                ? 'in:' . $this->product->prodPrice
+                : 'required|numeric|min:1'
+            ], [
+                'offerPrice.in' => 'For fixed-price items, the offer price must match the product price.',
+                'offerPrice.required' => 'Please enter an offer price.',
+                'offerPrice.numeric' => 'The offer price must be a number.',
+                'offerPrice.min' => 'The offer price must be at least 1.'
+            ]);
 
+
+
+            // Rest of the offer submission logic
+            Offer::create([
+                'products_id' => $this->product->id,
+                'user_id' => auth()->id(),
+                'offer_price' => $this->offerPrice,
+                'meetup_location' => $this->meetupLocation,
+                'meetup_time' => $this->meetupTime,
+                'message' => $this->message,
+                'status' => 'pending'
+            ]);
+
+        session()->flash('success', 'Your offer has been submitted successfully!');
 
         $this->reset(['offerPrice', 'meetupLocation', 'meetupTime', 'message']);
         $this->dispatch('offerSubmitted');
-        session()->flash('success', 'Your offer has been submitted successfully!');
 
     }
 

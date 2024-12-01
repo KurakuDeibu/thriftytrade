@@ -107,7 +107,7 @@
             }
 
             .footer-section {
-                margin-bottom: 1.5rem;
+                margin-bottom: 1rem;
             }
 
             .footer-section h5 {
@@ -189,7 +189,7 @@
 
                 .footer-section {
                     text-align: center;
-                    margin-bottom: 1.5rem;
+                    margin-bottom: 1rem;
                 }
 
                 .footer-section ul {

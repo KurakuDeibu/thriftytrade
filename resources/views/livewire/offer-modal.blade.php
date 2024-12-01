@@ -1,6 +1,6 @@
 <div>
     <div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="offerModalLabel" aria-hidden="true"
-        wire:ignore.self>
+        wire:ignore.self x-data="offerModalFocus()">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="border-0 modal-header">
@@ -43,13 +43,30 @@
                             <h5 class="mb-4 text-primary">Make Your Offer</h5>
                             <form wire:submit.prevent="submitOffer">
                                 <div class="mb-3">
-                                    <label for="offerPrice" class="form-label">Your Price</label>
+                                    <label for="offerPrice" class="form-label">
+                                        @if ($product->price_type == 'Fixed')
+                                            Fixed Price
+                                        @else
+                                            Your Price
+                                        @endif
+                                    </label>
                                     <div class="input-group">
                                         <span class="text-white border-0 input-group-text bg-primary">₱</span>
                                         <input type="number" class="form-control" id="offerPrice"
-                                            wire:model.defer="offerPrice" required min="1" step="0.01"
-                                            placeholder="{{ $product->prodPrice }}">
+                                            x-ref="offerPriceInput" wire:model.defer="offerPrice"
+                                            @if ($product->price_type == 'Fixed') readonly
+                                                   value="{{ $product->prodPrice }}"
+                                               @else
+                                                   min="1"
+                                                   step="0.01"
+                                                   placeholder="{{ $product->prodPrice }}" @endif>
                                     </div>
+                                    @if ($product->price_type == 'Fixed')
+                                        <small class="text-muted">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            This is a fixed-price item. The offer price cannot be changed.
+                                        </small>
+                                    @endif
                                     @error('offerPrice')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -58,7 +75,8 @@
                                 <div class="mb-3">
                                     <label for="meetupLocation" class="form-label">Meetup Location</label>
                                     <input type="text" class="form-control" id="meetupLocation"
-                                        wire:model.defer="meetupLocation" required placeholder="Enter meetup location">
+                                        x-ref="meetupLocationInput" wire:model.defer="meetupLocation"
+                                        placeholder="Enter meetup location">
                                     @error('meetupLocation')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -67,7 +85,7 @@
                                 <div class="mb-3">
                                     <label for="meetupTime" class="form-label">Preferred Time</label>
                                     <input type="datetime-local" class="form-control" id="meetupTime"
-                                        wire:model.defer="meetupTime" required>
+                                        wire:model.defer="meetupTime">
                                     @error('meetupTime')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
@@ -80,10 +98,14 @@
                                     @error('message')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
+                                    <small class="text-muted">
+                                        <i class="bi bi-chat-text me-1"></i>
+                                        Share additional details or ask questions about the item
+                                    </small>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary w-100">
-                                    Submit Offer
+                                    <i class="fas fa-paper-plane me-2"></i> Send Offer
                                 </button>
                             </form>
                         </div>
@@ -187,4 +209,21 @@
             }
         }
     </style>
+
+    <script>
+        function offerModalFocus() {
+            return {
+                setInitialFocus() {
+                    // Wait for the next tick to ensure the modal is fully rendered
+                    this.$nextTick(() => {
+                        @if ($product->price_type == 'Fixed')
+                            this.$refs.meetupLocationInput.focus();
+                        @else
+                            this.$refs.offerPriceInput.focus();
+                        @endif
+                    });
+                }
+            }
+        }
+    </script>
 </div>

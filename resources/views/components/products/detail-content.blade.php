@@ -1,5 +1,4 @@
 <head>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript"
         src="https://platform-api.sharethis.com/js/sharethis.js#property=673c27e404dba600122bb512&product=inline-share-buttons&source=platform"
         async="async"></script>
@@ -122,13 +121,6 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .modal-header {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
-            border-top-left-radius: 15px;
-            border-top-right-radius: 15px;
-        }
-
         .modal-body {
             padding: 2rem;
         }
@@ -204,11 +196,11 @@
                     <div class="glide__track" data-glide-el="track">
                         <ol class="glide__slides">
                             <li class="glide__slide">
+
                                 <img src="{{ $marketplaceProducts->prodImage && file_exists(public_path('storage/' . $marketplaceProducts->prodImage))
                                     ? asset('storage/' . $marketplaceProducts->prodImage)
                                     : asset('img/NOIMG.jpg') }}"
-                                    class="card-img-top fixed-image" alt="{{ $marketplaceProducts->prodName }}"
-                                    loading="lazy">
+                                    class="card-img-top fixed-image" alt="{{ $marketplaceProducts->prodName }}">
 
                             </li>
                         </ol>
@@ -254,7 +246,6 @@
                         </div>
                     </div>
 
-                    @include('components.products.report-listing-form')
 
                     <!-- Glide arrows -->
                     <div class="glide__arrows" data-glide-el="controls">
@@ -273,21 +264,44 @@
 
                 </div>
 
+                @include('components.products.report-listing-form')
+
                 {{-- SELLER INFO --}}
-                <div class="p-3 seller-info">
-                    <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}">
-                        <img src="{{ $marketplaceProducts->author->profile_photo_url }}"
-                            alt="{{ $marketplaceProducts->author->name }} IMAGE" class="seller-avatar">
-                    </a>
-                    <span class="border-b-8"></span>
-                    <div>
-                        <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
-                            class="text-dark text-decoration-none hover-underline">
-                            <strong>{{ $marketplaceProducts->author->name }}</strong>
+                <div class="p-3 seller-info d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}">
+                            <img src="{{ $marketplaceProducts->author->profile_photo_url }}"
+                                alt="{{ $marketplaceProducts->author->name }} IMAGE" class="seller-avatar">
                         </a>
-                        <div class="text-muted">{{ $marketplaceProducts->author->userAddress }}</div>
+                        <span class="border-b-8"></span>
+                        <div>
+                            <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
+                                class="text-dark text-decoration-none hover-underline">
+                                <strong>{{ $marketplaceProducts->author->name }}</strong>
+                            </a>
+                            @if ($marketplaceProducts->author->hasVerifiedEmail())
+                                <i class="text-success bi bi-patch-check me-1" data-bs-toggle="tooltip"
+                                    title="User is verified"></i>
+                            @else
+                                <i class="text-danger bi bi-patch-exclamation me-1" data-bs-toggle="tooltip"
+                                    title="User is not verified"></i>
+                            @endif
+
+                            <div class="text-muted">{{ $marketplaceProducts->author->userAddress }}</div>
+                        </div>
+                    </div>
+
+                    {{-- @php
+                            $reviewCount = $marketplaceProducts->author->reviews()->count();
+                        @endphp --}}
+
+                    <div class="p-2 text-sm text-muted">
+                        <i class="fas fa-star text-warning"></i>
+                        {{-- {{ $reviewCount }} {{ Str::plural('review', $reviewCount) }} --}}
+                        0 review
                     </div>
                 </div>
+
                 <hr class="mt-2 d-block">
                 <hr class="border-b-2 d-block d-lg-none">
             </div>
@@ -342,6 +356,7 @@
                 <ul class="list-unstyled">
 
                     <li class="mb-2"><strong>Condition:</strong> {{ $marketplaceProducts->prodCondition }}</li>
+                    <li class="mb-2"><strong>Quantity:</strong> {{ $marketplaceProducts->prodQuantity }}</li>
                     <li class="mb-2"><strong>Category:</strong> {{ $marketplaceProducts->category->categName }}
                     <li class="mb-2"><strong>Location:</strong> {{ $marketplaceProducts->location }}</li>
                     </li>
@@ -366,7 +381,7 @@
 
                         @if ($isAvailableForOffers)
                             <!-- Offer Button for buyers -->
-                            <div class="mt-4 mb-2 d-lg-block">
+                            <div class="mt-4 mb-2">
                                 <button class="btn btn-outline-primary btn-lg w-100" data-bs-toggle="modal"
                                     data-bs-target="#offerModal">
                                     <i class="fas fa-tags"></i> OFFER
@@ -385,9 +400,7 @@
                                     <i class="fas fa-envelope me-2"></i> CHAT WITH SELLER
                                 </a>
                             </div>
-                            {{-- <div class="mt-2 mb-2 d-lg-block">
-                                @include('components.Message')
-                            </div> --}}
+                            {{-- @include('components.Message') --}}
 
                             <!-- Status-specific messages -->
                             @if ($marketplaceProducts->price_type == 'Negotiable')
@@ -419,7 +432,8 @@
                 @else
                     <!-- Show Login Button if not authenticated -->
                     <div class="mt-4 mb-2 d-lg-block">
-                        <a href="{{ route('login') }}" class="btn btn-primary btn-lg w-100">
+                        <a href="{{ route('login', ['redirect' => url()->current()]) }}"
+                            class="btn btn-primary btn-lg w-100">
                             <i class="fas fa-sign-in-alt"></i> LOGIN TO INTERACT
                         </a>
                     </div>
@@ -455,7 +469,10 @@
                 </div>
             @endauth
 
-
+            <!-- show the offer table -->
+            <div class="container mt-2">
+                @include('seller.offers.offer-table')
+            </div>
 
             {{-- HAS OTHER LISTING | MARKETPLACECONTROLLER --}}
             @include('components.products.other-listing')
