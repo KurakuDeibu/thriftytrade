@@ -1,14 +1,11 @@
 <div class="container mt-4">
     <div class="mb-4 d-flex justify-content-between align-items-center">
         <h1 class="px-2 text-lg navbar-brand">MANAGE OFFERS</h1>
-        <a href="{{ route('listing.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-2"></i>Create New
-        </a>
     </div>
     <div class="col">
-        @if ($pendingOffersCount > 0)
+        @if ($pendingOffers->count() > 0)
             <div class="alert alert-primary">
-                You have {{ $pendingOffersCount }} pending {{ Str::plural('offer', $pendingOffersCount) }}
+                You have {{ $pendingOffers->count() }} pending {{ Str::plural('offer', $pendingOffers->count()) }}
                 to
                 review.
             </div>
@@ -21,7 +18,7 @@
             <button class="nav-link active" id="pending-offers-tab" data-bs-toggle="tab"
                 data-bs-target="#pending-offers" type="button" role="tab" aria-controls="pending-offers"
                 aria-selected="true">
-                Pending ({{ $pendingOffersCount }})
+                Pending ({{ $pendingOffers->count() }})
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -48,7 +45,7 @@
 
         <!-- Pending Offers Tab -->
         <div class="tab-pane fade show active" id="pending-offers" role="tabpanel" aria-labelledby="pending-offers-tab">
-            @if ($pendingOffersCount > 0)
+            @if ($pendingOffers->count() > 0)
                 @foreach ($groupedOffers as $productId => $productOffers)
                     @php
                         $product = $productOffers->first()->product;
@@ -63,14 +60,17 @@
                                             alt="{{ $product->prodName }}" class="rounded me-3"
                                             style="width: 60px; height: 60px; object-fit: cover;">
                                         <div>
-                                            <h4 class="mb-0">{{ $product->prodName }}</h4>
+                                            <h4 class="mb-0">{{ Str::limit($product->prodName, 30) }}</h4>
                                             <p class="mb-0">Listed Price:
                                                 ₱{{ number_format($product->prodPrice, 2) }}
                                             </p>
                                         </div>
                                     </div>
-                                    <span class="badge bg-primary">{{ $pendingOffers->count() }}
-                                        {{ Str::plural('offer', $pendingOffers->count()) }}</span>
+                                    <a href="/marketplace/product/{{ $product->id }}">
+                                        <i class="text-white fas fa-external-link-alt"></i>
+                                        <span class="badge bg-primary">{{ $pendingOffers->count() }}
+                                            {{ Str::plural('offer', $pendingOffers->count()) }}</span>
+                                    </a>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -142,9 +142,14 @@
                     @endif
                 @endforeach
             @else
-                <div class="p-5 mt-3 text-center " role="alert">
-                    <div class="alert alert-primary">
-                        No pending offers at the moment.</div>
+                <div class="mb-4">
+                    <div class="p-4 text-center bg-white rounded shadow-sm stat-card-custom">
+                        <div class="p-3 mx-auto mb-3">
+                            <i class="fas fa-inbox text-secondary fa-3x"></i>
+                        </div>
+                        <h5 class="mb-2 text-muted">No pending offers</h5>
+                        <p class="mb-0">At the moment, there are no pending offers to review.</p>
+                    </div>
                 </div>
             @endif
 
@@ -167,13 +172,16 @@
                                             alt="{{ $product->prodName }}" class="rounded me-3"
                                             style="width: 60px; height: 60px; object-fit: cover;">
                                         <div>
-                                            <h4 class="mb-0">{{ $product->prodName }}</h4>
+                                            <h4 class="mb-0">{{ Str::limit($product->prodName, 30) }}</h4>
                                             <p class="mb-0 text-muted">Listed Price:
                                                 ₱{{ number_format($product->prodPrice, 2) }}</p>
                                         </div>
                                     </div>
-                                    <span class="badge bg-light text-success">{{ $acceptedOffers->count() }}
-                                        {{ Str::plural('offer', $acceptedOffers->count()) }}</span>
+                                    <a href="/marketplace/product/{{ $product->id }}">
+                                        <i class="text-white fas fa-external-link-alt"></i>
+                                        <span class="badge bg-light text-success">{{ $acceptedOffers->count() }}
+                                            {{ Str::plural('offer', $acceptedOffers->count()) }}</span>
+                                    </a>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -225,9 +233,13 @@
                     @endif
                 @endforeach
             @else
-                <div class="p-5 mt-3 text-center " role="alert">
-                    <div class="alert alert-primary">
-                        Accepted offers will display here.</div>
+                <div class="mb-4">
+                    <div class="p-4 text-center bg-white rounded shadow-sm stat-card-custom">
+                        <div class="p-3 mx-auto mb-3">
+                            <i class="fas fa-inbox text-secondary fa-3x"></i>
+                        </div>
+                        <h5 class="mb-2 text-muted">No accepted offers</h5>
+                    </div>
                 </div>
             @endif
         </div>
@@ -249,13 +261,16 @@
                                             alt="{{ $product->prodName }}" class="rounded me-3"
                                             style="width: 60px; height: 60px; object-fit: cover;">
                                         <div>
-                                            <h4 class="mb-0">{{ $product->prodName }}</h4>
+                                            <h4 class="mb-0">{{ Str::limit($product->prodName, 30) }}</h4>
                                             <p class="mb-0 text-muted">Listed Price:
                                                 ₱{{ number_format($product->prodPrice, 2) }}</p>
                                         </div>
                                     </div>
-                                    <span class="badge bg-light text-danger">{{ $rejectedOffers->count() }}
-                                        {{ Str::plural('offer', $rejectedOffers->count()) }}</span>
+                                    <a href="/marketplace/product/{{ $product->id }}">
+                                        <i class="text-white fas fa-external-link-alt"></i>
+                                        <span class="badge bg-light text-danger">{{ $rejectedOffers->count() }}
+                                            {{ Str::plural('offer', $rejectedOffers->count()) }}</span>
+                                    </a>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -307,9 +322,13 @@
                     @endif
                 @endforeach
             @else
-                <div class="p-5 mt-3 text-center " role="alert">
-                    <div class="alert alert-primary">
-                        Rejected offers will display here.</div>
+                <div class="mb-4">
+                    <div class="p-4 text-center bg-white rounded shadow-sm stat-card-custom">
+                        <div class="p-3 mx-auto mb-3">
+                            <i class="fas fa-inbox text-secondary fa-3x"></i>
+                        </div>
+                        <h5 class="mb-2 text-muted">No rejected offers.</h5>
+                    </div>
                 </div>
             @endif
         </div>
@@ -333,19 +352,21 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <img src="{{ asset('storage/' . $product->prodImage) }}"
-                                                    alt="{{ $product->prodName }}" class="rounded me-3"
+                                                <img src="{{ $product->prodImage && file_exists(public_path('storage/' . $product->prodImage))
+                                                    ? asset('storage/' . $product->prodImage)
+                                                    : asset('img/NOIMG.jpg') }}"
+                                                    class="rounded me-3"
                                                     style="width: 40px; height: 40px; object-fit: cover;">
-                                                <div>{{ $product->prodName }}</div>
+                                                <h4 class="mb-0">{{ Str::limit($product->prodName, 30) }}</h4>
                                             </div>
                                         </td>
                                         <td>₱{{ number_format($product->prodPrice, 2) }}</td>
                                         <td>{{ $product->created_at->format('M d, Y') }}</td>
                                         <td>
                                             <a type="button" href="/marketplace/product/{{ $product->id }}"
-                                                class="btn btn-sm btn-outline-primary fas fa-eye"></a>
+                                                class="btn btn-sm btn-outline-primary bi bi-eye"></a>
                                             <a type="button" href="{{ route('listing.edit', $product->id) }}"
-                                                class="btn btn-sm btn-outline-primary fas fa-edit"></a>
+                                                class="btn btn-sm btn-outline-primary bi bi-pencil"></a>
                                         </td>
                                     </tr>
                                 @endforeach

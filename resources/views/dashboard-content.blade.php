@@ -3,7 +3,7 @@
 </div>
 
 <div class="mb-4 row">
-    <div class="mb-3 col-md-3">
+    <div class="mb-3 col-md-4">
         <div class="p-4 bg-white rounded shadow-sm stat-card-custom position-relative hover-effect">
             <div class="d-flex justify-content-between">
                 <div class="p-3 mb-3 card-icon-bg rounded-circle bg-primary bg-opacity-10">
@@ -14,26 +14,26 @@
                 </a>
             </div>
             <div class="mb-2 text-muted">Active Listings</div>
-            <div class="mb-0 h3">{{ $userProducts->count() }}</div>
+            <div class="mb-0 h3">{{ $activeProducts->count() }}</div>
         </div>
     </div>
 
-    <div class="mb-3 col-md-3">
+    <div class="mb-3 col-md-4">
         <div class="p-4 bg-white rounded shadow-sm stat-card-custom position-relative hover-effect">
             <div class="d-flex justify-content-between">
                 <div class="p-3 mb-3 card-icon-bg rounded-circle bg-success bg-opacity-10">
                     <i class="fas fa-tags text-success fa-2x"></i>
                 </div>
-                <a href="" class="text-muted" title="View Sales">
+                <a href="{{ route('manage-listing') }}#sold" class="text-muted" title="View Sales">
                     <i class="fas fa-external-link-alt"></i>
                 </a>
             </div>
             <div class="mb-2 text-muted">Items Sold</div>
-            <div class="mb-0 h3">0</div>
+            <div class="mb-0 h3">{{ $soldProducts->count() }}</div>
         </div>
     </div>
 
-    <div class="mb-3 col-md-3">
+    <div class="mb-3 col-md-4">
         <div class="p-4 bg-white rounded shadow-sm stat-card-custom position-relative hover-effect">
             <div class="d-flex justify-content-between">
                 <div class="p-3 mb-3 card-icon-bg rounded-circle bg-warning bg-opacity-10">
@@ -44,11 +44,11 @@
                 </a>
             </div>
             <div class="mb-2 text-muted">Total Earnings</div>
-            <div class="mb-0 h3">₱{{ Auth::user()->products->sum('price') }}</div>
+            <div class="mb-0 h3">₱{{ $soldProducts->sum('prodPrice') }}</div>
         </div>
     </div>
 
-    <div class="mb-3 col-md-3">
+    <div class="mb-3 col-md-4">
         <div class="p-4 bg-white rounded shadow-sm stat-card-custom position-relative hover-effect">
             <div class="d-flex justify-content-between">
                 <div class="p-3 mb-3 card-icon-bg rounded-circle bg-info bg-opacity-10">
@@ -63,6 +63,7 @@
         </div>
     </div>
 </div>
+
 
 <style>
     .stat-card-custom {
