@@ -67,49 +67,35 @@
     <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
 </head>
 
+
 <nav class="bg-white shadow-sm navbar sticky-top navbar-expand-lg navbar-light">
     <div class="container">
 
         {{-- LOGO --}}
         <a class="navbar-brand" id="logo" href="/"></a>
-        <div class="navbar-nav-wrapper d-flex align-items-center">
+        <div class="d-flex align-items-center">
             {{-- SEARCH ICON - TOGGLE SEARCH --}}
             <div class="navbar-search-icon me-3" onclick="toggleSearchHeader()" id="search-bar">
                 <i class="bi bi-search"></i>
             </div>
 
             {{-- MOBILE TOGGLE BUTTON --}}
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
         </div>
 
 
         <!-- Search Header (Positioned within navbar) -->
-        <div class="search-header" id="searchHeader">
+        <div class="search-header d-none" id="searchHeader">
             <div class="search-header-container">
                 <div class="search-header-input">
                     <form action="{{ route('marketplace') }}" method="GET" class="d-flex">
                         <input type="search" name="query" placeholder="What are you looking for?"
                             class="form-control search-input" id="searchHeaderInput"
                             value="{{ request()->input('query') }}">
-
-                        <!-- Hidden inputs for preserving current filters -->
-                        @if (request('category'))
-                            <input type="hidden" name="category" value="{{ request('category') }}">
-                        @endif
-
-                        @if (request('condition'))
-                            <input type="hidden" name="condition" value="{{ request('condition') }}">
-                        @endif
-
-                        @if (request('featured'))
-                            <input type="hidden" name="featured" value="{{ request('featured') }}">
-                        @endif
-
-                        @if (request('sort'))
-                            <input type="hidden" name="sort" value="{{ request('sort') }}">
-                        @endif
                     </form>
                 </div>
                 <button class="search-header-close" onclick="closeSearchHeader()">
@@ -128,34 +114,16 @@
             </div>
         </div>
 
+
+
         {{-- COLLAPSE NAVBAR --}}
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="mx-auto navbar-nav">
-                {{-- <li class="nav-item">
-                        <a class="nav-link" href= "{{url('/marketplace')}}">
-                            <i class="bi bi-shop"></i> Marketplace
-                        </a>
-                    </li> --}}
-                {{-- @auth
-
-                    <li class="nav-item">
-                        <x-nav-link href="{{ url('marketplace') }}" :active="request()->routeIs('marketplace')"><i class="bi bi-shop">
-                                {{ __('Marketplace') }}</i>
-                        </x-nav-link>
-                    </li>
-
-                    <li class="nav-item">
-                        <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')"><i class="bi bi-heart">
-                                {{ __('Wishlist') }}</i>
-                        </x-nav-link>
-                    </li>
-                @endauth --}}
-
             </ul>
 
 
             @auth
-                <div class="py-2"><a href="{{ route('listing.create') }}">
+                <div class="py-2"><a wire:navigate.hover href="{{ route('listing.create') }}">
                         <button class="mx-2 btn btn-outline-primary">+ Sell Products</button>
                     </a>
                 </div>
@@ -164,25 +132,26 @@
 
 
             <ul class="navbar-nav">
-                <li class="nav-item">
+                <li class="my-2 nav-item">
                     @auth
-                        <a class="nav-link" href="{{ route('chat.chat-message') }}" id="chat-icon">
-                        @endauth
-                        @guest
-                            <a class="nav-link" href="{{ route('chat.chat-message') }}">
-                            @endguest
+                        <a class="nav-link" href="{{ route('chat.chat-message') }}">
                             <i class="bi bi-chat"></i>
                             <span class="d-lg-none">Chat</span>
                         </a>
+                    @else
+                        <a class="nav-link" href="{{ route('login') }}">
+                            <i class="bi bi-chat"></i>
+                            <span class="d-lg-none">Chat</span>
+                        </a>
+                    @endauth
                 </li>
 
-                <li class="nav-item" id="notification-icon">
+                <li class="my-2 nav-item">
                     <a class="nav-link" href="/notifications">
                         <i class="bi bi-bell"></i>
                         <span class="d-lg-none">Notifications</span>
                     </a>
                 </li>
-
 
                 @auth
                     <li class="flex items-center">
@@ -192,37 +161,43 @@
                     </li>
                 @endauth
 
-            </ul>
 
-            {{-- NAV-BAR --}}
-            @auth
-                @include('layouts.partials.header-right-auth')
-            @else
-                @include('layouts.partials.header-right-guest')
-            @endauth
+                {{-- NAV-BAR --}}
+                @auth
+                    @include('layouts.partials.header-right-auth')
+                @else
+                    @include('layouts.partials.header-right-guest')
+                @endauth
 
             </ul>
         </div>
     </div>
 </nav>
 
+
+
 <script>
     function toggleSearchHeader() {
         const searchHeader = document.getElementById('searchHeader');
         const searchInput = document.getElementById('searchHeaderInput');
 
+        // Toggle active class instead of d-none
         searchHeader.classList.toggle('active');
 
         if (searchHeader.classList.contains('active')) {
+            searchHeader.classList.remove('d-none');
             setTimeout(() => {
                 searchInput.focus();
             }, 400);
+        } else {
+            searchHeader.classList.add('d-none');
         }
     }
 
     function closeSearchHeader() {
         const searchHeader = document.getElementById('searchHeader');
         searchHeader.classList.remove('active');
+        searchHeader.classList.add('d-none');
     }
 
     // Close on Escape key
@@ -243,6 +218,7 @@
             closeSearchHeader();
         }
     });
+
     // Prevent closing when interacting with search header
     document.getElementById('searchHeader').addEventListener('click', function(event) {
         event.stopPropagation();

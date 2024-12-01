@@ -1,6 +1,6 @@
    <!-- Settings Dropdown -->
 
-   <div class="relative ms-3">
+   <div class="relative my-2 ms-3">
        <x-dropdown align="right" width="48">
            <x-slot name="trigger">
                @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
@@ -32,19 +32,19 @@
                </div>
                <div class="border-t border-gray-200"></div>
 
-               <x-dropdown-link href="{{ route('profile.user-listing', Auth::user()->id) }}">
-                   {{ __('My Listings') }}
+               <x-dropdown-link wire:navigate.hover href="{{ route('profile.user-listing', Auth::user()->id) }}">
+                   {{ __('My Profile') }}
                </x-dropdown-link>
 
-               <x-dropdown-link href="{{ route('wishlist.index') }}">
+               <x-dropdown-link wire:navigate.hover href="{{ route('wishlist.index') }}">
                    {{ __('My Wishlists') }}
                </x-dropdown-link>
 
-               <x-dropdown-link href="{{ route('profile.show') }}">
-                   {{ __('Edit Profile') }}
+               <x-dropdown-link wire:navigate.hover href="{{ route('profile.show') }}">
+                   {{ __('Settings') }}
                </x-dropdown-link>
 
-               <x-dropdown-link href="{{ route('dashboard') }}">
+               <x-dropdown-link wire:navigate.hover href="{{ route('dashboard') }}">
                    {{ __('History') }}
                </x-dropdown-link>
 

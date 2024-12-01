@@ -1,77 +1,71 @@
-<html>
+<title>{{ $user->name }}'s Listings</title>
+<style>
+    .profile-header {
+        background-color: #e6e7e85b;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 20px;
+    }
 
-<head>
-    <base href="">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $user->name }}'s Listings</title>
-    <style>
-        .profile-header {
-            background-color: #e6e7e85b;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 20px;
-        }
+    .profile-header img {
+        border: 3px solid #f8f9fa;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
+    .profile-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .item-image {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-top-left-radius: 0.375rem;
+        border-top-right-radius: 0.375rem;
+    }
+
+    .card {
+        font-size: 0.9rem;
+        transition: transform 0.2s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-text {
+        margin-bottom: 0.3rem;
+    }
+
+    .navbar-brand img {
+        height: 30px;
+    }
+
+    footer {
+        background-color: #9dabb9;
+        padding: 40px 0;
+    }
+
+    .footer-logo img {
+        height: 40px;
+    }
+
+
+    @media (max-width: 576px) {
         .profile-image {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 50%;
+            margin-bottom: 1rem;
         }
-
-        .item-image {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-top-left-radius: 0.375rem;
-            border-top-right-radius: 0.375rem;
-        }
-
-        .card {
-            font-size: 0.9rem;
-            transition: transform 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-title {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .card-text {
-            margin-bottom: 0.3rem;
-        }
-
-        .navbar-brand img {
-            height: 30px;
-        }
-
-        footer {
-            background-color: #9dabb9;
-            padding: 40px 0;
-        }
-
-        .footer-logo img {
-            height: 40px;
-        }
-
-
-        @media (max-width: 767.98px) {
-            .profile-header {
-                text-align: center;
-            }
-
-            .profile-image {
-                margin-bottom: 1rem;
-            }
-        }
-    </style>
-</head>
+    }
+</style>
 
 <!-- Navbar -->
 @extends('layouts.app')
@@ -80,7 +74,7 @@
 
     <body class="d-flex flex-column min-vh-100">
 
-        {{-- USER LISTING  --}}
+        {{-- USER PUBLIC-PROFILE INFO  --}}
         <div class="container mt-2">
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -91,53 +85,98 @@
                 </ol>
             </nav>
 
-            <div class="profile-header">
-                <div class="row align-items-start">
-                    <div class="mb-3 text-center col-md-auto mb-md-0 text-md-start">
-                        <img src="{{ $user->profile_photo_url }}" alt="Profile Picture"
-                            class="mx-auto profile-image mx-md-0 d-block">
-                    </div>
-                    <div class="col-md">
-                        <div class="d-flex flex-column flex-md-row justify-content-between">
-                            <div>
-                                <div class="d-flex align-items-center justify-content-center justify-content-md-start">
-                                    <h3 class="mb-1 text-center me-2 text-md-start">{{ $user->name }}</h3>
-                                    @if ($user->hasVerifiedEmail())
-                                        <span class="text-green-600 text-xsm">
-                                            <i class="fas fa-check-circle"></i> {{ __('Verified') }}
-                                        </span>
-                                    @else
-                                        <span class="text-sm text-red-600">
-                                            <i class="fas fa-times-circle"></i> {{ __('Unverified') }}
-                                        </span>
-                                    @endif
-                                </div>
-                                <p class="mb-2 text-center text-md-start">
-                                    <i class="fas fa-map-marker-alt" style="color: blue;"></i> {{ $user->userAddress }}
-                                </p>
-                                <p class="mb-2 text-center text-md-start">
-                                    <i class="fas fa-envelope" style="color: blue;"></i> {{ $user->email }}
-                                </p>
+            <div class="container mt-4">
+                <div class="p-4 bg-white shadow-sm profile-header rounded-4">
+                    <div class="row align-items-center">
+                        <div class="text-center col-md-3">
+                            <img src="{{ $user->profile_photo_url }}" alt="Profile Picture" class="mb-3 rounded-circle"
+                                style="width: 150px; height: 150px; object-fit: cover;">
+                        </div>
+                        <div class="col-md-9">
+                            <div class="mb-2 d-flex align-items-center">
+                                <h2 class="mb-0 me-2">{{ $user->name }}</h2>
+                                @if ($user->hasVerifiedEmail())
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle me-1"></i>Verified
+                                    </span>
+                                @else
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-x-circle me-1"></i>Unverified
+                                    </span>
+                                @endif
                             </div>
-                            @if (Auth::check() && Auth::id() === $user->id)
-                                <div class="mt-2 mt-md-0">
-                                    <a href="{{ route('profile.show') }}" class="btn btn-primary btn-sm me-2">
-                                        <i class="fas fa-user-edit"></i> Profile Settings
-                                    </a>
-                                    <a href="{{ route('dashboard') }}" class="btn btn-secondary btn-sm">
-                                        <i class="fas fa-tachometer-alt"></i> Dashboard
-                                    </a>
+
+                            <div class="mb-3">
+                                <div class="text-muted">
+                                    <i class="bi bi-calendar-check me-2"></i>
+                                    Joined {{ $user->created_at->diffForHumans() }}
                                 </div>
-                            @else
-                                <div class="mt-2 mt-md-0">
-                                    <a href="{{ route('chat.chat-message') }}" class="btn btn-primary btn-sm me-2">
-                                        <i class="fas fa-message"></i> Message
-                                    </a>
-                                    <a href="" class="btn btn-danger btn-sm">
-                                        <i class="fas fa-flag"></i> Report
-                                    </a>
+
+                                <div class="text-muted">
+                                    <i class="bi bi-geo-alt me-2"></i>
+                                    {{ $user->userAddress }}
                                 </div>
-                            @endif
+
+                                @auth
+
+                                    <div class="text-muted">
+                                        <i class="bi bi-envelope me-2"></i>
+                                        {{ $user->email }}
+                                    </div>
+
+                                    <div class="text-muted">
+                                        <i class="bi bi-telephone-forward me-2"></i>
+                                        <span id="phoneNumberDisplay">
+                                            @if ($user->phoneNum)
+                                                <span id="partialPhoneNumber">
+                                                    {{ substr($user->phoneNum, 0, 4) }}****
+                                                </span>
+                                                <span id="fullPhoneNumber" class="d-none text-primary">
+                                                    {{ $user->phoneNum }}
+                                                </span>
+                                                <button id="revealPhoneBtn" class="py-0 text-sm btn btn-link btn-sm">
+                                                    (click-to-reveal)
+                                                </button>
+                                            @else
+                                                Not provided
+                                            @endif
+                                        </span>
+                                    </div>
+                                @endauth
+
+                            </div>
+
+                            <div class="gap-2 d-flex">
+                                @if (Auth::check() && Auth::id() === $user->id)
+                                    <a href="{{ route('profile.show') }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-pencil me-1"></i>Edit Profile
+                                    </a>
+                                    <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary btn-sm">
+                                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                                    </a>
+                                @else
+                                    <a href="{{ route('chat.chat-message', $user->id) }}"
+                                        class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-chat-dots me-1"></i>Message
+                                    </a>
+
+                                    @auth
+                                        <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#reportModal">
+                                            <i class="fas fa-flag"></i> Report
+                                        </button>
+                                    @else
+                                        <a href="{{ route('login') }}" class="report-icon btn btn-sm btn-outline-danger"
+                                            title="Report Product">
+                                            <i class="fas fa-flag"></i> Report
+                                        </a>
+                                    @endauth
+                                @endif
+
+                                <!-- Report modal -->
+                                @include('components.products.report-listing-form')
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -147,7 +186,7 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="items-tab" data-bs-toggle="tab" data-bs-target="#items"
                         type="button" role="tab" aria-controls="items" aria-selected="true">Items for sale
-                        ({{ $userProducts->count() }})</button>
+                        ({{ $userProductsCount }})</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button"
@@ -163,8 +202,60 @@
                                 <div class="col">
                                     <div class="card h-100">
                                         <a href="/marketplace/product/{{ $product->id }}">
-                                            <img src="{{ asset('storage/' . $product->prodImage) }}"
+                                            <img src="{{ $product->prodImage && file_exists(public_path('storage/' . $product->prodImage))
+                                                ? asset('storage/' . $product->prodImage)
+                                                : asset('img/NOIMG.jpg') }}"
                                                 class="card-img-top item-image" alt="{{ $product->prodName }}">
+                                            <!-- Status and Condition Icons -->
+                                            <div class="top-0 p-2 position-absolute start-0">
+                                                <div class="d-flex flex-column">
+                                                    <!-- Condition Icon -->
+                                                    <span
+                                                        class="badge bg-{{ $product->prodCondition == 'New'
+                                                            ? 'success'
+                                                            : ($product->prodCondition == 'Likely-New'
+                                                                ? 'success'
+                                                                : ($product->prodCondition == 'Used'
+                                                                    ? 'success'
+                                                                    : ($product->prodCondition == 'Likely-Used'
+                                                                        ? 'success'
+                                                                        : 'secondary'))) }} mb-1"
+                                                        data-bs-toggle="tooltip"
+                                                        title="{{ ucfirst($product->prodCondition) }}">
+                                                        {{ ucfirst($product->prodCondition) }}
+                                                    </span>
+
+                                                    <!-- Status Icon -->
+                                                    <span
+                                                        class="badge
+                                                        {{ $product->status == 'Available'
+                                                            ? 'bg-success'
+                                                            : ($product->status == 'Pending'
+                                                                ? 'bg-warning'
+                                                                : ($product->status == 'Sold'
+                                                                    ? 'bg-secondary'
+                                                                    : 'bg-info')) }}"
+                                                        data-bs-toggle="tooltip" title="{{ ucfirst($product->status) }}">
+                                                        @switch($product->status)
+                                                            @case('Available')
+                                                                <i class="bi bi-check-circle me-1"></i>
+                                                            @break
+
+                                                            @case('Pending')
+                                                                <i class="bi bi-hourglass-split me-1"></i>
+                                                            @break
+
+                                                            @case('Sold')
+                                                                <i class="bi bi-bag-x me-1"></i>
+                                                            @break
+
+                                                            @default
+                                                                <i class="bi bi-question-circle me-1"></i>
+                                                        @endswitch
+                                                        {{ ucfirst($product->status) }}
+                                                    </span>
+                                                </div>
+                                            </div>
                                             <div class="card-body">
                                                 <h5 class="card-title">{{ $product->prodName }}</h5>
                                                 <p class="card-text">₱{{ $product->prodPrice }}</p>
@@ -175,6 +266,10 @@
                                     </div>
                                 </div>
                             @endforeach
+                        </div>
+                        <!-- Pagination Links -->
+                        <div class="mt-4">
+                            {{ $userProducts->links() }}
                         </div>
                     @else
                         <div class="p-5 text-center">
@@ -194,4 +289,34 @@
     @endsection
 </body>
 
-</html>
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const revealPhoneBtn = document.getElementById('revealPhoneBtn');
+            const partialPhoneNumber = document.getElementById('partialPhoneNumber');
+            const fullPhoneNumber = document.getElementById('fullPhoneNumber');
+
+            if (revealPhoneBtn) {
+                revealPhoneBtn.addEventListener('click', function() {
+                    if (partialPhoneNumber.classList.contains('d-none')) {
+                        // Currently showing full number, switch back to partial
+                        partialPhoneNumber.classList.remove('d-none');
+                        fullPhoneNumber.classList.add('d-none');
+                        revealPhoneBtn.textContent = '(click-to-reveal)';
+                    } else {
+                        // Currently showing partial number, switch to full
+                        partialPhoneNumber.classList.add('d-none');
+                        fullPhoneNumber.classList.remove('d-none');
+                        revealPhoneBtn.textContent = 'Hide';
+                    }
+                });
+            }
+
+            fullPhoneNumber.addEventListener('click', function() {
+                const phoneNumber = this.textContent.trim();
+                window.location.href = 'tel:' + phoneNumber;
+            });
+            fullPhoneNumber.style.cursor = 'pointer';
+        });
+    </script>
+@endpush

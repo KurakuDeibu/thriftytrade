@@ -6,7 +6,7 @@
         <div class="mt-2">
             <div class="d-flex">
                 <input x-model="query" wire:model.live="query" wire:keydown.enter="search"
-                    class="py-2 form-control rounded-0 me-2" type="text" placeholder="Search...">
+                    class="py-2 form-control rounded-5 me-2" type="text" placeholder="What are you looking for?...">
                 <button wire:click="search" class="btn btn-primary">
                     <i class="bi bi-search"></i> <!-- Search icon -->
                 </button>
@@ -43,11 +43,13 @@
     {{-- Search Results --}}
     <div class="my-3 text-center justify-content-between align-items-center">
         {{-- Loading Indicator --}}
-        <div wire:loading class="my-5 mt-5 p-5 text-center justify-content-between align-items-center">
-            <div class="spinner-border text-primary" role="status">
+        <div wire:loading class="p-5 my-5 mt-5 text-center justify-content-between align-items-center">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
                 <span class="visually-hidden">Loading...</span>
             </div>
-            <p class="p-2 text-sm">Searching...</p>
+            <i class="text-primary fs-2 animate__animated animate__shakeX animate__infinite"
+                style="animation-duration: 0.5s;"></i>
+            <p class="mt-2 text-muted">Searching...</p>
         </div>
     </div>
 
@@ -98,7 +100,7 @@
         @endif
     </div>
     {{-- Pagination --}}
-    <div class="mt-3">
-        {{ $marketplaceProducts->links() }}
+    <div class="mt-5">
+        {{ $marketplaceProducts->onEachSide(1)->links() }}
     </div>
 </div>

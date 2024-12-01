@@ -66,15 +66,15 @@
         @endif
 
         <!-- First Name -->
-        <div class="col-span-3 sm:col-span-2">
+        <div class="col-span-6 sm:col-span-3 md:col-span-2">
             <x-label for="firstName" value="{{ __('First Name') }}" />
-            <x-input id="firstName" type="text" class="block w-full mt-1" wire:model="state.firstName" required
+            <x-input id="firstName" type="text" class="block w-full mt-1" wire:model="state.firstName"
                 autocomplete="firstName" />
             <x-input-error for="firstName" class="mt-2" />
         </div>
 
         <!-- Middle Name -->
-        <div class="col-span-3 sm:col-span-2">
+        <div class="col-span-6 sm:col-span-3 md:col-span-2">
             <x-label for="middleName" value="{{ __('Middle Name') }}" />
             <x-input id="middleName" type="text" class="block w-full mt-1" wire:model="state.middleName"
                 autocomplete="middleName" />
@@ -82,25 +82,25 @@
         </div>
 
         <!-- Last Name -->
-        <div class="col-span-3 sm:col-span-2">
+        <div class="col-span-6 sm:col-span-3 md:col-span-2">
             <x-label for="lastName" value="{{ __('Last Name') }}" />
-            <x-input id="lastName" type="text" class="block w-full mt-1" wire:model="state.lastName" required
+            <x-input id="lastName" type="text" class="block w-full mt-1" wire:model="state.lastName"
                 autocomplete="lastName" />
             <x-input-error for="lastName" class="mt-2" />
         </div>
 
-        <!-- Name -->
-        <div class="col-span-3 sm:col-span-2">
+        <!-- Username -->
+        <div class="col-span-6 sm:col-span-3 md:col-span-2">
             <x-label for="name" value="{{ __('Username') }}" />
-            <x-input id="name" type="text" class="block w-full mt-1" wire:model="state.name" required
+            <x-input id="name" type="text" class="block w-full mt-1" wire:model="state.name"
                 autocomplete="name" />
             <x-input-error for="name" class="mt-2" />
         </div>
 
         <!-- User Address -->
-        <div class="col-span-6">
+        <div class="col-span-6 sm:col-span-3 md:col-span-3">
             <x-label for="userAddress" value="{{ __('Address') }}" />
-            <x-input id="userAddress" type="text" class="block w-full mt-1" wire:model="state.userAddress" required
+            <x-input id="userAddress" type="text" class="block w-full mt-1" wire:model="state.userAddress"
                 autocomplete="userAddress" />
             <x-input-error for="userAddress" class="mt-2" />
         </div>
@@ -108,7 +108,7 @@
         <!-- BirthDate -->
         <div class="col-span-6 sm:col-span-3">
             <x-label for="birthDay" value="{{ __('Birth Date') }}" />
-            <x-input id="birthDay" type="date" class="block w-full mt-1" wire:model="state.birthDay" required
+            <x-input id="birthDay" type="date" class="block w-full mt-1" wire:model="state.birthDay"
                 autocomplete="birthDay" />
             <x-input-error for="birthDay" class="mt-2" />
         </div>
@@ -116,7 +116,7 @@
         <!-- Phone Number -->
         <div class="col-span-6 sm:col-span-3">
             <x-label for="phoneNum" value="{{ __('Phone Number') }}" />
-            <x-input id="phoneNum" type="tel" class="block w-full mt-1" wire:model="state.phoneNum" required
+            <x-input id="phoneNum" type="tel" class="block w-full mt-1" wire:model="state.phoneNum"
                 autocomplete="phoneNum" />
             <x-input-error for="phoneNum" class="mt-2" />
         </div>
@@ -124,7 +124,7 @@
         <!-- Email -->
         <div class="col-span-6 md:col-span-6">
             <x-label for="email" value="{{ __('Email') }}" />
-            <x-input id="email" type="email" class="block w-full mt-1" wire:model="state.email" required
+            <x-input id="email" type="email" class="block w-full mt-1" wire:model="state.email"
                 autocomplete="username" />
             <x-input-error for="email" class="mt-2" />
 
