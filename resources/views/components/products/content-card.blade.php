@@ -9,7 +9,6 @@
             default => 'status-card-available',
         };
     @endphp
-
     <div
         class="transition bg-white border-0 shadow-sm card h-100 item-card status-card {{ $statusClass }} {{ $products->featured ? 'featured-card' : '' }}">
         <div class="position-relative">
@@ -17,7 +16,7 @@
                 <img src="{{ $products->prodImage && file_exists(public_path('storage/' . $products->prodImage))
                     ? asset('storage/' . $products->prodImage)
                     : asset('img/NOIMG.jpg') }}"
-                    class="card-img-top item-image" alt="{{ $products->prodName }}" loading="lazy">
+                    class="card-img-top item-image" alt="{{ $products->prodName }}">
             </div>
 
             @if ($products->featured)
@@ -135,6 +134,10 @@
                             <div class="detail-row">
                                 <span class="detail-label">Category:</span>
                                 <span class="detail-value">{{ $products->category->categName }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Condition:</span>
+                                <span class="detail-value">{{ $products->prodCondition }}</span>
                             </div>
                             <div class="detail-row">
                                 <span class="detail-label">Status:</span>

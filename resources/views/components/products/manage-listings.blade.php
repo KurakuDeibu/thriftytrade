@@ -10,6 +10,10 @@
         </div>
     </div>
 
+    @php
+        $activeTab = request()->query('tab', 'All');
+    @endphp
+
     <!-- Tabs Navigation -->
     <ul class="p-1 mb-4 nav nav-pills bg-light rounded-pill">
         <li class="nav-item">
@@ -51,7 +55,8 @@
                                             <img src="{{ $product->prodImage && file_exists(public_path('storage/' . $product->prodImage))
                                                 ? asset('storage/' . $product->prodImage)
                                                 : asset('img/NOIMG.jpg') }}"
-                                                class="card-img-top listing-image" alt="{{ $product->prodName }}">
+                                                class="border-2 card-img-top listing-image"
+                                                alt="{{ $product->prodName }}">
 
                                             <!-- Status and Condition Icons -->
                                             <div class="top-0 p-2 position-absolute start-0">
@@ -75,13 +80,13 @@
                                                     <!-- Status Icon -->
                                                     <span
                                                         class="badge
-                                                    {{ $product->status == 'Available'
-                                                        ? 'bg-success'
-                                                        : ($product->status == 'Pending'
-                                                            ? 'bg-warning'
-                                                            : ($product->status == 'Sold'
-                                                                ? 'bg-secondary'
-                                                                : 'bg-info')) }}"
+                                                        {{ $product->status == 'Available'
+                                                            ? 'bg-success'
+                                                            : ($product->status == 'Pending'
+                                                                ? 'bg-warning'
+                                                                : ($product->status == 'Sold'
+                                                                    ? 'bg-secondary'
+                                                                    : 'bg-info')) }}"
                                                         data-bs-toggle="tooltip"
                                                         title="{{ ucfirst($product->status) }}">
                                                         @switch($product->status)
@@ -186,13 +191,23 @@
                             </div>
                         </div>
                         @empty
-                            <div class="p-5 mt-3 col-12">
-                                <div class="text-center alert alert-primary">
-                                    No listings in this category.
+                            <div class="mb-4">
+                                <div class="p-4 text-center bg-white rounded shadow-sm stat-card-custom">
+                                    <div class="p-3 mx-auto mb-3">
+                                        <i class="fas fa-inbox text-secondary fa-3x"></i>
+                                    </div>
+                                    <h5 class="mb-2 text-muted">No listings in this category.</h5>
                                 </div>
                             </div>
                         @endforelse
                     </div>
+
+                    <!-- Pagination for each tab -->
+                    @if ($products instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                        <div class="mt-4 d-flex justify-content-center">
+                            {{ $products->links() }}
+                        </div>
+                    @endif
                 </div>
             @endforeach
         </div>
@@ -242,12 +257,6 @@
         .btn-group .btn {
             transition: background-color 0.3s ease, color 0.3s ease;
             width: 100%;
-            /* Ensures all buttons are the same width */
-        }
-
-        .btn-group .btn:hover {
-            background-color: rgba(0, 123, 255, 0.1);
-            color: #0d6efd;
         }
     </style>
 

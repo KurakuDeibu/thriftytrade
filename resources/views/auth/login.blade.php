@@ -1,4 +1,76 @@
 <x-guest-layout>
+
+
+    <div class="login-container">
+        <div class="login-wrapper">
+            <!-- Image Section -->
+            <div class="login-image">
+                {{-- MESSAGE --}}
+            </div>
+
+            <!-- Login Form Section -->
+            <div class="login-form">
+                <div class="form-content">
+                    <a href="{{ route('home') }}">
+                        <img src="{{ asset('img/thriftytrade-logo.png') }}" alt="Logo" class="logo">
+                    </a>
+                    <h2 class="mb-2 text-2xl text-center fw-bold">Welcome Back</h2>
+                    <p class="mb-4 text-center text-gray-600">Login to your account</p>
+
+                    <form method="POST" action="{{ route('login') }}">
+                        @csrf
+
+                        <div class="form-group">
+                            <input type="email" name="email" class="form-input @error('email') error @enderror"
+                                placeholder="Email address" value="{{ old('email') }}" autofocus>
+                            @error('email')
+                                <div class="text-sm error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <input type="password" name="password" class="form-input @error('password') error @enderror"
+                                placeholder="Password">
+                            @error('password')
+                                <div class="text-sm error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="flex items-center justify-between mb-4">
+                            <label class="flex items-center cursor-pointer">
+                                <x-checkbox id="remember_me" name="remember" />
+                                <span class="text-sm text-gray-600">&nbsp; Remember me</span>
+                            </label>
+
+                            @if (Route::has('password.request'))
+                                <a href="{{ route('password.request') }}"
+                                    class="text-sm text-indigo-600 hover:underline">
+                                    Forgot password?
+                                </a>
+                            @endif
+                        </div>
+
+                        <button type="submit" class="login-button">
+                            Log In
+                        </button>
+
+                        <div class="mt-4 form-footer">
+                            <p class="text-gray-600">
+                                Don't have an account?
+                                <a href="{{ route('register') }}" class="text-indigo-600 text-decoration-none">
+                                    Sign up
+                                </a>
+                                |
+                                <a href="{{ route('home') }}" class="text-indigo-600 text-decoration-none">
+                                    Home
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <style>
         :root {
             --primary-color: #4267B2;
@@ -153,75 +225,4 @@
             }
         }
     </style>
-
-    <div class="login-container">
-        <div class="login-wrapper">
-            <!-- Image Section -->
-            <div class="login-image">
-                {{-- MESSAGE --}}
-            </div>
-
-            <!-- Login Form Section -->
-            <div class="login-form">
-                <div class="form-content">
-                    <a href="{{ route('home') }}">
-                        <img src="{{ asset('img/thriftytrade-logo.png') }}" alt="Logo" class="logo">
-                    </a>
-                    <h2 class="mb-2 text-2xl text-center fw-bold">Welcome Back</h2>
-                    <p class="mb-4 text-center text-gray-600">Login to your account</p>
-
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
-
-                        <div class="form-group">
-                            <input type="email" name="email" class="form-input @error('email') error @enderror"
-                                placeholder="Email address" value="{{ old('email') }}" autofocus>
-                            @error('email')
-                                <div class="text-sm error-message">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <input type="password" name="password" class="form-input @error('password') error @enderror"
-                                placeholder="Password">
-                            @error('password')
-                                <div class="text-sm error-message">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="flex items-center justify-between mb-4">
-                            <label class="flex items-center cursor-pointer">
-                                <x-checkbox id="remember_me" name="remember" />
-                                <span class="text-sm text-gray-600">&nbsp; Remember me</span>
-                            </label>
-
-                            @if (Route::has('password.request'))
-                                <a href="{{ route('password.request') }}"
-                                    class="text-sm text-indigo-600 hover:underline">
-                                    Forgot password?
-                                </a>
-                            @endif
-                        </div>
-
-                        <button type="submit" class="login-button">
-                            Log In
-                        </button>
-
-                        <div class="mt-4 form-footer">
-                            <p class="text-gray-600">
-                                Don't have an account?
-                                <a href="{{ route('register') }}" class="text-indigo-600 text-decoration-none">
-                                    Sign up
-                                </a>
-                                |
-                                <a href="{{ route('home') }}" class="text-indigo-600 text-decoration-none">
-                                    Home
-                                </a>
-                            </p>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 </x-guest-layout>

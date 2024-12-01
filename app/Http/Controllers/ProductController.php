@@ -23,33 +23,7 @@ class ProductController extends Controller
         $pendingProducts = $userProducts->where('status', 'Pending');
         $activeProducts = $userProducts->where('status', 'Available');
 
-          // Get all offers for products where the authenticated user is the seller
-          $offers = Offer::whereHas('product', function ($query) {
-            $query->where('user_id', Auth::id());
-        })
-        ->with(['product', 'user'])
-        ->latest()
-        ->get();
-
-        // Group offers by product
-        $groupedOffers = $offers->groupBy('products_id');
-
-        // Get total number of pending offers
-        $pendingOffers = $offers->where('status', 'pending');
-        $acceptedOffers = $offers->where('status', 'accepted');
-        $rejectedOffers = $offers->where('status', 'rejected');
-
-        // Get products with no offers
-        $productsWithNoOffers = Products::where('user_id', Auth::id())
-            ->whereDoesntHave('offers')
-            ->get();
-
         return view('dashboard', compact(
-            'groupedOffers',
-            'pendingOffers',
-            'productsWithNoOffers',
-            'acceptedOffers',
-            'rejectedOffers',
             'userProducts',
             'soldProducts',
             'activeProducts',
@@ -169,7 +143,7 @@ class ProductController extends Controller
         // Update the product with all the data
         $product->update($updateData);
 
-        return redirect()->route('manage-listing')->with('success', 'Listing updated successfully.');
+        return redirect()->back()->with('success', 'Listing updated successfully.');
     }
 
     //Delete the seller's product in the database
@@ -178,7 +152,7 @@ class ProductController extends Controller
         $product = Products::findOrFail($id);
 
         if ($product->user_id !== auth()->id()) {
-        return redirect()->route('manage-listing')->with('error', 'Unauthorized access.');
+        return redirect()->back()->with('error', 'Unauthorized access.');
     }
 
     // Delete the product image from storage if it exists
@@ -191,62 +165,7 @@ class ProductController extends Controller
 
     return redirect()->back()->with('success', 'Listing deleted successfully.');
         }
-
         // --------------------END OF PRODUCT CRUD-----------------------//
-
-
-
-
-        // ------------------START OF PRODUCT OFFERS------------------//
-    // - Show offers for a specific product
-    public function showProductOffers(Products $product)
-    {
-        // Verify that the authenticated user is the seller of the product
-        if ($product->user_id !== auth()->user()->id()) {
-            return back()->with('error', 'Unauthorized action.');
-        }
-
-        $offers = $product->offers()->with('user')->latest()->get();
-        return redirect()->route('seller-offers', compact('product', 'offers'));
-    }
-
-    // - Update offer status
-    public function updateOfferStatus(Request $request, Offer $offer)
-    {
-        // Validate request
-        $request->validate([
-            'status' => 'required|in:accepted,rejected',
-        ]);
-
-        // check if the offer exists
-        if (!$offer) {
-            return back()->with('error', 'Offer not found.');
-        }
-
-        $offer->load('product');
-
-        if (!$offer->product || $offer->product->user_id !== Auth::id()) {
-            return back()->with('error', 'Unauthorized action.');
-        }
-
-        try {
-            // Update the offer status
-            $offer->update(['status' => $request->status]);
-
-            // If offer is accepted, reject all other offers for this product
-            if ($request->status === 'accepted') {
-                Offer::where('products_id', $offer->products_id)
-                    ->where('id', '!=', $offer->id)
-                    ->update(['status' => 'rejected']);
-
-
-
-            }
-            return redirect()->route('seller-offers')->with('success', 'Offer updated successfully.');
-        } catch (\Exception $e) {
-            return redirect()->route('seller-offers')->with('error', 'An error occurred while updating the offer status.');
-        }
-    }
 
     public function markAsSold($id)
     {

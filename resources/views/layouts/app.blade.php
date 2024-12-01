@@ -22,8 +22,12 @@
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Roboto+Slab:wght@400;700&display=swap"
         rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <link rel="stylesheet" href="{{ asset('css/sweetalert.min.css') }}">
+    <script src="{{ asset('js/sweetalert.min.js') }}"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -40,13 +44,7 @@
 </style>
 
 <body>
-    @push('scripts')
-        <script src="{{ asset('js/lazy-load.js') }}"></script>
-    @endpush
-
-    @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/lazy-load.css') }}"> <!--lazy-load css-->
-    @endpush
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     @include('layouts.partials.header')
 

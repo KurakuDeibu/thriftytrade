@@ -4,7 +4,7 @@
     <i class="bi bi-filter me-2"></i>Filters
 </button>
 
-<!-- Existing Filter Content with Mobile Wrapper -->
+<!-- Filter Content with Mobile Wrapper -->
 <div class="filter-content">
     <div class="filter-mobile-header d-none">
         <h4>Filters</h4>
@@ -215,8 +215,6 @@
         .mobile-filter-toggle {
             display: block;
             width: 100%;
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
             padding: 10px;
             text-align: center;
             margin-bottom: 15px;
@@ -263,9 +261,7 @@
             font-size: 1.5rem;
         }
     }
-</style>
 
-<style>
     .category-radio-group {
         max-height: 300px;
         overflow-y: auto;

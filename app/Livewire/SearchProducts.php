@@ -87,6 +87,14 @@ class SearchProducts extends Component
             $query->where('location', $this->location);
         }
 
+        // Order to prioritize available products first to show in
+        $query->orderByRaw('CASE
+            WHEN status = "Available" THEN 1
+            WHEN status = "Pending" THEN 2
+            WHEN status = "Sold" THEN 3
+            ELSE 4
+        END');
+
         // Sorting - CASE
         switch ($this->sort) {
             case 'latest':

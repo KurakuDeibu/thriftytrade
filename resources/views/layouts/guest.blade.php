@@ -34,7 +34,7 @@
 
 <body>
 
-    @if (!in_array(Route::currentRouteName(), ['login', 'register']))
+    @if (!in_array(Route::currentRouteName(), ['login', 'register', 'password.request']))
         @include('layouts.partials.header')
     @endif
 
@@ -45,7 +45,7 @@
     {{ $slot }}
     @yield('content')
 
-    @if (!in_array(Route::currentRouteName(), ['login', 'register']))
+    @if (!in_array(Route::currentRouteName(), ['login', 'register', 'password.request']))
         @include('layouts.partials.footer')
     @endif
 

@@ -20,6 +20,10 @@ class MarketplaceController extends Controller
     // Initialize query builder for products
     $query = Products::query();
 
+    // Filter to only include available products
+    $query->where('status', 'Available');
+
+
     // Handle search query
     $query->when($request->input('query'), function ($q) use ($request) {
         $q->where(function ($subQ) use ($request) {
@@ -126,11 +130,13 @@ class MarketplaceController extends Controller
        // Fetch the user by their ID
         $user = User::findOrFail($userId);
         // Fetch the products listed by the user
-        $userProducts = Products::where('user_id', $userId)->latest()->paginate(15);
+        $userProductsCount = Products::where('user_id', $userId)->count();
+        $userProducts = Products::where('user_id', $userId)->latest()->paginate(8);
 
         return view('profile.user-listing', [
             'user' => $user,
             'userProducts' => $userProducts,
+            'userProductsCount' => $userProductsCount,
         ]);
     }
 

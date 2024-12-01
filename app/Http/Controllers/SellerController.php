@@ -30,7 +30,7 @@ class SellerController extends Controller
             ->whereDoesntHave('offers')
             ->get();
 
-        return view('seller.offers.index', compact(
+        return view('dashboard', compact(
             'groupedOffers',
             'pendingOffersCount',
             'productsWithNoOffers'
