@@ -155,6 +155,9 @@ class ReportResource extends Resource
                 ->dateTime()
                 ->sortable(),
         ])
+            ->defaultGroup('status')
+            ->defaultSort('created_at', 'desc')
+
         ->filters([
             Tables\Filters\SelectFilter::make('report_type')
                 ->options([
