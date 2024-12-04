@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('meetup_location');
             $table->dateTime('meetup_time');
             $table->text('message')->nullable();
-            $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'accepted', 'rejected', 'completed'])->default('pending');
             $table->timestamps();
         });
     }

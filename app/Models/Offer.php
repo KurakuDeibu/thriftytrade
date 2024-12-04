@@ -10,6 +10,7 @@ class Offer extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
+        'seller_id',
         'products_id',
         'offer_price',
         'meetup_location',
@@ -27,4 +28,20 @@ class Offer extends Model
     {
         return $this->belongsTo(Products::class, 'products_id');
     }
+
+    public function transaction()
+    {
+        return $this->hasOne(Transaction::class, 'offer_id');
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function hasBeenReviewedByUser($userId)
+    {
+        return $this->reviews()->where('reviewer_id', $userId)->exists();
+    }
+
 }
