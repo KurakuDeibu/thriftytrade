@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Products;
+use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -98,6 +99,7 @@ class MarketplaceController extends Controller
     public function showDetails($id)
     {
         $marketplaceProducts = Products::findOrFail($id);
+        $user = User::findOrFail($marketplaceProducts->user_id);
 
         $showOtherListings = Products::where('user_id', $marketplaceProducts->user_id)
         ->where('id', '!=', $id) // Exclude the current product that is showing
@@ -115,13 +117,15 @@ class MarketplaceController extends Controller
         ->take(10) // Limit to 4 recommended products
         ->get();
 
-
+        // Fetch the product by its ID
+        $reviewCount = Review::where('reviewee_id', $user->id)->count();
 
         return view('products.product-details')->with([
             'marketplaceProducts' => $marketplaceProducts,
             'showOtherListings' => $showOtherListings,
             'hasOtherListings' => $hasOtherListings, // Pass the condition to the view
             'similarListings' => $similarListings,
+            'reviewCount' => $reviewCount,
         ]);
     }
 
@@ -133,10 +137,24 @@ class MarketplaceController extends Controller
         $userProductsCount = Products::where('user_id', $userId)->count();
         $userProducts = Products::where('user_id', $userId)->latest()->paginate(8);
 
+        // Fetch user reviews with related information
+        $userReviews = Review::with(['reviewer', 'product'])
+        ->where('reviewee_id', $userId)
+        ->latest()
+        ->paginate(10);
+
+        $userReviewsCount = $userReviews->total();
+
+        $averageRating = Review::where('reviewee_id', $userId)->avg('rating') ?? 0;
+
         return view('profile.user-listing', [
             'user' => $user,
             'userProducts' => $userProducts,
             'userProductsCount' => $userProductsCount,
+            'userReviews' => $userReviews,
+            'userReviewsCount' => $userReviewsCount,
+            'averageRating' => $averageRating
+
         ]);
     }
 

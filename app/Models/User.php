@@ -58,6 +58,10 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Offer::class);
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

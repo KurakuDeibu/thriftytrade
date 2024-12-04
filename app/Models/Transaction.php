@@ -14,21 +14,31 @@ class Transaction extends Model
     protected $fillable = [
         'user_id',
         'products_id',
+        'offer_id',
         'tranDate',
         'quantity',
         'totalPrice',
         'tranStatus',
         'systemCommission',
         'finderCommission',
+        'meetup_location',
+        'meetup_time',
+
 
     ];
+
+    public function offer()
+    {
+        return $this->belongsTo(Offer::class, 'offer_id');
+    }
+
     public function buyer() {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     // A transaction involves a product
     public function product() {
-        return $this->belongsTo(Products::class);
+        return $this->belongsTo(Products::class, 'products_id');
     }
 
     // A transaction can have a finder (user)

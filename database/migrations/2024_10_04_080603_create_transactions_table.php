@@ -16,15 +16,17 @@ return new class extends Migration
 
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('products_id');
+            $table->unsignedInteger('offer_id')->nullable(); // Reference to the accepted offer
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('products_id')->references('id')->on('products')->cascadeOnDelete();
+            $table->foreign('offer_id')->references('id')->on('offers')->cascadeOnDelete();
 
-            $table->dateTime('tranDate');
+            $table->timestamp('tranDate')->nullable();
             $table->integer('quantity');
             $table->decimal('totalPrice', 10, 2);
-            $table->string('tranStatus', 30);
-            $table->decimal('systemCommission', 10, 2);
+            $table->enum('tranStatus', ['pending', 'completed', 'canceled'])->default('pending');
+            $table->decimal('systemCommission', 10, 2)->nullable();
             $table->decimal('finderCommission', 10, 2)->nullable();
             $table->timestamps();
         });

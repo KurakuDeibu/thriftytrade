@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Products;
 use App\Http\Controllers\Controller;
 use App\Models\Offer;
+use App\Models\Review;
 use App\Models\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,17 +18,38 @@ class ProductController extends Controller
 
     public function dashboard()
     {
+        $offers = Offer::whereHas('product', function ($query) {
+            $query->where('user_id', Auth::id());
+        })
+        ->with(['product', 'user'])
+        ->latest()
+        ->get();
+
+        $user = Auth::user();
+        // Calculate the average rating for the user
+        $averageRating = Review::where('reviewee_id', $user->id)->avg('rating') ?? 0;
+
         // Fetch the products that belong to the logged-in user
         $userProducts = Products::where('user_id', auth()->id())->orderBy('updated_at', 'desc')->get();
         $soldProducts = $userProducts->where('status', 'Sold');
         $pendingProducts = $userProducts->where('status', 'Pending');
         $activeProducts = $userProducts->where('status', 'Available');
+        $pendingOffers = $offers->where('status', 'pending');
+        $acceptedOffers = $offers->where('status', 'accepted');
+        $rejectedOffers = $offers->where('status', 'rejected');
+        $completedOffers = $offers->where('status', 'completed');
+
 
         return view('dashboard', compact(
             'userProducts',
             'soldProducts',
             'activeProducts',
             'pendingProducts',
+            'pendingOffers',
+            'acceptedOffers',
+            'rejectedOffers',
+            'completedOffers',
+            'averageRating'
         ));
     }
 
@@ -46,6 +68,16 @@ class ProductController extends Controller
     //Add seller's product in the database
     public function store(Request $request)
     {
+        $user = Auth::user();
+        $availableListingCount = Products::where('user_id', $user->id)
+        ->where('status', 'Available')
+        ->count();
+
+        // Check if the user has reached the maximum limit of 10 available listings
+        if ($availableListingCount >= 10) {
+        return redirect()->back()->with('error', 'You can only post a maximum of 10 available listings. Please remove an existing available listing to add a new one.');
+        }
+
         $request->validate([
             'name' => 'required|string|min:3|max:255',
             'category_id' => 'required|exists:category,id',
@@ -176,6 +208,11 @@ class ProductController extends Controller
             return redirect()->back()->with('error', 'You are not authorized to mark this listing as sold.');
         }
 
+        // Only allow marking as sold if the product is in pending status
+        if ($product->status !== 'Pending') {
+            return redirect()->back()->with('error', 'Only pending products can be marked as sold.');
+        }
+
         $product->status = 'Sold';
         $product->save();
 
@@ -190,10 +227,25 @@ class ProductController extends Controller
             return redirect()->back()->with('error', 'You are not authorized to mark this listing as available.');
         }
 
+            // Count the number of available listings the user has
+            $availableListingCount = Products::where('user_id', $product->user_id)
+            ->where('status', 'Available')
+            ->count();
+
+        // Check if the user has reached the maximum limit of 10 available listings
+        if ($availableListingCount >= 10) {
+        return redirect()->back()->with('error', 'You can only have a maximum of 10 available listings. Please remove an existing available listing before unmarking this product as available.');
+        }
+
+        // Only allow unmarking if the product is currently sold
+        if ($product->status !== 'Sold') {
+            return redirect()->back()->with('error', 'Only sold products can be unmarked.');
+        }
+
         $product->status = 'Available';
         $product->save();
 
         return redirect()->back()->with('success', 'Listing marked as available.');
-    }
+        }
 
 }
