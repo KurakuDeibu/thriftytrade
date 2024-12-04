@@ -27,13 +27,13 @@
                 @auth
                     {{-- MANAGE LISTINGS --}}
                     <div class="mb-2 card bg-light"><a wire:navigate.hover href="{{ route('manage-listing') }}"
-                            class="btn btn-outline-primary {{ Route::currentRouteName() === 'manage-listing' ? 'active' : '' }}">Manage
+                            class="btn btn-outline-primary {{ Route::currentRouteName() === 'manage-listing' ? 'active' : '' }}">My
                             Listings</a>
                     </div>
 
                     {{-- MANAGE-OFFERS --}}
                     <div class="mb-2 card bg-light"><a wire:navigate.hover href="{{ route('seller-offers') }}"
-                            class="btn btn-outline-primary {{ Route::currentRouteName() === 'seller-offers' ? 'active' : '' }}">Manage
+                            class="btn btn-outline-primary {{ Route::currentRouteName() === 'seller-offers' ? 'active' : '' }}">My
                             Offers</a>
                     </div>
 
@@ -44,19 +44,27 @@
 
                     {{-- TRANSACTIONS --}}
                     <div class="mb-2 card bg -light">
-                        <a wire:navigate.hover href="{{ route('user.transactions') }}"
+                        <a href="{{ route('user.transactions') }}"
                             class="btn btn-outline-primary {{ Route::currentRouteName() === 'user.transactions' ? 'active' : '' }}">My
                             Transactions</a>
                     </div>
 
+                    {{-- TRANSACTIONS --}}
+                    <div class="mb-2 card bg -light">
+                        <a href="{{ route('wishlist.index') }}"
+                            class="btn btn-outline-primary {{ Route::currentRouteName() === 'wishlist.index' ? 'active' : '' }}">My
+                            Wishlists</a>
+                    </div>
+
                     {{-- INSIGHTS --}}
                     <div class="mb-2 card bg-light">
-                        <a href="{{ url('/user/insights') }}" class="btn btn-outline-primary">View Insights</a>
+                        <a href="{{ route('profile.user-listing', Auth::user()->id) }}"
+                            class="btn btn-outline-primary">Preview Profile</a>
                     </div>
 
                     {{-- HISTORY --}}
-                    <div class="mb-2 card bg-light"><a href="{{ url('/user/history') }}" class="btn btn-outline-primary">My
-                            History</a></div>
+                    <div class="mb-2 card bg-light"><a href="{{ url('/user/history') }}"
+                            class="btn btn-outline-primary">Messages</a></div>
                 @endauth
             @endif
 

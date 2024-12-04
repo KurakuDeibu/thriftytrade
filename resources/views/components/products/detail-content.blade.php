@@ -291,14 +291,9 @@
                         </div>
                     </div>
 
-                    {{-- @php
-                            $reviewCount = $marketplaceProducts->author->reviews()->count();
-                        @endphp --}}
-
                     <div class="p-2 text-sm text-muted">
                         <i class="fas fa-star text-warning"></i>
-                        {{-- {{ $reviewCount }} {{ Str::plural('review', $reviewCount) }} --}}
-                        0 review
+                        {{ $reviewCount }} {{ Str::plural('reviews', $reviewCount) }}
                     </div>
                 </div>
 

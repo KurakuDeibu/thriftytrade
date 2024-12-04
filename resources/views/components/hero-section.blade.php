@@ -14,11 +14,11 @@
         <p class="mb-4 lead">Buy and sell secondhand items in your local community</p>
 
         @guest
-            <a href="{{ '/register' }}" class="mt-2 btn btn-light btn-lg">Join Now</a>
+            <a wire:navigate href="{{ '/register' }}" class="mt-2 btn btn-light btn-lg">Join Now</a>
         @endguest
 
         @auth
-            <a href="{{ '/marketplace' }}" class="mt-2 btn btn-light btn-lg">Start your Thrifty
+            <a wire:navigate href="{{ '/marketplace' }}" class="mt-2 btn btn-light btn-lg">Start your Thrifty
                 Activity!</a>
         @endauth
 
