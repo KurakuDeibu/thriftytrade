@@ -24,7 +24,7 @@
                 <div class="p-3 mb-3 card-icon-bg rounded-circle bg-success bg-opacity-10">
                     <i class="fas fa-tags text-success fa-2x"></i>
                 </div>
-                <a href="{{ route('manage-listing') }}#sold" class="text-muted" title="View Sales">
+                <a href="{{ route('manage-listing') }}#Sold" class="text-muted" title="View Sold Listings">
                     <i class="fas fa-external-link-alt"></i>
                 </a>
             </div>
@@ -33,7 +33,7 @@
         </div>
     </div>
 
-    <div class="mb-3 col-md-4">
+    {{-- <div class="mb-3 col-md-4">
         <div class="p-4 bg-white rounded shadow-sm stat-card-custom position-relative hover-effect">
             <div class="d-flex justify-content-between">
                 <div class="p-3 mb-3 card-icon-bg rounded-circle bg-warning bg-opacity-10">
@@ -44,7 +44,67 @@
                 </a>
             </div>
             <div class="mb-2 text-muted">Total Earnings</div>
-            <div class="mb-0 h3">₱{{ $soldProducts->sum('prodPrice') }}</div>
+            <div class="mb-0 h3">₱{{ $soldProducts->sum('offer_price') }}</div>
+        </div>
+    </div> --}}
+
+    <div class="mb-3 col-md-4">
+        <div class="p-4 bg-white rounded shadow-sm stat-card-custom position-relative hover-effect">
+            <div class="d-flex justify-content-between">
+                <div class="p-3 mb-3 card-icon-bg rounded-circle bg-info bg-opacity-10">
+                    <i class="fas fa-star text-info fa-2x"></i>
+                </div>
+                <a href="{{ route('profile.user-listing', Auth::user()->id) }}" class="text-muted" title="View Ratings">
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </div>
+            <div class="mb-2 text-muted">Average Rating</div>
+            <div class="mb-0 h3">{{ number_format($averageRating, 1) }}<span class="h6">/ 5</span></div>
+        </div>
+    </div>
+
+
+    <div class="mb-3 col-md-12">
+        <div class="p-3 bg-white rounded shadow-sm stat-card-custom position-relative hover-effect">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="p-2 mb-2 card-icon-bg rounded-circle bg-info bg-opacity-10">
+                    <i class="fas fa-file-alt text-info fa-2x"></i>
+                </div>
+                <a href="" class="text-muted" title="View Offers">
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </div>
+            <div class="mb-1 text-muted text-center h5">OFFERS</div>
+            <ul class="list-group mt-2">
+                <li class="list-group-item d-flex justify-content-between align-items-center p-2">
+                    <div>
+                        <i class="fas fa-clock text-warning fa-lg"></i>
+                        <span class="ms-2 small">Pending</span>
+                    </div>
+                    <span class="badge bg-warning rounded-pill">{{ $pendingOffers->count() }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center p-2">
+                    <div>
+                        <i class="fas fa-check-circle text-success fa-lg"></i>
+                        <span class="ms-2 small">Accepted</span>
+                    </div>
+                    <span class="badge bg-success rounded-pill">{{ $acceptedOffers->count() }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center p-2">
+                    <div>
+                        <i class="fas fa-times-circle text-danger fa-lg"></i>
+                        <span class="ms-2 small">Rejected</span>
+                    </div>
+                    <span class="badge bg-danger rounded-pill">{{ $rejectedOffers->count() }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center p-2">
+                    <div>
+                        <i class="fas fa-check-double text-primary fa-lg"></i>
+                        <span class="ms-2 small">Completed</span>
+                    </div>
+                    <span class="badge bg-primary rounded-pill">{{ $completedOffers->count() }}</span>
+                </li>
+            </ul>
         </div>
     </div>
 
@@ -54,12 +114,13 @@
                 <div class="p-3 mb-3 card-icon-bg rounded-circle bg-info bg-opacity-10">
                     <i class="fas fa-star text-info fa-2x"></i>
                 </div>
-                <a href="" class="text-muted" title="View Ratings">
+                <a href="{{ route('profile.user-listing', Auth::user()->id) }}" class="text-muted"
+                    title="View Ratings">
                     <i class="fas fa-external-link-alt"></i>
                 </a>
             </div>
             <div class="mb-2 text-muted">Average Rating</div>
-            <div class="mb-0 h3">5 <span class="h6">/ 5</span></div>
+            <div class="mb-0 h3">{{ number_format($averageRating, 1) }}<span class="h6">/ 5</span></div>
         </div>
     </div>
 </div>
