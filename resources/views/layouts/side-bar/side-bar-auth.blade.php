@@ -27,13 +27,13 @@
                 @auth
                     {{-- MANAGE LISTINGS --}}
                     <div class="mb-2 card bg-light"><a wire:navigate.hover href="{{ route('manage-listing') }}"
-                            class="btn btn-outline-primary {{ Route::currentRouteName() === 'manage-listing' ? 'active' : '' }}">My
+                            class="btn btn-outline-primary {{ Route::currentRouteName() === 'manage-listing' ? 'active' : '' }}">Manage
                             Listings</a>
                     </div>
 
                     {{-- MANAGE-OFFERS --}}
                     <div class="mb-2 card bg-light"><a wire:navigate.hover href="{{ route('seller-offers') }}"
-                            class="btn btn-outline-primary {{ Route::currentRouteName() === 'seller-offers' ? 'active' : '' }}">My
+                            class="btn btn-outline-primary {{ Route::currentRouteName() === 'seller-offers' ? 'active' : '' }}">Manage
                             Offers</a>
                     </div>
 
@@ -45,7 +45,7 @@
                     {{-- TRANSACTIONS --}}
                     <div class="mb-2 card bg -light">
                         <a href="{{ route('user.transactions') }}"
-                            class="btn btn-outline-primary {{ Route::currentRouteName() === 'user.transactions' ? 'active' : '' }}">My
+                            class="btn btn-outline-primary {{ Route::currentRouteName() === 'user.transactions' ? 'active' : '' }}">View
                             Transactions</a>
                     </div>
 

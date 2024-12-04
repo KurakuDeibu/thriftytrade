@@ -7,6 +7,7 @@ use App\Http\Controllers\OfferController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SendMessageController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WishlistController;
@@ -88,9 +89,12 @@ Route::middleware(['auth', 'verified'])->group( function () {
     // ------MANAGE OFFERS------//
     Route::get('/user/offers', [OfferController::class, 'offerdashboard'])->name('seller-offers');
     Route::patch('/user/offers/{offer}/status', [OfferController::class, 'updateOfferStatus'])->name('seller.offers.update-status');
+    Route::post('/user/offers/{offer}/complete', [OfferController::class, 'convertOfferToTransaction'])->name('seller.offers.complete');
 
     // -------MY TRANSACTIONS-----//
     Route::get('/user/transactions', [TransactionController::class, 'index'])->name('user.transactions');
-    Route::get('/user/transaction/{offer}/review', [TransactionController::class, 'showReviewModal'])->name('transaction.review');
+
+    //-------REVIEWCONTROLLER------//
+    Route::post('/user/transaction/{transaction}/review', [ReviewController::class, 'storeReview'])->name('transactions.review.store');
 
 });
