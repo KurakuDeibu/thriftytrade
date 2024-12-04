@@ -1,9 +1,11 @@
  {{-- OTHER LISTINGS OF THE USER --}}
  <div class="row">
      <div class="col-12 d-flex justify-content-between align-items-center">
-         <h2 class="text-xl font-bold text-center">
-             Other listings by {{ $marketplaceProducts->author->name }}
-         </h2>
+         <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
+             class="mt-5 text-xl font-bold text-center">
+             Other listings by <span
+                 class=" text-blue-500 hover-underline">{{ $marketplaceProducts->author->name }}</span>
+         </a>
          @if ($hasOtherListings && $showOtherListings->count() > 4)
              <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
                  class="font-medium text-blue-500 hover-underline">Show All</a>

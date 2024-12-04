@@ -1,7 +1,7 @@
  {{-- RECOMMENDED LISTINGS FOR THE USER --}}
  @if ($similarListings->count() > 0)
-     <div class="mt-5 recommended-listings">
-         <h3 class="mb-4">Similar Listings</h3>
+     <div class="mt-5">
+         <h3 class="mb-4 text-xl font-bold">Similar Listings</h3>
          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
              @foreach ($similarListings->shuffle() as $similarProduct)
                  <div class="col">
