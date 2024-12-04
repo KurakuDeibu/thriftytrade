@@ -12,8 +12,7 @@
                             <tr>
                                 <th>Buyer</th>
                                 <th>Offer Price</th>
-                                <th>Meetup Location</th>
-                                <th>Meetup Time</th>
+                                <th>Meetup Details</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -21,7 +20,7 @@
                         <tbody>
                             @foreach ($marketplaceProducts->offers->sortByDesc('created_at') as $offer)
                                 <tr>
-                                    <td>
+                                    <td class="px-4 m-2">
                                         <div class="d-flex align-items-center">
                                             <img src="{{ $offer->user->profile_photo_url }}" alt="{{ $offer->user->name }}"
                                                 class="rounded-circle me-2"
@@ -32,30 +31,38 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td>
-                                        <span
-                                            class="
+                                    <td class="px-4 m-2">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <span
+                                                    class="
                                                     {{ $offer->status == 'accepted'
                                                         ? 'text-success'
                                                         : ($offer->status == 'rejected'
                                                             ? 'text-danger'
                                                             : 'text-warning') }}
                                                     fw-bold">
-                                            ₱{{ number_format($offer->offer_price, 2) }}
-                                        </span>
+                                                    ₱{{ number_format($offer->offer_price, 2) }}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </td>
-                                    <td>{{ $offer->meetup_location }}</td>
-                                    <td>
-                                        {{ \Carbon\Carbon::parse($offer->meetup_time)->format('M d, Y h:i A') }}
+                                    <td class="px-4 m-2">
+                                        <div>
+                                            <div class="fw-bold text-sm"> <i class="bi bi-geo-alt"></i>
+                                                {{ $offer->meetup_location }}</div>
+                                            <small class="text-muted"> <i class="bi bi-clock"></i>
+                                                {{ \Carbon\Carbon::parse($offer->meetup_time)->format('M d, Y h:i A') }}</small>
+                                        </div>
                                     </td>
-                                    <td>
+                                    <td class="px-4 m-2">
                                         <span
                                             class="badge
                                             {{ $offer->status == 'accepted' ? 'bg-success' : ($offer->status == 'rejected' ? 'bg-danger' : 'bg-warning') }}">
                                             {{ ucfirst($offer->status) }}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td class="px-4 m-2">
                                         @if ($offer->status == 'accepted')
                                             <a href="{{ route('seller-offers') }}"
                                                 class="gap-2 btn btn-outline-primary btn-sm align-items-center">

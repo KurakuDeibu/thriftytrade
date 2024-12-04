@@ -190,10 +190,12 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button"
-                        role="tab" aria-controls="reviews" aria-selected="false">Reviews (0)</button>
+                        role="tab" aria-controls="reviews" aria-selected="false">Reviews
+                        ({{ $userReviewsCount }})</button>
                 </li>
             </ul>
 
+            {{-- USER LISTING TABS  --}}
             <div class="tab-content" id="profileTabsContent">
                 <div class="tab-pane fade show active" id="items" role="tabpanel" aria-labelledby="items-tab">
                     @if (count($userProducts) > 0)
@@ -278,10 +280,101 @@
                     @endif
                 </div>
             </div>
-            <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
-                <p class="p-5 text-center">No reviews yet.</p>
+
+            {{-- USER REVIEWS TABS --}}
+            <div class="tab-content" id="profileTabsContent">
+                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                    @if ($userReviewsCount > 0)
+                        <div class="row">
+
+                            {{-- Overall Rating Summary --}}
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h4>Overall Rating</h4>
+                                        <div class="display-4 text-warning">
+                                            {{ number_format($averageRating, 1) }}
+                                            <small class="text-muted">/5</small>
+                                        </div>
+                                        <div class="rating-stars">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <i
+                                                    class="bi bi-star{{ $i <= round($averageRating) ? '-fill text-warning' : ' text-muted' }}"></i>
+                                            @endfor
+                                        </div>
+                                        <small class="text-muted">
+                                            Based on {{ $userReviewsCount }}
+                                            {{ Str::plural('review', $userReviewsCount) }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Reviews List --}}
+                            <div class="col-md-8">
+                                @foreach ($userReviews as $review)
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <div class="d-flex">
+                                                {{-- Reviewer Profile Image --}}
+                                                <img src="{{ $review->reviewer->profile_photo_url }}"
+                                                    class="rounded-circle me-3"
+                                                    style="width: 50px; height: 50px; object-fit: cover;">
+
+                                                <div class="flex-grow-1">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <h6 class="mb-1">
+                                                                <a
+                                                                    href="{{ route('profile.user-listing', $review->reviewer->id) }}">
+                                                                    {{ $review->reviewer->name ?? 'Anonymous' }}
+                                                                    <span class="badge bg-secondary ms-2">
+                                                                        {{ $review->role ?? 'Unknown' }}
+                                                                    </span>
+                                                                </a>
+                                                            </h6>
+                                                            <small class="text-muted">
+                                                                {{ $review->created_at->diffForHumans() }}
+                                                            </small>
+                                                        </div>
+
+                                                        {{-- Rating Stars --}}
+                                                        <div class="rating-stars">
+                                                            @for ($i = 1; $i <= 5; $i++)
+                                                                <i
+                                                                    class="bi bi-star{{ $i <= $review->rating ? '-fill text-warning' : ' text-muted' }}"></i>
+                                                            @endfor
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Reviewed Product --}}
+                                                    <div class="mt-2 mb-2 d-flex align-items-center">
+                                                        <img src="{{ $review->product->prodImage ? asset('storage/' . $review->product->prodImage) : asset('img/NOIMG.jpg') }}"
+                                                            class="rounded me-2"
+                                                            style="width: 50px; height: 50px; object-fit: cover;">
+                                                        <small class="text-muted">
+                                                            Listing Name: <span
+                                                                class="fw-bold">{{ $review->product->prodName }}</span>
+                                                        </small>
+                                                    </div> {{-- Review Content --}}
+                                                    <div class="review-content bg-light p-2 rounded">
+                                                        <p class="mb-0">
+                                                            <i class="bi bi-quote me-1"></i>
+                                                            {{ $review->content }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @else
+                        <p class="p-5 text-center">No reviews yet.</p>
+                    @endif
+                </div>
             </div>
-        </div>
         </div>
 
         @include('layouts.partials.footer-top')

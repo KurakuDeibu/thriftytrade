@@ -7,7 +7,7 @@
 @endif
 
 @section('content')
-    <x-products.detail-content :marketplaceProducts="$marketplaceProducts" :showOtherListings="$showOtherListings" :hasOtherListings="$hasOtherListings" :similarListings="$similarListings" />
+    <x-products.detail-content :marketplaceProducts="$marketplaceProducts" :showOtherListings="$showOtherListings" :hasOtherListings="$hasOtherListings" :similarListings="$similarListings" :reviewCount="$reviewCount" />
 
     @include('layouts.partials.footer-top')
 @endsection

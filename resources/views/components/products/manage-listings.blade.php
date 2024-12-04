@@ -1,4 +1,4 @@
-<div class="container-fluid marketplace-listings">
+<div class="tab-container-fluid marketplace-listings">
     <div class="mb-4 row align-items-center">
         <div class="col">
             <h1 class="px-2 text-lg navbar-brand">MANAGE LISTINGS</h1>
@@ -171,10 +171,26 @@
 
                                             @if ($product->status != 'Sold')
                                                 <div class="mt-4">
-                                                    <button onclick="updateProductStatus({{ $product->id }}, 'Sold')"
-                                                        class="btn btn-outline-secondary w-100">
-                                                        <i class="bi bi-check-circle me-1"></i>Mark as Sold
-                                                    </button>
+                                                    @if ($product->status == 'Pending')
+                                                        <button
+                                                            onclick="updateProductStatus({{ $product->id }}, 'Sold')"
+                                                            class="btn btn-outline-secondary w-100">
+                                                            <i class="bi bi-check-circle me-1"></i>Mark as Sold
+                                                        </button>
+                                                    @elseif ($product->status == 'Available')
+                                                        @if ($pendingOffers->isNotEmpty())
+                                                            <div class="alert alert-warning" role="alert">
+                                                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                                                You have {{ $pendingOffers->count() }} pending
+                                                                {{ Str::plural('offer', $pendingOffers->count()) }}
+                                                            </div>
+                                                        @else
+                                                            <div class="alert alert-info" role="alert">
+                                                                <i class="bi bi-info-circle me-2"></i>
+                                                                Waiting for offers or negotiations
+                                                            </div>
+                                                        @endif
+                                                    @endif
                                                 </div>
                                             @else
                                                 <div class="mt-4">
