@@ -1,3 +1,5 @@
 <a href="/">
-<div id="logo" class="text-3xl"></div>
+    <div id="logo" class="text-3xl">
+        <img src="{{ asset('img/thriftytrade-logo.png') }}" alt="THRIFTYTRADE LGO">
+    </div>
 </a>
