@@ -255,12 +255,6 @@
         box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
     }
 
-    .modal-header,
-    .modal-footer {
-        background-color: var(--primary-light);
-        border: none;
-    }
-
     .modal-body {
         padding: 2rem;
         overflow-y: auto;

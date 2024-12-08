@@ -1,5 +1,6 @@
 <div class="mb-4 d-flex justify-content-between align-items-center">
     <h1 class="navbar-brand">{{ Auth::user()->name }}'s Dashboard</h1>
+    <button class="btn btn-primary"><i class="bi bi-graph-up-arrow"> </i>Generate Reports</button>
 </div>
 
 <div class="mb-4 row">
@@ -64,7 +65,7 @@
     </div>
 
 
-    <div class="mb-3 col-md-12">
+    <div class="mb-3 col-md-8">
         <div class="p-3 bg-white rounded shadow-sm stat-card-custom position-relative hover-effect">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="p-2 mb-2 card-icon-bg rounded-circle bg-info bg-opacity-10">
@@ -74,30 +75,30 @@
                     <i class="fas fa-external-link-alt"></i>
                 </a>
             </div>
-            <div class="mb-1 text-muted text-center h5">OFFERS</div>
-            <ul class="list-group mt-2">
-                <li class="list-group-item d-flex justify-content-between align-items-center p-2">
+            <div class="mb-1 text-center text-muted h5">OFFERS</div>
+            <ul class="mt-2 list-group">
+                <li class="p-2 list-group-item d-flex justify-content-between align-items-center">
                     <div>
                         <i class="fas fa-clock text-warning fa-lg"></i>
                         <span class="ms-2 small">Pending</span>
                     </div>
                     <span class="badge bg-warning rounded-pill">{{ $pendingOffers->count() }}</span>
                 </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center p-2">
+                <li class="p-2 list-group-item d-flex justify-content-between align-items-center">
                     <div>
                         <i class="fas fa-check-circle text-success fa-lg"></i>
                         <span class="ms-2 small">Accepted</span>
                     </div>
                     <span class="badge bg-success rounded-pill">{{ $acceptedOffers->count() }}</span>
                 </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center p-2">
+                <li class="p-2 list-group-item d-flex justify-content-between align-items-center">
                     <div>
                         <i class="fas fa-times-circle text-danger fa-lg"></i>
                         <span class="ms-2 small">Rejected</span>
                     </div>
                     <span class="badge bg-danger rounded-pill">{{ $rejectedOffers->count() }}</span>
                 </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center p-2">
+                <li class="p-2 list-group-item d-flex justify-content-between align-items-center">
                     <div>
                         <i class="fas fa-check-double text-primary fa-lg"></i>
                         <span class="ms-2 small">Completed</span>

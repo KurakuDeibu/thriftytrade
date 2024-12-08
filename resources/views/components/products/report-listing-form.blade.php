@@ -1,8 +1,8 @@
 @auth
     <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content report-modal-content">
-                <div class="modal-header report-modal-header">
+            <div class="modal-content">
+                <div class="modal-header">
                     <h5 class="modal-title" id="reportModalLabel">
                         <i class="fas fa-flag text-danger me-2"></i>
                         @if (request()->routeIs('profile.user-listing'))
@@ -108,13 +108,6 @@
 <style>
     .report-modal-content {
         border-radius: 10px;
-    }
-
-    .report-modal-header {
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #e9ecef;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
     }
 
     .form-select {

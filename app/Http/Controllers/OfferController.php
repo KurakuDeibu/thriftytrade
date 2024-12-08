@@ -90,9 +90,9 @@ class OfferController extends Controller
                     ->update(['status' => 'rejected']);
             }
 
-            return redirect()->route('seller-offers')->with('success', 'Offer updated successfully.');
+            return redirect()->back()->with('success', 'Offer updated successfully.');
         } catch (\Exception $e) {
-            return redirect()->route('seller-offers')->with('error', 'An error occurred while updating the offer status.');
+            return redirect()->back()->with('error', 'An error occurred while updating the offer status.');
         }
     }
 

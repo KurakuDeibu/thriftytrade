@@ -19,6 +19,8 @@ class Offer extends Model
         'status',
     ];
 
+    protected $dates = ['meetup_time'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -44,4 +46,10 @@ class Offer extends Model
         return $this->reviews()->where('reviewer_id', $userId)->exists();
     }
 
+     // Scope to get offers for a specific product and user
+     public function scopeForProductAndUser($query, $productId, $userId)
+     {
+         return $query->where('product_id', $productId)
+                      ->where('user_id', $userId);
+     }
 }

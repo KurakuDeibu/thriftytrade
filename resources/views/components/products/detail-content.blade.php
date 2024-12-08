@@ -389,13 +389,13 @@
 
                             <!-- Chat Button for buyers -->
                             <!-- Button to trigger modal -->
-                            <div class="mb-2 d-lg-block">
+                            {{-- <div class="mb-2 d-lg-block">
                                 <a href="#" class="shadow-sm btn btn-primary btn-lg w-100"
                                     data-bs-toggle="modal" data-bs-target="#chatModal">
                                     <i class="fas fa-envelope me-2"></i> CHAT WITH SELLER
                                 </a>
-                            </div>
-                            {{-- @include('components.Message') --}}
+                            </div> --}}
+                            @include('components.Message')
 
                             <!-- Status-specific messages -->
                             @if ($marketplaceProducts->price_type == 'Negotiable')
@@ -464,18 +464,31 @@
                 </div>
             @endauth
 
-            <!-- show the offer table -->
+            <!-- show the seller offers table -->
             <div class="container mt-2">
-                @include('seller.offers.offer-table')
+                @php
+                    $isProductOwner = Auth::check() && Auth::id() == $marketplaceProducts->author->id;
+                @endphp
+
+                @if ($isProductOwner)
+                    @include('seller.offers.offer-table')
+                @endif
+
+                {{-- show the buyer sent offers table --}}
+                @if (!$isProductOwner)
+                    @livewire('product-offers', ['product' => $marketplaceProducts])
+                @endif
+
             </div>
-
-            {{-- HAS OTHER LISTING | MARKETPLACECONTROLLER --}}
-            @include('components.products.other-listing')
-
-            {{-- SIMILAR LISTINGS / SAME CATEGORY LISTINGS | MARKETPLACECONTROLLER --}}
-            @include('components.products.similar-listing')
-
         </div>
+
+        {{-- HAS OTHER LISTING | MARKETPLACECONTROLLER --}}
+        @include('components.products.other-listing')
+
+        {{-- SIMILAR LISTINGS / SAME CATEGORY LISTINGS | MARKETPLACECONTROLLER --}}
+        @include('components.products.similar-listing')
+
+    </div>
     </div>
 
 

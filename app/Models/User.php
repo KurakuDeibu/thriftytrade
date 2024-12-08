@@ -24,7 +24,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->email === 'admin@gmail.com'; // super admin
+        return $this->isAdmin === true;
     }
 
     /**
@@ -46,6 +46,7 @@ class User extends Authenticatable implements FilamentUser
         'userAddress',
         'phoneNum',
         'password',
+        'isAdmin',
     ];
 
     public function products()
@@ -62,6 +63,16 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(Transaction::class);
     }
+
+        // In your User model
+    public function latestMessage()
+    {
+        return $this->hasOne(ChatMessage::class, 'user_id')
+            ->orWhere('receiver_id', $this->id)
+            ->latest();
+    }
+
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -93,6 +104,7 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'isAdmin' => 'boolean',
         ];
 
     }
