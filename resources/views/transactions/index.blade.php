@@ -95,12 +95,18 @@
                                             <hr>
 
                                             <div class="inline-flex gap-2 mt-2 d-flex">
-                                                <a href="/marketplace/product/{{ $transaction->product->id }}"
-                                                    type="button" class="btn btn-outline-primary w-50"
-                                                    title="View Details">
-                                                    <i class="bi bi-eye me-1"></i> View Details
-                                                </a>
 
+                                                <button wire:click="viewOfferDetails({{ $transaction->id }})"
+                                                    class="btn btn-outline-primary w-50" data-bs-toggle="modal"
+                                                    data-bs-target="#offerDetailsModal">
+                                                    <i class="bi bi-eye me-1"></i> View Transaction
+                                                </button>
+
+                                                @php
+                                                    $selectedOffer = $transaction;
+                                                @endphp
+
+                                                @include('transactions.transaction-modal')
 
                                                 @php
                                                     $hasReviewed = $transaction->hasBeenReviewedByUser(auth()->id());
@@ -163,7 +169,7 @@
                                                     @endfor
                                                 </div>
                                                 <input type="hidden" name="rating" value="0">
-                                                <small class="text-muted d-block mt-2">Please select a rating</small>
+                                                <small class="mt-2 text-muted d-block">Please select a rating</small>
                                             </div>
 
                                             <div class="mb-4">
@@ -275,11 +281,17 @@
                                             <hr>
 
                                             <div class="inline-flex gap-2 mt-2 d-flex">
-                                                <a href="/marketplace/product/{{ $transaction->product->id }}"
-                                                    type="button" class="btn btn-outline-primary w-50"
-                                                    title="View Details">
-                                                    <i class="bi bi-eye me-1"></i> View Details
-                                                </a>
+                                                <button wire:click="viewOfferDetails({{ $transaction->id }})"
+                                                    class="btn btn-outline-primary w-50" data-bs-toggle="modal"
+                                                    data-bs-target="#offerDetailsModal">
+                                                    <i class="bi bi-eye me-1"></i> View Transaction
+                                                </button>
+
+                                                @php
+                                                    $selectedOffer = $transaction;
+                                                @endphp
+
+                                                @include('transactions.transaction-modal')
 
                                                 @php
                                                     $hasReviewed = $transaction->hasBeenReviewedByUser(auth()->id());
@@ -349,7 +361,7 @@
                                                     @endfor
                                                 </div>
                                                 <input type="hidden" name="rating" value="0" required>
-                                                <small class="text-muted d-block mt-2">Please select a rating</small>
+                                                <small class="mt-2 text-muted d-block">Please select a rating</small>
                                             </div>
 
                                             <div class="mb-4">
