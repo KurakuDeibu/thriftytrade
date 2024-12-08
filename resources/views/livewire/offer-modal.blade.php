@@ -1,20 +1,25 @@
 <div>
-    <div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="offerModalLabel" aria-hidden="true"
-        wire:ignore.self x-data="offerModalFocus()">
+    <div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="offerModalLabel" wire:ignore.self
+        x-data="offerModalFocus()">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="border-0 modal-header">
+                    <i class="fas fa-tags"></i>
+                    <h5 class="modal-title fw-bold" id="offerModalLabel">&nbsp;
+                        Send Offer
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
                 <div class="p-0 modal-body">
                     <div class="row g-0">
                         <!-- Product Details (Left Side) -->
                         <div class="p-4 col-md-5 bg-light"
-                            style="background: linear-gradient(135deg, #e3f2fd, #bbdefb);">
+                            style="background: linear-gradient(135deg, #72bbf2, #bbdefb);">
                             <div class="product-preview">
                                 <div class="mb-3 product-image-container">
-                                    <img src="{{ $product->prodImage && file_exists(public_path('storage/' . $product->prodImage))
-                                        ? asset('storage/' . $product->prodImage)
+                                    <img src="{{ $product?->prodImage && file_exists(public_path('storage/' . $product?->prodImage))
+                                        ? asset('storage/' . $product?->prodImage)
                                         : asset('img/NOIMG.jpg') }}"
                                         class="product-image">
                                 </div>
@@ -22,21 +27,22 @@
                                 <!-- Seller Info -->
                                 <div class="mb-3 seller-info">
                                     <div class="d-flex align-items-center">
-                                        <img src="{{ $product->author->profile_photo_url }}"
-                                            alt="{{ $product->author->name }}" class="seller-avatar">
+                                        <img src="{{ $product?->author->profile_photo_url }}"
+                                            alt="{{ $product?->author->name }}" class="seller-avatar">
                                         <div class="ms-2">
-                                            <p class="mb-0 fw-bold">{{ $product->author->name }}</p>
+                                            <p class="mb-0 fw-bold">{{ $product?->author->name }}</p>
                                             <small class="text-muted">Seller</small>
                                         </div>
                                     </div>
                                 </div>
 
-                                <h5 class="mb-2 product-title">{{ $product->prodName }}</h5>
-                                <p class="mb-2 price">₱{{ number_format($product->prodPrice, 2) }}</p>
-                                <p class="mb-2 small">{{ $product->category->categName }} •
-                                    {{ $product->prodCondition }}</p>
+                                <h5 class="mb-2 product-title">{{ $product?->prodName }}</h5>
+                                <p class="mb-2 price">₱{{ number_format($product?->prodPrice, 2) }}</p>
+                                <p class="mb-2 small">{{ $product?->category->categName }} •
+                                    {{ $product?->prodCondition }}</p>
                             </div>
                         </div>
+
 
                         <!-- Offer Form (Right Side) -->
                         <div class="p-4 bg-white col-md-7">
@@ -44,7 +50,7 @@
                             <form wire:submit.prevent="submitOffer">
                                 <div class="mb-3">
                                     <label for="offerPrice" class="form-label">
-                                        @if ($product->price_type == 'Fixed')
+                                        @if ($product?->price_type == 'Fixed')
                                             Fixed Price
                                         @else
                                             Your Price
@@ -54,14 +60,14 @@
                                         <span class="text-white border-0 input-group-text bg-primary">₱</span>
                                         <input type="number" class="form-control" id="offerPrice"
                                             x-ref="offerPriceInput" wire:model.defer="offerPrice"
-                                            @if ($product->price_type == 'Fixed') readonly
-                                                   value="{{ $product->prodPrice }}"
+                                            @if ($product?->price_type == 'Fixed') readonly
+                                                   value="{{ $product?->prodPrice }}"
                                                @else
                                                    min="1"
                                                    step="0.01"
-                                                   placeholder="{{ $product->prodPrice }}" @endif>
+                                                   placeholder="{{ $product?->prodPrice }}" @endif>
                                     </div>
-                                    @if ($product->price_type == 'Fixed')
+                                    @if ($product?->price_type == 'Fixed')
                                         <small class="text-muted">
                                             <i class="bi bi-info-circle me-1"></i>
                                             This is a fixed-price item. The offer price cannot be changed.
@@ -104,11 +110,48 @@
                                     </small>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary w-100">
-                                    <i class="fas fa-paper-plane me-2"></i> Send Offer
+                                @error('offer_limit')
+                                    <div class="mb-4 text-red-500">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+
+                                @if ($this->remainingOfferSlots > 0)
+                                    <p class="text-sm text-gray-600">
+                                        You have {{ $this->remainingOfferSlots }} offer slot(s) remaining for this
+                                        listing.
+                                    </p>
+                                @else
+                                    <p class="text-sm text-red-600">
+                                        You have reached the limit of offers for this listing.
+                                    </p>
+                                @endif
+
+                                {{-- Success Message --}}
+                                @if ($successMessage)
+                                    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show"
+                                        class="alert alert-success alert-dismissible fade show" role="alert"
+                                        x-on:offer-submitted.window="window.location.reload()">
+                                        {{ $successMessage }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close" wire:click="clearMessages()"></button>
+                                    </div>
+                                @endif
+
+
+
+                                <button type="submit" class="btn btn-primary w-100" wire:loading.attr="disabled">
+                                    <span wire:loading.remove>
+                                        <i class="fas fa-paper-plane me-2"></i> Send Offer
+                                    </span>
+                                    <span wire:loading>
+                                        <span class="spinner-border spinner-border-sm" role="status"></span>
+                                        Sending Offer...
+                                    </span>
                                 </button>
                             </form>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -123,12 +166,6 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .modal-header {
-            padding: 0.5rem 1rem;
-            position: absolute;
-            right: 0;
-            z-index: 1;
-        }
 
         .product-image-container {
             width: 100%;
@@ -216,13 +253,23 @@
                 setInitialFocus() {
                     // Wait for the next tick to ensure the modal is fully rendered
                     this.$nextTick(() => {
-                        @if ($product->price_type == 'Fixed')
+                        @if ($product?->price_type == 'Fixed')
                             this.$refs.meetupLocationInput.focus();
                         @else
                             this.$refs.offerPriceInput.focus();
                         @endif
                     });
+                },
+                init() {
+                    // Listen for the browser event dispatched from Livewire
+                    document.addEventListener('offer-submitted', (event) => {
+                        // Reload the page after a short delay to show success message
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    });
                 }
+
             }
         }
     </script>

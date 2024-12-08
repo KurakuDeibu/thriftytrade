@@ -40,8 +40,9 @@
                                                         ? 'text-success'
                                                         : ($offer->status == 'rejected'
                                                             ? 'text-danger'
-                                                            : 'text-warning') }}
-                                                    fw-bold">
+                                                            : ($offer->status == 'completed'
+                                                                ? 'text-primary'
+                                                                : 'text-warning')) }} fw-bold">
                                                     ₱{{ number_format($offer->offer_price, 2) }}
                                                 </span>
                                             </div>
@@ -49,7 +50,7 @@
                                     </td>
                                     <td class="px-4 m-2">
                                         <div>
-                                            <div class="fw-bold text-sm"> <i class="bi bi-geo-alt"></i>
+                                            <div class="text-sm fw-bold"> <i class="bi bi-geo-alt"></i>
                                                 {{ $offer->meetup_location }}</div>
                                             <small class="text-muted"> <i class="bi bi-clock"></i>
                                                 {{ \Carbon\Carbon::parse($offer->meetup_time)->format('M d, Y h:i A') }}</small>
@@ -58,48 +59,60 @@
                                     <td class="px-4 m-2">
                                         <span
                                             class="badge
-                                            {{ $offer->status == 'accepted' ? 'bg-success' : ($offer->status == 'rejected' ? 'bg-danger' : 'bg-warning') }}">
+                                        {{ $offer->status == 'accepted'
+                                            ? 'bg-success'
+                                            : ($offer->status == 'rejected'
+                                                ? 'bg-danger'
+                                                : ($offer->status == 'completed'
+                                                    ? 'bg-primary'
+                                                    : 'bg-warning')) }}">
                                             {{ ucfirst($offer->status) }}
                                         </span>
                                     </td>
                                     <td class="px-4 m-2">
-                                        @if ($offer->status == 'accepted')
-                                            <a href="{{ route('seller-offers') }}"
-                                                class="gap-2 btn btn-outline-primary btn-sm align-items-center">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a href="{{ route('chat.chat-message') }}"
-                                                class="gap-2 btn btn-outline-primary btn-sm align-items-center">
-                                                <i class="bi bi-chat-square"></i>
-                                            </a>
-                                        @elseif ($offer->status == 'pending')
-                                            <div class="btn-group" role="group">
-                                                <button class="btn btn-sm btn-success"
-                                                    onclick="updateOfferStatus({{ $offer->id }}, 'accepted')">
-                                                    <i class="bi bi-check-circle me-1"></i> Accept
-                                                </button>
-                                                <button class="btn btn-sm btn-danger"
-                                                    onclick="updateOfferStatus({{ $offer->id }}, 'rejected')">
-                                                    <i class="bi bi-x-circle me-1"></i> Reject
-                                                </button>
-                                            </div>
-                                        @else
-                                            <span class="text-muted">No Action</span>
-                                        @endif
+                                        <div class="btn-group" role="group">
+                                            @if ($offer->status == 'accepted')
+                                                <a href="{{ route('seller-offers') }}"
+                                                    class="gap-2 btn btn-outline-primary btn-sm align-items-center">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                                <a href="{{ route('chat.chat-message') }}"
+                                                    class="gap-2 btn btn-outline-success btn-sm align-items-center">
+                                                    <i class="bi bi-chat-square"></i> Message with {{ $offer->user->name }}
+                                                </a>
+                                            @elseif ($offer->status == 'pending')
+                                                <div class="btn-group" role="group">
+                                                    <button class="btn btn-sm btn-success"
+                                                        onclick="updateOfferStatus({{ $offer->id }}, 'accepted')">
+                                                        <i class="bi bi-check-circle me-1"></i> Accept
+                                                    </button>
+                                                    <button class="btn btn-sm btn-danger"
+                                                        onclick="updateOfferStatus({{ $offer->id }}, 'rejected')">
+                                                        <i class="bi bi-x-circle me-1"></i> Reject
+                                                    </button>
+                                                </div>
+                                            @elseif ($offer->status == 'completed')
+                                                <a href="{{ route('user.transactions') }}"
+                                                    class="btn btn-sm btn-outline-warning">
+                                                    <i class="bi bi-star"></i> Review
+                                                </a>
+                                            @else
+                                                <span class="text-muted">No Action</span>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    @if ($marketplaceProducts->offers->count() > 3)
-                        <div class="mt-3 text-center">
-                            <a wire:navigate.hover href="{{ route('seller-offers') }}" class="btn btn-outline-secondary">
-                                View All Offers ({{ $marketplaceProducts->offers->count() }})
-                            </a>
-                        </div>
-                    @endif
-
                 </div>
+                @if ($marketplaceProducts->offers->count() > 3)
+                    <div class="mt-3 text-center">
+                        <a wire:navigate.hover href="{{ route('seller-offers') }}" class="btn btn-outline-secondary">
+                            View All Offers ({{ $marketplaceProducts->offers->count() }})
+                        </a>
+                    </div>
+                @endif
             @else
                 <div class="alert alert-info">
                     No offers have been made for this product yet.

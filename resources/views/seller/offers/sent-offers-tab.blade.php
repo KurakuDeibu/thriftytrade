@@ -38,13 +38,19 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <span class="fw-bold text-info">
+                                        <span class="fw-bold text-muted">
                                             ₱{{ number_format($offer->offer_price, 2) }}
                                         </span>
                                     </td>
                                     <td>
                                         <span
-                                            class="badge {{ $offer->status == 'accepted' ? 'bg-success' : ($offer->status == 'rejected' ? 'bg-danger' : 'bg-warning') }}">
+                                            class="badge {{ $offer->status == 'accepted'
+                                                ? 'bg-success'
+                                                : ($offer->status == 'rejected'
+                                                    ? 'bg-danger'
+                                                    : ($offer->status == 'completed'
+                                                        ? 'bg-info'
+                                                        : 'bg-warning')) }}">
                                             {{ ucfirst($offer->status) }}
                                         </span>
                                     </td>
