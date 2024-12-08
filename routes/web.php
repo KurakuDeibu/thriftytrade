@@ -25,7 +25,6 @@ Route::get('/marketplace/product/{id}', [MarketplaceController::class, 'showDeta
 Route::get('/marketplace/user/{userId}/listings', [MarketplaceController::class, 'showUserListings'])->name('profile.user-listing'); //Show User Listings
 
 // ---------------------SENDMESSAGECONTROLLER - CHAT CONTROLLER --------------------------//
-Route::get('/marketplace/chat', [ChatController::class, 'index'])->name('chat.chat-message');
 Route::get('/marketplace/chat', [SendMessageController::class, 'index'])->name('chat.chat-message');
 Route::post('/send/messages', [SendMessageController::class, 'store']);
 Route::get('/users', [SendMessageController::class, 'showUsers']);
@@ -97,4 +96,6 @@ Route::middleware(['auth', 'verified'])->group( function () {
     //-------REVIEWCONTROLLER------//
     Route::post('/user/transaction/{transaction}/review', [ReviewController::class, 'storeReview'])->name('transactions.review.store');
 
+    // ------GENERATE REPORTS ------//
+    Route::get('/generate-pdf/{offerId}', [TransactionController::class, 'generatePDF'])->name('offers.generate-pdf');
 });

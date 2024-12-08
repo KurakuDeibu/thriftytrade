@@ -31,27 +31,14 @@
             float: left;
             width: 12rem;
             height: 70px;
-            background: url("{{ asset('img/thriftytrade-logo.png') }}") left/contain no-repeat;
+            background: left/contain no-repeat;
             transition: all 0.5s ease;
+            padding: 5px;
         }
 
         #logo:hover {
-            background: url("{{ asset('img/thriftytrade-logo.png') }}") left/contain no-repeat;
-            transform: scale(1.2);
-        }
+            transform: scale(1.1);
 
-        @keyframes logoAnimation {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-
-            100% {
-                transform: scale(1);
-            }
         }
 
         @media (max-width: 991.98px) {
@@ -63,16 +50,29 @@
                 margin-right: 0.5rem;
             }
         }
+
+        @media (max-width: 768px) {
+            .btn-outline-secondary {
+                width: 35px;
+                height: 35px;
+            }
+        }
     </style>
     <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
 </head>
 
-
 <nav class="bg-white shadow-sm navbar sticky-top navbar-expand-lg navbar-light">
-    <div class="container">
+
+    <div class="container d-flex align-items-center">
+        {{-- BACK BUTTON --}}
+        <button onclick="goBack()" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip"
+            data-bs-placement="bottom" title="Go Back">
+            <i class="bi bi-arrow-left"></i>
+        </button>
 
         {{-- LOGO --}}
-        <a class="navbar-brand" id="logo" href="/"></a>
+        <a id="logo" href="/"><img src="{{ asset('img/thriftytrade-logo.png') }}" class="navbar-brand"
+                alt="THRIFTYTRADE LOGO"></a>
         <div class="d-flex align-items-center">
             {{-- SEARCH ICON - TOGGLE SEARCH --}}
             <div class="navbar-search-icon me-3" onclick="toggleSearchHeader()" id="search-bar">
@@ -80,13 +80,12 @@
             </div>
 
             {{-- MOBILE TOGGLE BUTTON --}}
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            <button class="m-2 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
         </div>
-
 
         <!-- Search Header (Positioned within navbar) -->
         <div class="search-header d-none" id="searchHeader">
@@ -222,5 +221,22 @@
     // Prevent closing when interacting with search header
     document.getElementById('searchHeader').addEventListener('click', function(event) {
         event.stopPropagation();
+    });
+</script>
+
+{{-- Add this script to the existing script section or in a separate script tag --}}
+<script>
+    function goBack() {
+        if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            window.location.href = "/";
+        }
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.altKey && event.key === 'ArrowLeft') {
+            goBack();
+        }
     });
 </script>

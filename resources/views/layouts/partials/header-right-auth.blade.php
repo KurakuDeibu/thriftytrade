@@ -32,6 +32,14 @@
                </div>
                <div class="border-t border-gray-200"></div>
 
+               <!-- Admin Dashboard Link -->
+               @if (Auth::user()->isAdmin)
+                   <x-dropdown-link href="{{ route('filament.admin.pages.dashboard') }}">
+                       {{ __('Admin Dashboard') }}
+                   </x-dropdown-link>
+                   <div class="border-t border-gray-200"></div>
+               @endif
+
                <x-dropdown-link wire:navigate.hover href="{{ route('profile.user-listing', Auth::user()->id) }}">
                    {{ __('My Profile') }}
                </x-dropdown-link>
@@ -44,9 +52,11 @@
                    {{ __('Settings') }}
                </x-dropdown-link>
 
-               <x-dropdown-link wire:navigate.hover href="{{ route('dashboard') }}">
+               <x-dropdown-link wire:navigate.hover href="{{ route('user.transactions') }}">
                    {{ __('History') }}
                </x-dropdown-link>
+
+
 
                @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                    <x-dropdown-link href="{{ route('api-tokens.index') }}">
