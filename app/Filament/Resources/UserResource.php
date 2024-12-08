@@ -80,6 +80,14 @@ class UserResource extends Resource
                             }
                         }),
                 ]),
+
+                Forms\Components\Section::make('User Permissions')
+                ->schema([
+                    Toggle::make('isAdmin')
+                        ->label('Admin Access')
+                        ->helperText('Allow this user to access the admin panel')
+                ])
+
         ]);
     }
 

@@ -27,6 +27,7 @@ class UserSeeder extends Seeder
             'userAddress' => '123 Admin St, Admin City',
             'phoneNum' => '123-456-7890',
             'email_verified_at' => now(),
+            'isAdmin' => true,
         ]);
     }
 }

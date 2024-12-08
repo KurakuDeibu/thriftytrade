@@ -21,6 +21,8 @@ return new class extends Migration
             $table->date('birthDay'); // birthdate
             $table->string('phoneNum', 50); // phone num
             $table->string('userRefTag', 10)->nullable(); // user ref tag
+            $table->boolean('isAdmin')->default(false); //added admin role
+            $table->boolean('isFinder')->default(false); //added finder role
 
             $table->string('email', 50)->unique();
             $table->timestamp('email_verified_at')->nullable();
