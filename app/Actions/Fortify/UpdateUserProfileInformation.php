@@ -18,15 +18,15 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     public function update(User $user, array $input): void
     {
         Validator::make($input, [
-            'firstName' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s-]+$/'],
-            'lastName' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s-]+$/'],
-            'middleName' => ['nullable','string', 'max:255', 'regex:/^[a-zA-Z\s-]+$/'],
-            'userAddress' => ['required','string', 'max:255'],
-            'birthDay' => ['required','string', 'max:255'],
+            'firstName' => ['required', 'string', 'max:50', 'regex:/^[a-zA-Z\s-]+$/'],
+            'lastName' => ['required', 'string', 'max:50', 'regex:/^[a-zA-Z\s-]+$/'],
+            'middleName' => ['nullable','string', 'max:50', 'regex:/^[a-zA-Z\s-]+$/'],
+            'userAddress' => ['required','string', 'max:50'],
+            'birthDay' => ['required','string', 'max:50'],
             'phoneNum' => ['required','string', 'min:11'],
 
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'name' => ['required', 'string', 'max:25'],
+            'email' => ['required', 'email', 'max:50', Rule::unique('users')->ignore($user->id)],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
         ])->validateWithBag('updateProfileInformation');
 

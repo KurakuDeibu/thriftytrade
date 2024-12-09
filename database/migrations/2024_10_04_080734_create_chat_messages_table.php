@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('receiver_id');
-            $table->unsignedInteger('products_id');
+            $table->unsignedInteger('products_id')->nullable();
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('receiver_id')->references('id')->on('users')->cascadeOnDelete();

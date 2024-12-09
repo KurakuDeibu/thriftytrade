@@ -3,6 +3,15 @@
     $userId = auth()->user()->id;
     $receiverId = $marketplaceProducts->author->id;
     $productId = $marketplaceProducts->id;
+
+    // Check if existing chat exists
+    $existingChat = \App\Models\ChatMessage::where(function ($query) use ($userId, $receiverId) {
+        $query->where('user_id', $userId)->where('receiver_id', $receiverId);
+    })
+        ->orWhere(function ($query) use ($userId, $receiverId) {
+            $query->where('user_id', $receiverId)->where('receiver_id', $userId);
+        })
+        ->first();
 @endphp
 
 <!-- Button to trigger modal -->
@@ -71,9 +80,15 @@
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-arrow-left me-2"></i>Back
                 </button>
-                <button type="button" class="px-4 btn btn-primary" @click="sendMessages">
-                    <i class="fas fa-paper-plane me-2"></i>Send Messages
-                </button>
+                @if ($existingChat)
+                    <a href="{{ route('chat.chat-message') }}" class="px-4 btn btn-primary">
+                        <i class="fas fa-comments me-2"></i>View Chat
+                    </a>
+                @else
+                    <button type="button" class="px-4 btn btn-primary" @click="sendMessages">
+                        <i class="fas fa-paper-plane me-2"></i>Send Messages
+                    </button>
+                @endif
             </div>
         </div>
     </div>
