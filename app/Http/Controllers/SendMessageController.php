@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\ChatMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class SendMessageController extends Controller
@@ -60,32 +61,71 @@ class SendMessageController extends Controller
     }
 
     public function showMessages(Request $request, $id)
-{
-    $messages = ChatMessage::with(['user', 'products', 'offers'])
-        ->where(function($query) use ($id) {
-            $query->where('receiver_id', auth()->id())
-                  ->where('user_id', $id);
-        })
-        ->orWhere(function($query) use ($id) {
-            $query->where('user_id', auth()->id())
-                  ->where('receiver_id', $id);
-        })
-        ->orderBy('created_at', 'asc')
-        ->get()
-        ->map(function($message) {
-            return [
-                'id' => $message->id,
-                'messages' => $message->messages,
-                'user_id' => $message->user_id,
-                'receiver_id' => $message->receiver_id,
-                'created_at' => $message->created_at,
-                'self_owned' => $message->user_id === auth()->id(),
-                'product' => $message->products // Include product details
-            ];
-        });
+    {
+        $messages = ChatMessage::with(['user', 'products', 'offers'])
+            ->where(function($query) use ($id) {
+                $query->where('receiver_id', auth()->id())
+                    ->where('user_id', $id);
+            })
+            ->orWhere(function($query) use ($id) {
+                $query->where('user_id', auth()->id())
+                    ->where('receiver_id', $id);
+            })
+            ->orderBy('created_at', 'asc')
+            ->get()
+            ->map(function($message) {
+                return [
+                    'id' => $message->id,
+                    'messages' => $message->messages,
+                    'user_id' => $message->user_id,
+                    'receiver_id' => $message->receiver_id,
+                    'created_at' => $message->created_at,
+                    'self_owned' => $message->user_id === auth()->id(),
+                    'product' => $message->products,
+                ];
+            });
 
-    return response()->json($messages);
-}
+             // If no messages found
+            if ($messages->isEmpty()) {
+                return response()->json([
+                    'message' => 'No messages found',
+                    'product' => null
+                ], 404);
+            }
+
+        return response()->json($messages);
+    }
+
+    public function sendMessage(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'receiver_id' => 'required|exists:users,id',
+            'message' => 'required|string|max:1000'
+        ]);
+
+        // Ensure the user is authenticated
+        if (!Auth::check()) {
+            return response()->json([
+                'error' => 'Unauthorized'
+            ], 401);
+        }
+
+        $sender = Auth::user();
+
+        $message = ChatMessage::create([
+            'user_id' => $sender->id,
+            'receiver_id' => $request->receiver_id,
+            'messages' => $request->message,
+        ]);
+
+        // Can broadcast the message or trigger an event here
+        // to have an real-time communication (WIP)
+
+        return response()->json([
+            'message' => $message,
+        ], 201);
+    }
 
 
 }

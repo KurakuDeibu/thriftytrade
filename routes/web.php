@@ -24,12 +24,17 @@ Route::get('/marketplace', [MarketplaceController::class, 'showMarketplace'])->n
 Route::get('/marketplace/product/{id}', [MarketplaceController::class, 'showDetails'])->name('product'); //Show Details
 Route::get('/marketplace/user/{userId}/listings', [MarketplaceController::class, 'showUserListings'])->name('profile.user-listing'); //Show User Listings
 
-// ---------------------SENDMESSAGECONTROLLER - CHAT CONTROLLER --------------------------//
+// --------------SENDMESSAGECONTROLLER - CHAT CONTROLLER -------------//
 Route::get('/marketplace/chat', [SendMessageController::class, 'index'])->name('chat.chat-message');
-Route::post('/send/messages', [SendMessageController::class, 'store']);
-Route::get('/users', [SendMessageController::class, 'showUsers']);
-Route::get('/messages/user/{userId}', [SendMessageController::class, 'showMessages']);
 
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+// -----------SEND MESSAGE FROM PRODUCT DETAILS------------//
+Route::post('/send/messages', [SendMessageController::class, 'store']);
+// -----------VIEW CHATS FROM CHAT-MESSAGES-----------//
+Route::get('/users', [SendMessageController::class, 'showUsers']);
+Route::get('/messages/user/{userId}', [SendMessageController::class, 'showMessages'])->name('chat.showMessages');
+Route::post('/send-message', [SendMessageController::class, 'sendMessage']);
+});
 
 // --------------------WISHLISTCONTROLLER-------------------------//
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {

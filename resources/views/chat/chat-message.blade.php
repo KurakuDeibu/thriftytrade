@@ -35,6 +35,22 @@
             .message-wrapper.flex-row-reverse .message-content {
                 text-align: right;
             }
+
+            @media (max-width: 991.98px) {
+                #chatSidebar {
+                    width: 100%;
+                    max-width: 350px;
+                }
+            }
+
+            #chatSidebar {
+                transition: transform 0.3s ease-in-out;
+            }
+
+            .list-group-item.active {
+                background-color: #f8f9fa;
+                color: #007bff;
+            }
         </style>
     </head>
 
@@ -43,22 +59,41 @@
     <body class="bg-light">
         <div class="p-0 container-fluid p-sm-4 mobile-screen">
             <div class="bg-white shadow h-100 d-flex flex-column">
-
                 {{-- START OF CHAT LISTS --}}
-                <div x-data="chatApp()" x-init="showUsers()" class="overflow-hidden d-flex flex-grow-1">
-                    <!-- CHAT Sidebar -->
-                    <div class="collapse d-lg-block bg-light border-end" id="sidebar"
-                        style="width: 280px; height: calc(100vh - 56px); overflow-y: auto;">
-                        <div class="p-3 border-bottom d-flex align-items-center">
-                            <h3 class="p-2 mb-0 h5"> Chats </h3>
-                            <a href="{{ route('home') }}" class="text-decoration-none me-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-house" viewBox="0 0 16 16">
-                                    <path
-                                        d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z" />
-                                </svg>
-                            </a>
+                <div x-data="chatApp()" x-init="showUsers()"
+                    class="overflow-hidden d-flex flex-grow-1 position-relative">
+                    <!-- Sidebar Toggle Button -->
+                    <button class="top-0 m-2 btn btn-primary d-lg-none position-absolute start-0 z-3" type="button"
+                        data-bs-toggle="offcanvas" data-bs-target="#chatSidebar" aria-controls="chatSidebar">
+                        <i class="bi bi-chat-left-text"></i>
+                    </button>
+
+                    <!-- Chat Sidebar -->
+                    <div class="bg-white offcanvas-lg offcanvas-start border-end" tabindex="-1" id="chatSidebar"
+                        aria-labelledby="chatSidebarLabel" style="width: 320px;">
+
+                        <!-- Sidebar Header -->
+                        <div class="p-3 offcanvas-header border-bottom">
+                            <div class="d-flex align-items-center w-100">
+                                <h5 class="mb-0 offcanvas-title me-auto" id="chatSidebarLabel">
+                                    <i class="bi bi-chat-dots text-primary me-2"></i>Chats
+                                </h5>
+
+                                <!-- Quick Actions -->
+                                <div class="d-flex align-items-center">
+                                    <a href="{{ route('home') }}" class="text-muted me-2" data-bs-toggle="tooltip"
+                                        title="Home">
+                                        <i class="bi bi-house-fill"></i>
+                                    </a>
+
+                                </div>
+
+                                <!-- Close button for mobile -->
+                                <button type="button" class="btn-close d-lg-none ms-2" data-bs-dismiss="offcanvas"
+                                    aria-label="Close"></button>
+                            </div>
                         </div>
+
 
                         <!-- User List -->
                         <div class="list-group list-group-flush">
@@ -68,34 +103,67 @@
                                 </div>
                             </template>
 
+                            <!-- In the User List section -->
                             <template x-for="user in users" :key="user.id">
-                                <a href ="#" class="list-group-item list-group-item-action"
-                                    :class="{ 'active': selectedUserId === user.id }"
-                                    @click.prevent="showMessages(user.id)">
-                                    <div class="d-flex w-100 justify-content-between align-items-center">
-                                        <div class="d-flex align-items-center">
-                                            <!-- Profile Photo -->
+                                <div class="list-group-item list-group-item-action position-relative user-list-item"
+                                    :class="{ 'active': selectedUserId === user.id }">
+                                    <div class="d-flex align-items-center w-100">
+                                        <!-- Profile Photo -->
+                                        <div class="flex-shrink-0 me-3"
+                                            style="width: 50px; height: 50px; overflow: hidden; border-radius: 50%;">
                                             <img :src="user.profile_photo_url || 'https://via.placeholder.com/50'"
-                                                alt="User  avatar" class="rounded-circle me-3" width="50"
-                                                height="50">
+                                                alt="User avatar" class="w-100 h-100 object-fit-cover"
+                                                style="object-position: center; cursor: pointer;"
+                                                @click="openUserProfile(user)">
+                                        </div>
 
-                                            <div>
-                                                <!-- User Name -->
-                                                <h6 class="mb-1 fw-bold" x-text="user.name"></h6>
+                                        <!-- User Info - Flex Column -->
+                                        <div class="overflow-hidden flex-grow-1 me-2" @click="showMessages(user.id)">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <!-- Username Container -->
+                                                <div class="overflow-hidden d-flex flex-column"
+                                                    style="flex-grow: 1; min-width: 0;">
+                                                    <h6 class="mb-0 text-truncate fw-bold"
+                                                        style="max-width: 100%; cursor: pointer;" x-text="user.name"
+                                                        @click="openUserProfile(user)" :title="user.name">
+                                                    </h6>
 
-                                                <!-- Latest Message -->
-                                                <p class="mb-1 text-muted small"
-                                                    x-text="user.created_at?.message || 'No messages yet'"></p>
+                                                    <!-- Latest Message -->
+                                                    <p class="mb-0 text-muted small text-truncate"
+                                                        x-text="user.created_at?.message || 'No messages yet'"
+                                                        style="max-width: 100%;">
+                                                    </p>
+                                                </div>
+
+                                                <!-- Timestamp Container -->
+                                                <small class="flex-shrink-0 text-muted ms-2 text-nowrap"
+                                                    style="font-size: 0.75rem;">
+                                                    <span
+                                                        x-text="user.created_at ? diffForHumans(user.created_at) : ''"></span>
+                                                </small>
                                             </div>
                                         </div>
 
-                                        <!-- Timestamp of Latest Message -->
-                                        <small class="text-muted"
-                                            x-text="user.created_at ? diffForHumans(user.created_at) : ''">
-                                        </small>
+                                        <!-- Dropdown Menu -->
+                                        <div class="flex-shrink-0 dropdown position-static">
+                                            <button class="p-0 btn btn-link text-muted" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end"
+                                                style="position: absolute; z-index: 1050;">
+                                                <li>
+                                                    <a class="dropdown-item" href="#"
+                                                        @click.prevent="openUserProfile(user)">
+                                                        <i class="bi bi-person me-2"></i>View Profile
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                </a>
+                                </div>
                             </template>
+
                         </div>
                     </div>
 
@@ -106,7 +174,8 @@
                                 <div class="d-flex justify-content-center align-items-center" style="height: 100%;">
                                     <div class="text-center">
                                         <h4>You must login first to view your messages.</h4>
-                                        <a class="m-2 btn btn-outline-primary" href="{{ route('login') }}">Go To Login</a>
+                                        <a class="m-2 btn btn-outline-primary" href="{{ route('login') }}">Go To
+                                            Login</a>
                                     </div>
                                 </div>
                             @else
@@ -119,23 +188,27 @@
 
                                 <template x-if="selectedUserId">
                                     <div class="gap-3 d-flex flex-column">
-                                        <template x-for="message in messages" :key="message.id">
+                                        <template x-for="(message, index) in messages" :key="message.id">
                                             <div class="mb-3 message-wrapper d-flex align-items-start"
                                                 :class="{
                                                     'flex-row-reverse': message.user_id === currentUserId,
                                                 }">
                                                 <!-- User Profile Image -->
-                                                <img :src="message.user_id === currentUserId ?
-                                                    '{{ auth()->user()->profile_photo_url }}' :
-                                                    users.find(u => u.id === message.user_id)?.profile_photo_url ||
-                                                    'https://via.placeholder.com/40'"
-                                                    class="mx-2 rounded-circle" width="40" height="40"
+                                                <img x-show="index === messages.length - 1 || messages[index+1].user_id !== message.user_id"
+                                                    :src="message.user_id === currentUserId ?
+                                                        '{{ auth()->user()->profile_photo_url }}' :
+                                                        users.find(u => u.id === message.user_id)
+                                                        ?.profile_photo_url ||
+                                                        'https://via.placeholder.com/40'"
+                                                    class="mx-2 rounded-circle object-fit-cover"
+                                                    style="width: 40px; height: 40px;" width="40" height="40"
                                                     alt="User avatar">
 
                                                 <div class="message-content">
-                                                    <div class="p-2 rounded d-inline-block"
+                                                    <div class="p-2 px-2 py-2 rounded d-inline-block"
                                                         :class="{
-                                                            'bg-primary text-white': message.user_id === currentUserId,
+                                                            'bg-primary text-white': message.user_id ===
+                                                                currentUserId,
                                                             'bg-light': message.user_id !== currentUserId
                                                         }">
 
@@ -144,8 +217,12 @@
                                                         </p>
                                                         <!-- Timestamp -->
                                                         <small class="text-muted d-block"
-                                                            :class="{ 'text-white-50': message.user_id === currentUserId }"
-                                                            x-text="diffForHumans(message.created_at)">
+                                                            :class="{
+                                                                'text-white-50': message.user_id === currentUserId
+                                                            }">
+                                                            <span x-text="diffForHumans(message.created_at)"></span>
+                                                            <span
+                                                                x-text="message.user_id === currentUserId ? ' • You' : ' • ' + (users.find(u => u.id === message.user_id)?.name || 'User')"></span>
                                                         </small>
                                                     </div>
                                                 </div>
@@ -159,16 +236,16 @@
                         <!-- Message Input -->
                         <div class="p-3 bg-white border-top">
                             <div class="input-group">
-                                <input type="text" class="form-control rounded-pill" placeholder="Type your message..."
+                                <input type="text" class="form-control" placeholder="Type a message..."
                                     x-model="newMessage" @keyup.enter="sendMessage"
-                                    :disabled="!selectedUserId || !{{ auth()->check() ? 'true' : 'false' }}">
-                                <button class="btn btn-primary rounded-circle ms-2" type="button" @click="sendMessage"
-                                    :disabled="!selectedUserId || !{{ auth()->check() ? 'true' : 'false' }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                                        <path
-                                            d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z" />
-                                    </svg>
+                                    :disabled="!selectedUserId || isLoading">
+                                <button class="btn btn-primary" type="button" @click="sendMessage"
+                                    :disabled="!selectedUserId || !newMessage.trim() || isLoading">
+                                    <span x-show="!isLoading">
+                                        <i class="bi bi-send"></i>
+                                    </span>
+                                    <span x-show="isLoading" class="spinner-border spinner-border-sm" role="status"
+                                        aria-hidden="true"></span>
                                 </button>
                             </div>
                         </div>
@@ -185,14 +262,68 @@
                     selectedUserId: null,
                     selectedUserName: '',
                     currentUserId: {{ auth()->id() }},
+                    newMessage: '',
+                    isLoading: false,
+                    searchQuery: '',
+                    filteredUsers: [],
+
 
                     showUsers() {
                         axios.get('/users')
                             .then(response => {
                                 this.users = response.data;
+                                this.filteredUsers = [...this.users];
                             })
                             .catch(error => {
                                 console.error('Error fetching users:', error);
+                            });
+                    },
+
+                    filterUsers() {
+                        this.filteredUsers = this.users.filter(user =>
+                            user.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+                        );
+                    },
+
+                    openUserProfile(user) {
+                        window.open(`/marketplace/user/${user.id}/listings`, '_blank');
+
+                        this.showMessages(user.id);
+                    },
+
+
+                    sendMessage() {
+                        // Validate message and selected user
+                        if (!this.selectedUserId || !this.newMessage.trim()) {
+                            console.error('Invalid message or no user selected');
+                            return;
+                        }
+                        this.isLoading = true;
+
+                        // Send message via axios
+                        axios.post('/send-message', {
+                                receiver_id: this.selectedUserId,
+                                message: this.newMessage
+                            })
+                            .then(response => {
+                                // Add the new message to the messages array
+                                this.messages.push(response.data.message);
+                                this.newMessage = '';
+
+                                // Scroll to bottom
+                                this.$nextTick(() => {
+                                    const messageBox = document.getElementById('messageBox');
+                                    messageBox.scrollTop = messageBox.scrollHeight;
+                                });
+                            })
+                            .catch(error => {
+                                // error logging
+                                console.error('Error sending message:', error.response ? error.response.data : error);
+
+                                alert('Failed to send message. Please try again.');
+                            })
+                            .finally(() => {
+                                this.isLoading = false;
                             });
                     },
 
@@ -204,13 +335,11 @@
                         axios.get(`/messages/user/${userId}`)
                             .then(response => {
                                 this.messages = response.data.map(message => {
-                                    // Optionally, you can add additional processing here
                                     return {
                                         ...message,
                                         user_profile_image: this.getUserProfileImage(message.user_id)
                                     };
                                 });
-
                                 // Scroll to bottom after loading messages
                                 this.$nextTick(() => {
                                     const messageBox = document.getElementById('messageBox');
@@ -224,9 +353,20 @@
                     getUserProfileImage(userId) {
                         const user = this.users.find(u => u.id === userId);
                         return user ? user.profile_photo_url : 'https://via.placeholder.com/40';
-                    }
-                };
+                    },
+
+
+
+                }
             }
+
+            // Initialize tooltips
+            document.addEventListener('DOMContentLoaded', function() {
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl)
+                });
+            });
         </script>
 
         <script>
