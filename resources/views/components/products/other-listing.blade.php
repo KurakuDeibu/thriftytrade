@@ -1,10 +1,10 @@
  {{-- OTHER LISTINGS OF THE USER --}}
- <div class="row">
+ <div class="mb-3 row">
      <div class="col-12 d-flex justify-content-between align-items-center">
          <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"
              class="mt-5 text-xl font-bold text-center">
              Other listings by <span
-                 class=" text-blue-500 hover-underline">{{ $marketplaceProducts->author->name }}</span>
+                 class="text-blue-500 hover-underline">{{ $marketplaceProducts->author->name }}</span>
          </a>
          @if ($hasOtherListings && $showOtherListings->count() > 4)
              <a href="{{ route('profile.user-listing', $marketplaceProducts->author->id) }}"

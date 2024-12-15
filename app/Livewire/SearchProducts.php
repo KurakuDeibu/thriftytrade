@@ -43,9 +43,9 @@ class SearchProducts extends Component
         $this->location = request('location') ?: null;
     }
 
-    public function search()
+    public function updatingSearch()
     {
-        $this->render();
+        $this->resetPage();
     }
 
     public function render()

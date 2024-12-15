@@ -351,7 +351,6 @@
                 <ul class="list-unstyled">
 
                     <li class="mb-2"><strong>Condition:</strong> {{ $marketplaceProducts->prodCondition }}</li>
-                    <li class="mb-2"><strong>Quantity:</strong> {{ $marketplaceProducts->prodQuantity }}</li>
                     <li class="mb-2"><strong>Category:</strong> {{ $marketplaceProducts->category->categName }}
                     <li class="mb-2"><strong>Location:</strong> {{ $marketplaceProducts->location }}</li>
                     </li>
@@ -390,12 +389,14 @@
                             <!-- Chat Button for buyers -->
                             <!-- Button to trigger modal -->
                             {{-- <div class="mb-2 d-lg-block">
-                                <a href="#" class="shadow-sm btn btn-primary btn-lg w-100"
-                                    data-bs-toggle="modal" data-bs-target="#chatModal">
+                                <a wire:click="message()"
+                                    href="{{ route('chat', ['query' => $marketplaceProducts->author->id]) }}"
+                                    class="shadow-sm btn btn-primary btn-lg w-100" data-bs-toggle="modal"
+                                    data-bs-target="#chatModal">
                                     <i class="fas fa-envelope me-2"></i> CHAT WITH SELLER
                                 </a>
                             </div> --}}
-                            @include('components.Message')
+                            <livewire:message-modal :userId="$marketplaceProducts->author->id" />
 
                             <!-- Status-specific messages -->
                             @if ($marketplaceProducts->price_type == 'Negotiable')

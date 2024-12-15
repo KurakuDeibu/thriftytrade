@@ -9,10 +9,22 @@ class Notification extends Model
 {
     use HasFactory;
 
-    protected $table = "notifications";
+    protected $fillable = [
+        'recipient_id',
+        'sender_id',
+        'type',
+        'related_id',
+        'message',
+        'is_read'
+    ];
 
-    // A notification belongs to a user
-    public function user() {
-        return $this->belongsTo(User::class);
+    public function recipient()
+    {
+        return $this->belongsTo(User::class, 'recipient_id');
+    }
+
+    public function sender()
+    {
+        return $this->belongsTo(User::class, 'sender_id');
     }
 }
