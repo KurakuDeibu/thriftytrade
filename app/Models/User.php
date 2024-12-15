@@ -64,12 +64,23 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Transaction::class);
     }
 
-        // In your User model
-    public function latestMessage()
+    public function conversations()
     {
-        return $this->hasOne(ChatMessage::class, 'user_id')
-            ->orWhere('receiver_id', $this->id)
-            ->latest();
+
+        return $this->hasMany(Conversation::class,'sender_id')->orWhere('receiver_id',$this->id)->whereNotDeleted();
+    }
+
+    public function isFinder()
+    {
+        return $this->isFinder === true;
+    }
+
+    /**
+     * The channels the user receives notification broadcasts on.
+     */
+    public function receivesBroadcastNotificationsOn(): string
+    {
+        return 'users.'.$this->id;
     }
 
 
