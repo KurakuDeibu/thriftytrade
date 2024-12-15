@@ -60,7 +60,7 @@ class ProductController extends Controller
         $categories = Category::orderBy('categName', 'asc')->get();
 
         if (auth()->user() && !auth()->user()->hasVerifiedEmail()) {
-            return redirect()->route('home')->with('error', 'You must verify your email address before you can sell.');
+            return redirect()->back()->with('error', 'You must verify your email address before you can sell.');
         }
         return view('listing.create', compact('categories'));
     }

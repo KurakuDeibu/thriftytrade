@@ -79,14 +79,16 @@ class UserResource extends Resource
                                 $set('email_verified_at', null);
                             }
                         }),
-                ]),
 
-                Forms\Components\Section::make('User Permissions')
+            Forms\Components\Section::make('User Permissions')->columnSpan('1xs')
                 ->schema([
                     Toggle::make('isAdmin')
                         ->label('Admin Access')
                         ->helperText('Allow this user to access the admin panel')
                 ])
+
+                ]),
+
 
         ]);
     }
