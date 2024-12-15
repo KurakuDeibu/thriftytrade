@@ -1,13 +1,11 @@
 <div class="tab-container-fluid marketplace-listings">
-    <div class="mb-4 row align-items-center">
-        <div class="col">
-            <h1 class="px-2 text-lg navbar-brand">MANAGE LISTINGS</h1>
+    <div
+        class="px-2 py-2 mb-4 d-flex justify-content-between align-items-center bg-gradient-to-br from-gray-100 to-indigo-100">
+        <div class="section-text">
+            <h1 class="text-xl navbar-brand">MY LISTINGS</h1>
+            <h1 class="text-sm text-muted">Manage your listings</h1>
         </div>
-        <div class="col-auto">
-            <a href="{{ route('listing.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-lg me-1"></i>Create New Listing
-            </a>
-        </div>
+        <button class="btn btn-primary"><i class="bi bi-plus"> </i>New Listing</button>
     </div>
 
     @php

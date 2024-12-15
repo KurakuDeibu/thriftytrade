@@ -1,6 +1,10 @@
-<div class="tab-container mt-4">
-    <div class="mb-4 d-flex justify-content-between align-items-center">
-        <h1 class="px-2 text-lg navbar-brand">MANAGE OFFERS</h1>
+<div class="mt-4 tab-container">
+    <div
+        class="px-2 py-2 mb-4 d-flex justify-content-between align-items-center bg-gradient-to-br from-gray-100 to-indigo-100">
+        <div class="section-text">
+            <h1 class="text-xl navbar-brand">MY OFFERS</h1>
+            <h1 class="text-sm text-muted">Manage your received and sent offers</h1>
+        </div>
     </div>
     <div class="col">
         @if ($pendingOffers->count() > 0)

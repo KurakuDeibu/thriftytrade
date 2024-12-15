@@ -51,19 +51,19 @@
 
                     {{-- TRANSACTIONS --}}
                     <div class="mb-2 card bg -light">
-                        <a href="{{ route('wishlist.index') }}"
+                        <a wire:navigate.hover href="{{ route('wishlist.index') }}"
                             class="btn btn-outline-primary {{ Route::currentRouteName() === 'wishlist.index' ? 'active' : '' }}">My
                             Wishlists</a>
                     </div>
 
                     {{-- INSIGHTS --}}
                     <div class="mb-2 card bg-light">
-                        <a href="{{ route('profile.user-listing', Auth::user()->id) }}"
+                        <a wire:navigate.hover href="{{ route('profile.user-listing', Auth::user()->id) }}"
                             class="btn btn-outline-primary">Preview Profile</a>
                     </div>
 
                     {{-- HISTORY --}}
-                    <div class="mb-2 card bg-light"><a href="{{ url('/user/history') }}"
+                    <div class="mb-2 card bg-light"><a wire:navigate.hover href="{{ route('chat.index') }}"
                             class="btn btn-outline-primary">Messages</a></div>
                 @endauth
             @endif

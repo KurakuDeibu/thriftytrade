@@ -1,5 +1,9 @@
-<div class="mb-4 d-flex justify-content-between align-items-center">
-    <h1 class="navbar-brand">{{ Auth::user()->name }}'s Dashboard</h1>
+<div
+    class="px-2 py-2 mb-4 d-flex justify-content-between align-items-center bg-gradient-to-br from-gray-100 to-indigo-100">
+    <div class="section-text">
+        <h1 class="text-xl navbar-brand">DASHBOARD</h1>
+        <h1 class="text-sm text-muted">{{ Auth::user()->name }}</h1>
+    </div>
     <button class="btn btn-primary"><i class="bi bi-graph-up-arrow"> </i>Generate Reports</button>
 </div>
 
@@ -108,22 +112,8 @@
             </ul>
         </div>
     </div>
-
-    <div class="mb-3 col-md-4">
-        <div class="p-4 bg-white rounded shadow-sm stat-card-custom position-relative hover-effect">
-            <div class="d-flex justify-content-between">
-                <div class="p-3 mb-3 card-icon-bg rounded-circle bg-info bg-opacity-10">
-                    <i class="fas fa-star text-info fa-2x"></i>
-                </div>
-                <a href="{{ route('profile.user-listing', Auth::user()->id) }}" class="text-muted"
-                    title="View Ratings">
-                    <i class="fas fa-external-link-alt"></i>
-                </a>
-            </div>
-            <div class="mb-2 text-muted">Average Rating</div>
-            <div class="mb-0 h3">{{ number_format($averageRating, 1) }}<span class="h6">/ 5</span></div>
-        </div>
-    </div>
+    {{-- RECENT OFFERS/PENDING OFFERS  --}}
+    {{-- -------------------------- --}}
 </div>
 
 
