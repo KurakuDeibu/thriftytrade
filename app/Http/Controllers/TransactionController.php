@@ -74,6 +74,7 @@ class TransactionController extends Controller
         $pdf->setPaper('a4', 'portrait');
 
         // Download the PDF
-        return $pdf->download('transaction-details-' . $offerId . '.pdf');
+        return $pdf->stream('transaction-details-' . $offerId . '.pdf');
+        // return $pdf->download('transaction-details-' . $offerId . '.pdf');
     }
 }
