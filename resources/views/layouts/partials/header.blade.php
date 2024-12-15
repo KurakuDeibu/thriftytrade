@@ -5,28 +5,6 @@
             overflow-x: hidden;
         }
 
-        .hoverlink {
-            position: relative;
-            display: inline-block;
-            text-decoration: none;
-        }
-
-        .hoverlink::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            bottom: -2px;
-            height: 1px;
-            width: 0%;
-            background-color: #4267B2;
-            transition: width 0.3s ease;
-        }
-
-        .hoverlink:hover::after {
-            width: 100%;
-            /* Full width on hover */
-        }
-
         #logo {
             float: left;
             width: 12rem;
@@ -37,25 +15,8 @@
         }
 
         #logo:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
 
-        }
-
-        @media (max-width: 991.98px) {
-            .navbar-nav .nav-link {
-                padding: 0.5rem 1rem;
-            }
-
-            .navbar-nav .nav-link i {
-                margin-right: 0.5rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .btn-outline-secondary {
-                width: 35px;
-                height: 35px;
-            }
         }
     </style>
     <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
@@ -65,24 +26,24 @@
 
     <div class="container d-flex align-items-center">
         {{-- BACK BUTTON --}}
-        <button onclick="goBack()" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip"
+        <a href="javascript:history.back()" class="me-2 btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip"
             data-bs-placement="bottom" title="Go Back">
             <i class="bi bi-arrow-left"></i>
-        </button>
+        </a>
 
         {{-- LOGO --}}
         <a id="logo" href="/"><img src="{{ asset('img/thriftytrade-logo.png') }}" class="navbar-brand"
                 alt="THRIFTYTRADE LOGO"></a>
         <div class="d-flex align-items-center">
             {{-- SEARCH ICON - TOGGLE SEARCH --}}
-            <div class="navbar-search-icon me-3" onclick="toggleSearchHeader()" id="search-bar">
+            <div class="navbar-search-icon me-2" onclick="toggleSearchHeader()" id="search-bar">
                 <i class="bi bi-search"></i>
             </div>
 
             {{-- MOBILE TOGGLE BUTTON --}}
-            <button class="m-2 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler navbar-toggler-icon" type="button" data-toggle="collapse"
+                data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
+                aria-label="Toggle navigation">
             </button>
 
         </div>
@@ -116,10 +77,9 @@
 
 
         {{-- COLLAPSE NAVBAR --}}
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="navbar-collapse" id="navbarNavAltMarkup">
             <ul class="mx-auto navbar-nav">
             </ul>
-
 
             @auth
                 <div class="py-2"><a href="{{ route('listing.create') }}">
@@ -128,12 +88,10 @@
                 </div>
             @endauth
 
-
-
             <ul class="navbar-nav">
-                <li class="my-2 nav-item">
+                <li class="my-2">
                     @auth
-                        <a class="nav-link" href="{{ route('chat.chat-message') }}">
+                        <a class="nav-link" href="{{ route('chat.index') }}">
                             <i class="bi bi-chat"></i>
                             <span class="d-lg-none">Chat</span>
                         </a>
@@ -145,7 +103,7 @@
                     @endauth
                 </li>
 
-                <li class="my-2 nav-item">
+                <li class="my-2">
                     <a class="nav-link" href="/notifications">
                         <i class="bi bi-bell"></i>
                         <span class="d-lg-none">Notifications</span>
@@ -221,22 +179,5 @@
     // Prevent closing when interacting with search header
     document.getElementById('searchHeader').addEventListener('click', function(event) {
         event.stopPropagation();
-    });
-</script>
-
-{{-- Add this script to the existing script section or in a separate script tag --}}
-<script>
-    function goBack() {
-        if (window.history.length > 1) {
-            window.history.back();
-        } else {
-            window.location.href = "/";
-        }
-    }
-
-    document.addEventListener('keydown', function(event) {
-        if (event.altKey && event.key === 'ArrowLeft') {
-            goBack();
-        }
     });
 </script>
