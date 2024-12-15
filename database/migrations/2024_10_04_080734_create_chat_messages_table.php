@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreign('receiver_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('products_id')->references('id')->on('products')->cascadeOnDelete();
 
-            $table->text('messages');
+            $table->text('message')->nullable();
             $table->timestamp('sent_at')->nullable();
             $table->timestamps();
         });
