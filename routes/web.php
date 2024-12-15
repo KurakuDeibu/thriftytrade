@@ -11,7 +11,9 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SendMessageController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WishlistController;
-use App\Models\Wishlist;
+use App\Livewire\Chat\Chat;
+use App\Livewire\Chat\Index;
+use App\Livewire\Users;
 use Illuminate\Support\Facades\Route;
 
 
@@ -25,16 +27,23 @@ Route::get('/marketplace/product/{id}', [MarketplaceController::class, 'showDeta
 Route::get('/marketplace/user/{userId}/listings', [MarketplaceController::class, 'showUserListings'])->name('profile.user-listing'); //Show User Listings
 
 // --------------SENDMESSAGECONTROLLER - CHAT CONTROLLER -------------//
-Route::get('/marketplace/chat', [SendMessageController::class, 'index'])->name('chat.chat-message');
+// Route::get('/marketplace/chat', [SendMessageController::class, 'index'])->name('chat.chat-message');
+// Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+// // -----------SEND MESSAGE FROM PRODUCT DETAILS------------//
+// Route::post('/send/messages', [SendMessageController::class, 'store']);
+// // -----------VIEW CHATS FROM CHAT-MESSAGES-----------//
+// Route::get('/users', [SendMessageController::class, 'showUsers']);
+// Route::get('/messages/user/{userId}', [SendMessageController::class, 'showMessages']);
+// Route::post('/send-message', [SendMessageController::class, 'sendMessage']);
+// });
 
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-// -----------SEND MESSAGE FROM PRODUCT DETAILS------------//
-Route::post('/send/messages', [SendMessageController::class, 'store']);
-// -----------VIEW CHATS FROM CHAT-MESSAGES-----------//
-Route::get('/users', [SendMessageController::class, 'showUsers']);
-Route::get('/messages/user/{userId}', [SendMessageController::class, 'showMessages'])->name('chat.showMessages');
-Route::post('/send-message', [SendMessageController::class, 'sendMessage']);
+// ------------------------LIVEWIRE-CHAT------------------------------//
+Route::middleware('auth')->group(function (){
+
+    Route::get('/chat',Index::class)->name('chat.index');
+    Route::get('/chat/{query}',Chat::class)->name('chat');
 });
+Route::get('/users/finder',Users::class)->name('users.finder');
 
 // --------------------WISHLISTCONTROLLER-------------------------//
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
