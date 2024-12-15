@@ -93,9 +93,21 @@
                                                 </div>
                                             @elseif ($offer->status == 'completed')
                                                 <a href="{{ route('user.transactions') }}"
-                                                    class="btn btn-sm btn-outline-warning">
-                                                    <i class="bi bi-star"></i> Review
+                                                    class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i> View Transaction
                                                 </a>
+
+                                                @if ($offer->hasBeenReviewedByUser(Auth::id()))
+                                                    <a class="btn btn-sm btn-outline-success"
+                                                        href="{{ route('user.transactions') }}">
+                                                        <i class="bi bi-star-fill"></i> Reviewed
+                                                    </a>
+                                                @else
+                                                    <a href="{{ route('user.transactions') }}"
+                                                        class="btn btn-sm btn-outline-warning">
+                                                        <i class="bi bi-star"></i> Review
+                                                    </a>
+                                                @endif
                                             @else
                                                 <span class="text-muted">No Action</span>
                                             @endif

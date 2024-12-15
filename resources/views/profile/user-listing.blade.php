@@ -146,28 +146,23 @@
 
                             </div>
 
-                            <div class="gap-2 d-flex">
+                            <div class="gap-2 ">
                                 @if (Auth::check() && Auth::id() === $user->id)
-                                    <a href="{{ route('profile.show') }}" class="btn btn-outline-primary btn-sm">
-                                        <i class="bi bi-pencil me-1"></i>Edit Profile
-                                    </a>
-                                    <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary btn-sm">
-                                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
-                                    </a>
+                                    <a href="{{ route('profile.show') }}"> <button
+                                            class="px-4 py-2 text-sm btn btn-outline-primary">
+                                            <i class="bi bi-pencil me-1"></i>Edit Profile</button></a>
+                                    <a href="{{ route('dashboard') }}"> <button
+                                            class="px-4 py-2 text-sm btn btn-outline-info">
+                                            <i class="bi bi-speedometer2 me-1"></i>My Dashboard</button></a>
                                 @else
-                                    <a href="{{ route('chat.chat-message', $user->id) }}"
-                                        class="btn btn-outline-primary btn-sm">
-                                        <i class="bi bi-chat-dots me-1"></i>Message
-                                    </a>
-
                                     @auth
-                                        <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal"
+                                        <button class="px-4 py-2 text-sm btn btn-outline-danger" data-bs-toggle="modal"
                                             data-bs-target="#reportModal">
                                             <i class="fas fa-flag"></i> Report
                                         </button>
                                     @else
-                                        <a href="{{ route('login') }}" class="report-icon btn btn-sm btn-outline-danger"
-                                            title="Report Product">
+                                        <a href="{{ route('login') }}"
+                                            class="px-4 py-2 text-sm report-icon btn btn-outline-danger" title="Report Product">
                                             <i class="fas fa-flag"></i> Report
                                         </a>
                                     @endauth
@@ -288,9 +283,9 @@
                         <div class="row">
 
                             {{-- Overall Rating Summary --}}
-                            <div class="col-md-4 mb-4">
+                            <div class="mb-4 col-md-4">
                                 <div class="card">
-                                    <div class="card-body text-center">
+                                    <div class="text-center card-body">
                                         <h4>Overall Rating</h4>
                                         <div class="display-4 text-warning">
                                             {{ number_format($averageRating, 1) }}
@@ -313,7 +308,7 @@
                             {{-- Reviews List --}}
                             <div class="col-md-8">
                                 @foreach ($userReviews as $review)
-                                    <div class="card mb-3">
+                                    <div class="mb-3 card">
                                         <div class="card-body">
                                             <div class="d-flex">
                                                 {{-- Reviewer Profile Image --}}
@@ -357,7 +352,7 @@
                                                                 class="fw-bold">{{ $review->product->prodName }}</span>
                                                         </small>
                                                     </div> {{-- Review Content --}}
-                                                    <div class="review-content bg-light p-2 rounded">
+                                                    <div class="p-2 rounded review-content bg-light">
                                                         <p class="mb-0">
                                                             <i class="bi bi-quote me-1"></i>
                                                             {{ $review->content }}

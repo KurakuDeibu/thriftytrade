@@ -89,10 +89,17 @@
                                                     data-bs-target="#offerDetailsModal">
                                                     <i class="bi bi-eye"></i> View Transaction
                                                 </button>
-                                                <a href="{{ route('user.transactions') }}"
-                                                    class="btn btn-sm btn-outline-warning">
-                                                    <i class="bi bi-star"></i> Review
-                                                </a>
+
+                                                @if ($offer->hasBeenReviewedByUser(Auth::id()))
+                                                    <span class="btn btn-sm btn-outline-success disabled">
+                                                        <i class="bi bi-star-fill"></i> Reviewed
+                                                    </span>
+                                                @else
+                                                    <a href="{{ route('user.transactions') }}"
+                                                        class="btn btn-sm btn-outline-warning">
+                                                        <i class="bi bi-star"></i> Review
+                                                    </a>
+                                                @endif
                                             @endif
 
                                             @if ($offer->status == 'accepted')
