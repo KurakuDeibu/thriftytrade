@@ -56,6 +56,11 @@
                    {{ __('History') }}
                </x-dropdown-link>
 
+               @if (Auth::user()->isFinder == false)
+                   <x-dropdown-link href="{{ route('finder.registration') }}">
+                       {{ __('Become a Finder') }}
+                   </x-dropdown-link>
+               @endif
 
 
                @if (Laravel\Jetstream\Jetstream::hasApiFeatures())

@@ -101,13 +101,12 @@
                                     </a>
 
                                     @auth
-                                        @if (!$finder == Auth::id())
+                                        @if (Auth::user() != $finder)
                                             <button wire:click="message({{ $finder->id }})"
                                                 class="px-3 py-1 text-lg text-white transition bg-blue-500 rounded-full hover:bg-blue-600">
                                                 Message
                                             </button>
                                         @endif
-
                                     @endauth
                                 </div>
                             </div>

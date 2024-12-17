@@ -63,6 +63,11 @@
                                                 </small>
                                             </td>
                                             <td>
+                                                <a href="{{ route('chat.index') }}" type="submit"
+                                                    class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-envelope me-1"></i>Chat with
+                                                    {{ $offer->user->name }}
+                                                </a>
                                                 <form action="{{ route('seller.offers.complete', $offer->id) }}"
                                                     method="POST" class="d-inline">
                                                     @csrf

@@ -17,7 +17,7 @@ class ProductsSeeder extends Seeder
     public function run(): void
     {
                 // Create 50 products
-             Products::factory(10)->create([
+             Products::factory(50)->create([
                  'user_id' => fn() => User::inRandomOrder()->first()->id,
                  'category_id' => fn() => Category::inRandomOrder()->first()->id,
              ]);

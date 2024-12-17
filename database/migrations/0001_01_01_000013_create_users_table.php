@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('phoneNum', 50); // phone num
             $table->string('userRefTag', 10)->nullable(); // user ref tag
             $table->boolean('isAdmin')->default(false); //added admin role
-            $table->boolean('isFinder')->default(false); //added finder role
 
             $table->string('email', 50)->unique();
             $table->timestamp('email_verified_at')->nullable();
@@ -31,6 +30,13 @@ return new class extends Migration
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();
+
+            $table->boolean('isFinder')->default(false); //added finder role
+            $table->enum('finder_status', ['pending', 'approved', 'rejected'])->default(null)->nullable();
+            $table->string('finder_document_path')->nullable();
+            $table->text('finder_verification_notes')->nullable();
+            $table->timestamp('finder_verified_at')->nullable();
+
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

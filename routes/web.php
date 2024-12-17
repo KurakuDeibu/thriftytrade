@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\FinderRegistrationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\OfferController;
@@ -26,24 +27,33 @@ Route::get('/marketplace', [MarketplaceController::class, 'showMarketplace'])->n
 Route::get('/marketplace/product/{id}', [MarketplaceController::class, 'showDetails'])->name('product'); //Show Details
 Route::get('/marketplace/user/{userId}/listings', [MarketplaceController::class, 'showUserListings'])->name('profile.user-listing'); //Show User Listings
 
-// --------------SENDMESSAGECONTROLLER - CHAT CONTROLLER -------------//
-// Route::get('/marketplace/chat', [SendMessageController::class, 'index'])->name('chat.chat-message');
-// Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-// // -----------SEND MESSAGE FROM PRODUCT DETAILS------------//
-// Route::post('/send/messages', [SendMessageController::class, 'store']);
-// // -----------VIEW CHATS FROM CHAT-MESSAGES-----------//
-// Route::get('/users', [SendMessageController::class, 'showUsers']);
-// Route::get('/messages/user/{userId}', [SendMessageController::class, 'showMessages']);
-// Route::post('/send-message', [SendMessageController::class, 'sendMessage']);
-// });
+// -----CHAT CONTROLLER - DELETED
+    // --------------SENDMESSAGECONTROLLER - CHAT CONTROLLER -------------//
+    // Route::get('/marketplace/chat', [SendMessageController::class, 'index'])->name('chat.chat-message');
+    // Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    // // -----------SEND MESSAGE FROM PRODUCT DETAILS------------//
+    // Route::post('/send/messages', [SendMessageController::class, 'store']);
+    // // -----------VIEW CHATS FROM CHAT-MESSAGES-----------//
+    // Route::get('/users', [SendMessageController::class, 'showUsers']);
+    // Route::get('/messages/user/{userId}', [SendMessageController::class, 'showMessages']);
+    // Route::post('/send-message', [SendMessageController::class, 'sendMessage']);
+    // });
 
 // ------------------------LIVEWIRE-CHAT------------------------------//
 Route::middleware('auth')->group(function (){
-
     Route::get('/chat',Index::class)->name('chat.index');
     Route::get('/chat/{query}',Chat::class)->name('chat');
 });
+
+// ----------------------FINDER-CONTROLLER-----------------//
 Route::get('/users/finder',Users::class)->name('users.finder');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/become-finder', [FinderRegistrationController::class, 'showRegistrationForm'])->name('finder.registration');
+    Route::post('/submit-finder-request', [FinderRegistrationController::class, 'submitFinderRequest'])->name('finder.submit');
+});
+
+
 
 // --------------------WISHLISTCONTROLLER-------------------------//
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {

@@ -101,10 +101,8 @@
                                                     </a>
                                                 @endif
                                             @endif
-
                                             @if ($offer->status == 'accepted')
-                                                {{-- <a href="{{ route('chat.conversation', $offer->id) }}" --}}
-                                                <a href="" class="btn btn-sm btn-outline-success">
+                                                <a href="{{ route('chat.index') }}" class="btn btn-sm btn-outline-success">
                                                     <i class="bi bi-chat-square"></i> Message {{ $offer->user->name }}
                                                 </a>
                                             @endif

@@ -65,6 +65,12 @@
                     {{-- HISTORY --}}
                     <div class="mb-2 card bg-light"><a wire:navigate.hover href="{{ route('chat.index') }}"
                             class="btn btn-outline-primary">Messages</a></div>
+
+                    {{-- REGISTER AS A FINDER --}}
+                    @if (Auth::user()->isFinder == false)
+                        <div class="mb-2 card bg-light"><a href="{{ route('finder.registration') }}"
+                                class="btn btn-outline-primary">Become a Finder</a></div>
+                    @endif
                 @endauth
             @endif
 

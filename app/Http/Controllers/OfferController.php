@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Conversation;
 use App\Models\Offer;
 use App\Models\Products;
 use App\Models\Transaction;
@@ -57,6 +58,7 @@ class OfferController extends Controller
     // - Update offer status
     public function updateOfferStatus(Request $request, Offer $offer)
     {
+
         // Validate request
         $request->validate([
             'status' => 'required|in:accepted,rejected',
@@ -88,6 +90,22 @@ class OfferController extends Controller
                 Offer::where('products_id', $offer->products_id)
                     ->where('id', '!=', $offer->id)
                     ->update(['status' => 'rejected']);
+
+                    $conversation = Conversation::where(function($query) use ($offer) {
+                        $query->where('sender_id', Auth::id())
+                              ->where('receiver_id', $offer->user_id);
+                    })->orWhere(function($query) use ($offer) {
+                        $query->where('sender_id', $offer->user_id)
+                              ->where('receiver_id', Auth::id());
+                    })->first();
+
+                    // If no conversation exists, create a new one
+                    if (!$conversation) {
+                        $conversation = Conversation::create([
+                            'sender_id' => Auth::id(),
+                            'receiver_id' => $offer->user_id,
+                        ]);
+                    }
             }
 
             return redirect()->back()->with('success', 'Offer updated successfully.');

@@ -76,7 +76,7 @@
                                                     class="gap-2 btn btn-outline-primary btn-sm align-items-center">
                                                     <i class="bi bi-eye"></i> View
                                                 </a>
-                                                <a href="{{ route('chat.chat-message') }}"
+                                                <a href="{{ route('chat.index') }}"
                                                     class="gap-2 btn btn-outline-success btn-sm align-items-center">
                                                     <i class="bi bi-chat-square"></i> Message with {{ $offer->user->name }}
                                                 </a>

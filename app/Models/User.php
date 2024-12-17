@@ -47,7 +47,26 @@ class User extends Authenticatable implements FilamentUser
         'phoneNum',
         'password',
         'isAdmin',
+
+        // ---FINDER INFOS----//
+        'isFinder',
+        'finder_status',
+        'finder_document_path',
+        'finder_verification_notes',
+        'finder_verified_at'
+
     ];
+
+    public function getIsFinderAttribute()
+    {
+        return $this->finder_status === 'approved';
+    }
+
+    // Scope to get pending finder requests
+    public function scopePendingFinderRequests($query)
+    {
+        return $query->where('finder_status', 'pending');
+    }
 
     public function products()
     {
@@ -82,7 +101,6 @@ class User extends Authenticatable implements FilamentUser
     {
         return 'users.'.$this->id;
     }
-
 
     /**
      * The attributes that should be hidden for serialization.

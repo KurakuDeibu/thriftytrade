@@ -5,7 +5,7 @@
             <h1 class="text-xl navbar-brand">MY LISTINGS</h1>
             <h1 class="text-sm text-muted">Manage your listings</h1>
         </div>
-        <button class="btn btn-primary"><i class="bi bi-plus"> </i>New Listing</button>
+        <button class="btn btn-primary"><i class="bi bi-plus"> </i> New Listing</button>
     </div>
 
     @php
