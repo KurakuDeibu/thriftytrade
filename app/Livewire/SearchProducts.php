@@ -43,7 +43,7 @@ class SearchProducts extends Component
         $this->location = request('location') ?: null;
     }
 
-    public function updatingSearch()
+    public function search()
     {
         $this->resetPage();
     }
