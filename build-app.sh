@@ -3,7 +3,6 @@
 
 # Build assets using NPM
 npm install
-npm run build && npm run dev
 composer install 
 php artisan generate:key
 
