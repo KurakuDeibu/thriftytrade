@@ -4,6 +4,7 @@
 # Build assets using NPM
 npm run build
 composer install 
+npm run dev
 php artisan generate:key
 
 # Clear cache
