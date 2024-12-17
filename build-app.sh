@@ -2,9 +2,9 @@
 # Make sure this file has executable permissions, run `chmod +x build-app.sh`
 
 # Build assets using NPM
-npm run build
+npm install
+npm run build && npm run dev
 composer install 
-npm run dev
 php artisan generate:key
 
 # Clear cache
