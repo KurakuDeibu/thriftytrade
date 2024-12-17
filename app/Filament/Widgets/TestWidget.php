@@ -17,10 +17,13 @@ class TestWidget extends BaseWidget
         // $newUsersCount = User::where('created_at', '>=', now()->subWeek())->count();
         $verifiedUsersCount = User::where('email_verified_at', '!=', null)->count();
         $totalUsersCount = User::count();
+        $totalFinderCount = User::where('isFinder', true)->count();
+
         // Product Statistics
         $totalProducts = Products::count();
         $soldProducts = Products::where('status', 'sold')->count();
         $availableProducts = Products::where('status', 'available')->count();
+        $pendingProducts = Products::where('status', 'pending')->count();
         $totalReports = Report::count();
         $totalReviews = Review::count();
 
@@ -36,6 +39,12 @@ class TestWidget extends BaseWidget
                 ->description('All registered users')
                 ->descriptionIcon('heroicon-o-users', IconPosition::Before)
                 ->chart([0, $totalUsersCount])
+                ->color('primary'),
+
+                Stat::make('Total Finders', $totalFinderCount)
+                ->description('All verified finder')
+                ->descriptionIcon('heroicon-o-viewfinder-circle', IconPosition::Before)
+                ->chart([0, $totalFinderCount])
                 ->color('primary'),
 
                 Stat::make('Total Reports', $totalReports)
@@ -62,6 +71,12 @@ class TestWidget extends BaseWidget
                 ->descriptionIcon('heroicon-o-currency-dollar')
                 ->chart([0, $soldProducts])
                 ->color('gray'),
+
+                Stat::make('In Transaction', $pendingProducts)
+                ->description('Products that are in transaction')
+                ->descriptionIcon('heroicon-o-shopping-cart')
+                ->chart([0, $pendingProducts])
+                ->color('warning'),
 
                 Stat::make('Total Reviews', $totalReviews)
                 ->description('All product reviews')

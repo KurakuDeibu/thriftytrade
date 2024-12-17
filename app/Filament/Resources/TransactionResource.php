@@ -27,6 +27,7 @@ class TransactionResource extends Resource
     protected static ?string $model = Transaction::class;
 
     protected static ?string $label = 'Transactions';
+    protected static ?int $navigationSort = 40;
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
@@ -92,12 +93,12 @@ class TransactionResource extends Resource
                     ->label('Quantity'),
                 TextColumn::make('totalPrice')
                     ->label('Total Price'),
-                TextColumn::make('tranStatus')
+                TextColumn::make('tranStatus')->badge()
                     ->label('Transaction Status'),
-                TextColumn::make('systemCommission')
-                    ->label('System Commission'),
-                TextColumn::make('finderCommission')
-                    ->label('Finder Commission'),
+                // TextColumn::make('systemCommission')
+                //     ->label('System Commission'),
+                // TextColumn::make('finderCommission')
+                //     ->label('Finder Commission'),
 
             ])
             ->filters([
@@ -127,5 +128,15 @@ class TransactionResource extends Resource
             'create' => Pages\CreateTransaction::route('/create'),
             'edit' => Pages\EditTransaction::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('tranStatus', 'completed')->count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'success';
     }
 }

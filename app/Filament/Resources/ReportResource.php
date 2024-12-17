@@ -23,6 +23,7 @@ class ReportResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-flag';
     protected static ?string $navigationGroup = 'Reporting Management';
     protected static ?string $navigationLabel = 'Reports';
+    protected static ?int $navigationSort = 30;
 
     public static function form(Form $form): Form
     {

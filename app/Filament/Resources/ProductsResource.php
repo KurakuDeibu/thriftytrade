@@ -32,7 +32,7 @@ class ProductsResource extends Resource
     protected static ?string $model = Products::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
-
+    protected static ?int $navigationSort = 20;
     protected static ?string $navigationGroup = 'Product Management';
 
     public static function form(Form $form): Form
@@ -109,6 +109,7 @@ class ProductsResource extends Resource
                 ->boolean()
                 ->label('Is Featured'),
             ])
+            ->defaultSort('created_at', 'desc')
 
             ->filters([
                 Tables\Filters\Filter::make('Non-Featured')

@@ -23,14 +23,12 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-
+    protected static ?int $navigationSort = 10;
     protected static ?string $navigationGroup = 'User Management';
 
     public static function form(Form $form): Form
     {
         return $form
-
-
         ->schema([
             Forms\Components\Section::make('User Information')
             ->columnSpan('2xs')
@@ -79,17 +77,30 @@ class UserResource extends Resource
                                 $set('email_verified_at', null);
                             }
                         }),
-
+                    ]),
+                    Forms\Components\Section::make('Finder Verification')
+                ->columnSpan('1xs')
+                ->schema([
+                    Forms\Components\Select::make('finder_status')
+                        ->label('Finder Status')
+                        ->options([
+                            'pending' => 'Pending',
+                            'approved' => 'Approved',
+                            'rejected' => 'Rejected'
+                        ])
+                        ->required(),
+                    Forms\Components\FileUpload::make('finder_document_path')
+                        ->label('ID Document')
+                        ->required(fn ($get) => $get('finder_status') === 'pending'),
+                    Forms\Components\Textarea::make('finder_verification_notes')
+                        ->label('Verification Notes'),
+                ]),
             Forms\Components\Section::make('User Permissions')->columnSpan('1xs')
                 ->schema([
                     Toggle::make('isAdmin')
                         ->label('Admin Access')
                         ->helperText('Allow this user to access the admin panel')
-                ])
-
                 ]),
-
-
         ]);
     }
 
@@ -113,11 +124,42 @@ class UserResource extends Resource
                 TextColumn::make('name')->label('Username')->sortable(),
                 TextColumn::make('email')->label('Email')->searchable(),
                 TextColumn::make('email_verified_at')->label('Email Verified At')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('finder_status')->label('Finder Status')->badge()
+                ->colors([
+                    'warning' => 'pending',
+                    'success' => 'approved',
+                    'danger' => 'rejected'
+                ]),
             ])
             ->filters([
-                //
+                    Tables\Filters\Filter::make('Finder')
+                    ->query(fn (Builder $query) => $query->where('isFinder', true)),
+
+                    Tables\Filters\Filter::make('Admin')
+                    ->query(fn (Builder $query) => $query->where('isAdmin', true)),
             ])
+
             ->actions([
+                Tables\Actions\Action::make('approve')
+                ->action(function (User  $record) {
+                    $record->update([
+                        'finder_status' => 'approved',
+                        'isFinder' => true,
+                        'finder_verified_at' => now()
+                    ]);
+                })
+                ->visible(fn (User  $record) => $record->finder_status === 'pending')
+                ->label('Approve'),
+            Tables\Actions\Action:: make('reject')
+                ->action(function (User  $record) {
+                    $record->update([
+                        'finder_status' => 'rejected',
+                        'isFinder' => false
+                    ]);
+                })
+                ->visible(fn (User  $record) => $record->finder_status === 'pending')
+                ->label('Reject'),
+
                 Tables\Actions\Action::make('verify')
                     ->label('Verify')
                     ->icon('heroicon-o-check')
@@ -161,4 +203,6 @@ class UserResource extends Resource
     {
         return static::getModel()::count();
     }
+
+
 }
