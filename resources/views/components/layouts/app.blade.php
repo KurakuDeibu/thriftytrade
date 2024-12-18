@@ -29,8 +29,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Styles -->
     @livewireStyles
@@ -56,6 +57,8 @@
         {{ $slot }}
     </main>
 
+    @yield('content')
+
     @stack('modals')
     @stack('scripts')
 
@@ -64,6 +67,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
     </script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 
 </body>
