@@ -2,7 +2,7 @@
 # Make sure this file has executable permissions, run `chmod +x build-app.sh`
 
 # Build assets using NPM
-npm install
+npm install --production
 composer install
 npm install laravel-echo pusher-js
 
