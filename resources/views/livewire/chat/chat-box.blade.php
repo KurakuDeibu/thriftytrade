@@ -6,7 +6,7 @@
 $nextTick(() => conversationElement.scrollTop = height);
 
 
-Echo.private('users.{{ Auth()->User()->id }}')
+window.Echo.private('users.{{ Auth()->User()->id }}')
     .notification((notification) => {
         if (notification['type'] == 'App\\Notifications\\MessageRead' && notification['conversation_id'] == {{ $this->selectedConversation->id }}) {
 
@@ -20,7 +20,7 @@ Echo.private('users.{{ Auth()->User()->id }}')
             "
     class="w-full overflow-hidden">
 
-    <div class="flex flex-col h-full overflow-y-scroll border-b grow pt-2">
+    <div class="flex flex-col h-full pt-2 overflow-y-scroll border-b grow">
 
 
         {{-- header --}}
@@ -189,7 +189,7 @@ Echo.private('users.{{ Auth()->User()->id }}')
                                 'bg-gray-100 border-0': true,
                                 'border-red-500': @error('body') true @else false @enderror
                             }"
-                            class="me-2 col-span-10 rounded-lg outline-0 focus:border-0 focus:ring-0 hover:ring-0 focus:outline-none">
+                            class="col-span-10 rounded-lg me-2 outline-0 focus:border-0 focus:ring-0 hover:ring-0 focus:outline-none">
                         <button x-bind:disabled="!body || body.trim() === ''"
                             class="col-span-2 btn btn-outline-primary" type='submit'>
                             <i class="fas fa-paper-plane me-2"></i> Send

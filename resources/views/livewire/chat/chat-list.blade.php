@@ -1,18 +1,18 @@
     <div x-data="{ type: 'all', query: @entangle('query') }" x-init="setTimeout(() => {
-    
+
         conversationElement = document.getElementById('conversation-' + query);
-    
+
         {{-- scroll to the element --}}
         if (conversationElement) {
             conversationElement.scrollIntoView({ 'behavior': 'smooth' });
         }
     }, 200);
-    
+
     {{-- Echo to  --}}
-    Echo.private('users.{{ auth()->user()->id }}')
+    window.Echo.private('users.{{ auth()->user()->id }}')
         .notification((notification) => {
             if (notification['type'] == 'App\\Notifications\\MessageRead' || notification['type'] == 'App\\Notifications\\MessageSent') {
-    
+
                 Livewire.dispatch('refresh');
             }
         });" class="flex flex-col h-full overflow-hidden transition-all">

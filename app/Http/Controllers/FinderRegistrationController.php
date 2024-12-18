@@ -15,8 +15,13 @@ class FinderRegistrationController extends Controller
 
         // Check if user is already a finder or has a pending request
         $user = Auth::user();
+
+        if (!$user->hasVerifiedEmail()) {
+            return redirect()->back()->with('error', 'Please verify your email before applying to become a finder.');
+        }
+
         if ($user->isFinder === true) {
-            return redirect()->back()->with('success', 'You are already a verified finder.');
+            return redirect()->back()->with('info', 'You are already a verified finder.');
         }
 
         if ($user->finder_status === 'pending') {

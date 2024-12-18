@@ -64,6 +64,11 @@
                                             class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-eye me-1"></i>View Product
                                         </a>
+                                        <hr class="m-1">
+                                        <a href="{{ route('chat.index') }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-chat me-1"></i>Chat with
+                                            {{ $offer->product->author->name }}
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
