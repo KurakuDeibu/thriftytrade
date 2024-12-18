@@ -372,9 +372,8 @@
         </div>
 
         @include('layouts.partials.footer-top')
-
-    @endsection
-</body>
+    </body>
+@endsection
 
 @push('scripts')
     <script>
