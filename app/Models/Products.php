@@ -36,6 +36,11 @@ class Products extends Model
     const PRICE_TYPE_FIXED = 'Fixed';
     const PRICE_TYPE_NEGOTIABLE = 'Negotiable';
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id');

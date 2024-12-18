@@ -52,7 +52,7 @@ class ReceivedOfferNotification extends Notification
     {
             return [
                 'message' => "You have received an offer for {$this->offer->product->prodName} with an offer of: {$this->offer->offer_price}.",
-                'link' => route('product', $this->offer->product->id)
+                'link' => route('product', $this->offer->product->id) // Link to offer details page
             ];
 
     }

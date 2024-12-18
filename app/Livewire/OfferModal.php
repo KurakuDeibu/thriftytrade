@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Offer;
 use App\Models\Products;
 use App\Notifications\ReceivedOfferNotification;
+use Filament\Livewire\Notifications;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Component;
@@ -84,12 +85,11 @@ class OfferModal extends Component
                 ]);
 
                 if ($offer) {
-
                     // notify the recipient of the offer
-                    Notification::send($offer->product->user, new ReceivedOfferNotification($offer));
-
+                    Notification::send($offer->product->author, new ReceivedOfferNotification($offer));
 
                     $this->successMessage = 'Your offer has been successfully sent!';
+
 
                     // Browser event to trigger page reload
                     $this->dispatch('offer-submitted');

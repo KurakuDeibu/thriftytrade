@@ -23,7 +23,7 @@ class Offer extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function product()
@@ -49,7 +49,7 @@ class Offer extends Model
      // Scope to get offers for a specific product and user
      public function scopeForProductAndUser($query, $productId, $userId)
      {
-         return $query->where('product_id', $productId)
+         return $query->where('products_id', $productId)
                       ->where('user_id', $userId);
      }
 }
