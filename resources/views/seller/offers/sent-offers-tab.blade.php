@@ -1,11 +1,37 @@
 <div class="tab-pane fade" id="sent-offers" role="tabpanel" aria-labelledby="sent-offers-tab">
+    @php
+        $deletedOffers = $sentOffers->filter(function ($offer) {
+            return !$offer->product;
+        });
+    @endphp
+
     @if ($sentOffers->count() > 0)
         <div class="mb-4 shadow-sm card">
-            <div class="text-white card-header bg-info">
-                <h4 class="mb-0">Sent Offers</h4>
-                <span class="badge bg-light text-info">{{ $sentOffers->count() }}
-                    {{ Str::plural('offer', $sentOffers->count()) }}</span>
+            {{-- Header with Clear Deleted Offers Button --}}
+            <div class="text-white card-header bg-info d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0">Sent Offers</h4>
+                    <span class="badge bg-light text-info">
+                        {{ $sentOffers->count() }} {{ Str::plural('offer', $sentOffers->count()) }}
+                    </span>
+                </div>
+
+                {{-- Clear Deleted Offers Button --}}
+                @if ($deletedOffers->count() > 0)
+                    <div>
+                        <form action="{{ route('offers.clear-deleted') }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash me-1"></i>
+                                Clear {{ $deletedOffers->count() }} Deleted
+                                {{ Str::plural('Offer', $deletedOffers->count()) }}
+                            </button>
+                        </form>
+                    </div>
+                @endif
             </div>
+
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table align-middle table-hover">
@@ -20,22 +46,31 @@
                         </thead>
                         <tbody>
                             @foreach ($sentOffers as $offer)
-                                <tr>
+                                <tr class="{{ !$offer->product ? 'table-danger' : '' }}">
                                     <td>
-                                        <div class="d-flex align-items-center">
-                                            <img src="{{ asset('storage/' . $offer->product->prodImage) }}"
-                                                alt="{{ $offer->product->prodName }}" class="rounded me-3"
-                                                style="width: 60px; height: 60px; object-fit: cover;">
-                                            <div>
-                                                <h5 class="mb-0 fw-bold">
-                                                    {{ Str::limit($offer->product->prodName, 30) }}</h5>
-                                                <a
-                                                    href="{{ route('profile.user-listing', $offer->product->author->id) }}">
-                                                    <small
-                                                        class="text-muted">{{ $offer->product->author->name }}</small></a>
-                                                <small class="text-muted">{{ $offer->product->author->email }}</small>
+                                        @if (!$offer->product)
+                                            <div class="text-danger d-flex align-items-center">
+                                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                                Product has been deleted
                                             </div>
-                                        </div>
+                                        @else
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('storage/' . $offer->product->prodImage) }}"
+                                                    alt="{{ $offer->product->prodName }}" class="rounded me-3"
+                                                    style="width: 60px; height: 60px; object-fit: cover;">
+                                                <div>
+                                                    <h5 class="mb-0 fw-bold">
+                                                        {{ Str::limit($offer->product->prodName, 30) }}
+                                                    </h5>
+                                                    <a
+                                                        href="{{ route('profile.user-listing', $offer->product->author->id) }}">
+                                                        <small class="text-muted">
+                                                            {{ $offer->product->author->name }}
+                                                        </small>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        @endif
                                     </td>
                                     <td>
                                         <span class="fw-bold text-muted">
@@ -60,15 +95,19 @@
                                         </small>
                                     </td>
                                     <td>
-                                        <a href="/marketplace/product/{{ $offer->product->id }}"
-                                            class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-eye me-1"></i>View Product
-                                        </a>
-                                        <hr class="m-1">
-                                        <a href="{{ route('chat.index') }}" class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-chat me-1"></i>Chat with
-                                            {{ $offer->product->author->name }}
-                                        </a>
+                                        @if ($offer->product)
+                                            <a href="/marketplace/product/{{ $offer->product->id }}"
+                                                class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-eye me-1"></i>View Product
+                                            </a>
+                                            <hr class="m-1">
+                                            <a href="{{ route('chat.index') }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-chat me-1"></i>Chat with
+                                                {{ $offer->product->author->name }}
+                                            </a>
+                                        @else
+                                            <span class="text-muted">No actions available</span>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

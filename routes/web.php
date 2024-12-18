@@ -127,4 +127,7 @@ Route::middleware(['auth', 'verified'])->group( function () {
     Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'mar`kAsRead'])->name('notifications.read');
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
 
+    // CLEAR ALL - deleted product offers
+    Route::delete('/offers/clear-deleted', [OfferController::class, 'clearDeletedOffers'])->name('offers.clear-deleted');
+
 });

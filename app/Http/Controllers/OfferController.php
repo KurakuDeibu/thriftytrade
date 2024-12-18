@@ -174,4 +174,20 @@ class OfferController extends Controller
     {
         return $totalPrice * 0.02;
     }
+
+    public function clearDeletedOffers()
+    {
+        try {
+            // Delete offers where the associated product no longer exists
+            $deletedOffersCount = Offer::whereHas('product', function ($query) {
+                $query->onlyTrashed(); // if it is soft deleted
+            })->delete();
+
+            return redirect()->back()->with('success', "Cleared {$deletedOffersCount} offers for deleted products.");
+        } catch (\Exception $e) {
+            \Log::error('Error clearing deleted offers: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to clear offers. Please try again.');
+        }
+    }
+
 }
