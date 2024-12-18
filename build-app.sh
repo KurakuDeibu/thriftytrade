@@ -4,7 +4,7 @@
 # Build assets using NPM
 npm install
 composer install
-php artisan generate:key
+npm install laravel-echo pusher-js
 
 # Clear cache
 php artisan optimize:clear
