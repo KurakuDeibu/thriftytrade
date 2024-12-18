@@ -18,6 +18,102 @@
             transform: scale(1.05);
 
         }
+
+        /* Notification Sidebar Styles */
+        .notification-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease-in-out;
+            z-index: 1050;
+            overflow-y: auto;
+        }
+
+        .notification-sidebar.show {
+            right: 0;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid #f1f3f5;
+            display: flex;
+            align-items: start;
+        }
+
+        .notification-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .notification-icon {
+            margin-right: 15px;
+            font-size: 24px;
+        }
+
+        .notification-content {
+            flex-grow: 1;
+        }
+
+        .notification-time {
+            color: #6c757d;
+            font-size: 0.8rem;
+            display: block;
+            transition: background-color 0.3s ease;
+
+        }
+
+        .notification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            display: none;
+        }
+
+        .notification-item.read {
+            background-color: #f1f3f5;
+            color: #6c757d;
+        }
+
+        .notification-overlay.show {
+            display: block;
+        }
+
+        .read-notifications {
+            background-color: #e9ecef;
+            padding: 10px;
+            margin: 0;
+        }
+
+
+        /* Badge positioning */
+        .icon-badge-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .icon-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            z-index: 1;
+            font-size: 0.5rem;
+            padding: 0.2rem 0.4rem;
+        }
     </style>
     <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
 </head>
@@ -41,11 +137,10 @@
             </div>
 
             {{-- MOBILE TOGGLE BUTTON --}}
-            <button class="navbar-toggler navbar-toggler-icon" type="button" data-toggle="collapse"
-                data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
-                aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="btn-collapse" data-target="#mainNavbar"
+                aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
-
         </div>
 
         <!-- Search Header (Positioned within navbar) -->
@@ -76,23 +171,30 @@
 
 
 
-        {{-- COLLAPSE NAVBAR --}}
-        <div class="navbar-collapse" id="navbarNavAltMarkup">
+        {{-- btn-collapse NAVBAR --}}
+        <div class="btn-collapse navbar-collapse" id="mainNavbar">
             <ul class="mx-auto navbar-nav">
             </ul>
 
-            @auth
-                <div class="py-2"><a href="{{ route('listing.create') }}">
-                        <button class="mx-2 btn btn-outline-primary">+ Sell Products</button>
-                    </a>
-                </div>
-            @endauth
 
             <ul class="navbar-nav">
+
+                @auth
+                    <div class="py-2 d-none d-lg-block">
+                        <a href="{{ route('listing.create') }}">
+                            <button class="mx-2 btn btn-outline-primary">+ Sell Products</button>
+                        </a>
+                    </div>
+                @endauth
+
                 <li class="my-2">
                     @auth
                         <a class="nav-link" href="{{ route('chat.index') }}">
-                            <i class="bi bi-chat"></i>
+                            <!-- Chat icon with badge -->
+                            <div class="icon-badge-container me-2">
+                                <i class="bi bi-chat-dots"></i>
+                                <span class="badge bg-primary icon-badge"></span>
+                            </div>
                             <span class="d-lg-none">Chat</span>
                         </a>
                     @else
@@ -103,12 +205,94 @@
                     @endauth
                 </li>
 
-                <li class="my-2">
-                    <a class="nav-link" href="/notifications">
-                        <i class="bi bi-bell"></i>
+
+                <li class="my-2 nav-item dropdown">
+                    <a class="nav-link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false" onclick="openNotificationSidebar()">
+                        <div class="icon-badge-container me-2">
+                            <i class="bi bi-bell"></i>
+                            @auth
+                                @if (auth()->user()->unreadNotifications->count() > 0)
+                                    <span
+                                        class="badge bg-danger icon-badge">{{ auth()->user()->unreadNotifications()->count() }}</span>
+                                @endif
+                            @endauth
+
+                        </div>
                         <span class="d-lg-none">Notifications</span>
                     </a>
+
+
+                    <!-- Notification Sidebar -->
+                    <div class="notification-overlay" id="notificationOverlay"></div>
+                    <div class="notification-sidebar" id="notificationSidebar">
+                        <div class="notification-header">
+                            <h5 class="mb-0">Notifications</h5>
+                            @auth
+                                <button class="text-sm btn btn-link" id="markAllReadBtn">Mark all as read</button>
+                            @endauth
+
+                            <button class="btn btn-link text-dark" onclick="closeNotificationSidebar()">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+
+                        @auth
+
+                            {{-- New Message Notification --}}
+                            @foreach (auth()->user()->unreadNotifications as $notification)
+                                <a href="{{ $notification->data['link'] }}"
+                                    class="text-decoration-none text-dark notification-item border-bottom"
+                                    data-id="{{ $notification->id }}">
+                                    <div class="notification-icon text-success">
+                                        <i class="bi bi-bell"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <strong>Notification</strong>
+                                        <p class="mb-1">{{ $notification->data['message'] }}</p>
+                                        <small
+                                            class="notification-time">{{ $notification->created_at->diffForHumans() }}</small>
+                                    </div>
+                                </a>
+                            @endforeach
+                            @if (auth()->user()->notifications()->unread()->count() === 0)
+                                <div class="p-2 text-center notification-item text-muted">
+                                    No new notifications.
+                                </div>
+                            @endif
+                        @else
+                            <a href="{{ route('login') }}" class="p-2 text-center notification-item text-muted">
+                                Login to view your notifications.
+                            </a>
+                        @endauth
+
+                        {{-- Read Notifications --}}
+                        <div class="read-notifications">
+
+                            @auth
+
+                                @foreach (auth()->user()->readNotifications as $notification)
+                                    <div class="p-2 notification-item border-bottom" data-id="{{ $notification->id }}">
+                                        <a href="{{ $notification->data['link'] }}"
+                                            class="text-decoration-none text-dark">
+                                            <i class="bi bi-bell"></i>
+                                            {{ $notification->data['message'] }}
+                                        </a>
+                                        <span class="text-sm text-muted">Read at:
+                                            {{ $notification->read_at->diffForHumans() }}</span>
+                                    </div>
+                                @endforeach
+                                @if (auth()->user()->notifications()->whereNotNull('read_at')->count() === 0)
+                                    <div class="p-2 text-center notification-item text-muted">
+                                        No read notifications
+                                    </div>
+                                @endif
+                            @endauth
+
+                        </div>
+                    </div>
                 </li>
+
 
                 @auth
                     <li class="flex items-center">
@@ -118,6 +302,8 @@
                     </li>
                 @endauth
 
+                {{-- Mobile-specific Sell Products Button --}}
+
 
                 {{-- NAV-BAR --}}
                 @auth
@@ -126,6 +312,13 @@
                     @include('layouts.partials.header-right-guest')
                 @endauth
 
+                @auth
+                    <li class="my-2 nav-item d-lg-none btn btn-outline-primary ">
+                        <a href="{{ route('listing.create') }}" class="nav-link">
+                            + Sell Products
+                        </a>
+                    </li>
+                @endauth
             </ul>
         </div>
     </div>
@@ -179,5 +372,69 @@
     // Prevent closing when interacting with search header
     document.getElementById('searchHeader').addEventListener('click', function(event) {
         event.stopPropagation();
+    });
+</script>
+
+<script>
+    function openNotificationSidebar() {
+        document.getElementById('notificationSidebar').classList.add('show');
+        document.getElementById('notificationOverlay').classList.add('show');
+    }
+
+    function closeNotificationSidebar() {
+        document.getElementById('notificationSidebar').classList.remove('show');
+        document.getElementById('notificationOverlay').classList.remove('show');
+    }
+
+    // Close sidebar when clicking overlay
+    document.getElementById('notificationOverlay').addEventListener('click', closeNotificationSidebar);
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeNotificationSidebar();
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mark individual notification as read
+        document.querySelectorAll('.mark-as-read').forEach(function(notification) {
+            notification.addEventListener('click', function(event) {
+                event.preventDefault();
+                const notificationId = this.closest('.notification-item').dataset.id;
+
+                fetch(`/notifications/${notificationId}/mark-as-read`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                    },
+                }).then(response => {
+                    if (response.ok) {
+                        this.closest('.notification-item').classList.add(
+                            'read');
+                    }
+                });
+            });
+        });
+
+        // Mark all notifications as read
+        document.getElementById('markAllReadBtn').addEventListener('click', function() {
+            fetch('/notifications/mark-all-read', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                },
+            }).then(response => {
+                if (response.ok) {
+                    document.querySelectorAll('.notification-item').forEach(function(item) {
+                        item.classList.add('read'); // class to style as read
+                    });
+                }
+            });
+        });
     });
 </script>
