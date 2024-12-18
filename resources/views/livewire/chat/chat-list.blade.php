@@ -9,7 +9,7 @@
     }, 200);
 
     {{-- Echo to  --}}
-    window.Echo.private('users.{{ auth()->user()->id }}')
+    Echo.private('users.{{ auth()->user()->id }}')
         .notification((notification) => {
             if (notification['type'] == 'App\\Notifications\\MessageRead' || notification['type'] == 'App\\Notifications\\MessageSent') {
 
@@ -17,10 +17,10 @@
             }
         });" class="flex flex-col h-full overflow-hidden transition-all">
 
-        <header class="top-5 sticky z-10 w-full px-3 py-2 bg-white">
+        <header class="sticky z-10 w-full px-3 py-2 bg-white top-5">
             <div class="flex items-center justify-between pb-2 border-b">
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('home') }}" class="me-2 text-2xl font-extrabold">Chats <i
+                    <a href="{{ route('home') }}" class="text-2xl font-extrabold me-2">Chats <i
                             class="bi bi-house-fill"></i></a>
                 </div>
                 <button>
