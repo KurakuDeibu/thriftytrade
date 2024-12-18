@@ -94,6 +94,22 @@ class User extends Authenticatable implements FilamentUser
         return $this->isFinder === true;
     }
 
+    public function scopeUnread($query)
+    {
+        return $query->whereNull('read_at');
+    }
+
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    public function unreadMessagesCount()
+    {
+        return $this->messages()->whereNull('read_at')->count();
+    }
+
     /**
      * The channels the user receives notification broadcasts on.
      */

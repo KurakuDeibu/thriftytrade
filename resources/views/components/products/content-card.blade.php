@@ -38,9 +38,12 @@
                             <i class="p-2 fas fa-heart" style="color: blue;"></i>
                         </button>
                     @else
-                        <button type="submit" class="wishlist-icon" title="Add to Wishlist">
-                            <i class="p-2 far fa-heart"></i>
-                        </button>
+                        @auth
+
+                            <button type="submit" class="wishlist-icon" title="Add to Wishlist">
+                                <i class="p-2 far fa-heart"></i>
+                            </button>
+                        @endauth
                     @endif
                 </form>
             </div>

@@ -4,6 +4,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FinderRegistrationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MarketplaceController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PageController;
@@ -122,4 +123,8 @@ Route::middleware(['auth', 'verified'])->group( function () {
 
     // ------GENERATE REPORTS ------//
     Route::get('/generate-pdf/{offerId}', [TransactionController::class, 'generatePDF'])->name('offers.generate-pdf');
+
+    Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'mar`kAsRead'])->name('notifications.read');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+
 });

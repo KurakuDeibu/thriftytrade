@@ -7,9 +7,11 @@ use App\Models\Conversation;
 use App\Models\Offer;
 use App\Models\Products;
 use App\Models\Transaction;
+use App\Notifications\OfferNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class OfferController extends Controller
 {
@@ -81,6 +83,7 @@ class OfferController extends Controller
 
             // If offer is accepted, update product status to 'Pending'
             if ($request->status === 'accepted') {
+
                 // Update the associated product to 'Pending'
                 $offer->product->update([
                     'status' => 'Pending'
@@ -90,6 +93,10 @@ class OfferController extends Controller
                 Offer::where('products_id', $offer->products_id)
                     ->where('id', '!=', $offer->id)
                     ->update(['status' => 'rejected']);
+
+                // Notify the buyer of the offer status change
+                Notification::send($offer->user, new OfferNotification($offer));
+
 
                     $conversation = Conversation::where(function($query) use ($offer) {
                         $query->where('sender_id', Auth::id())

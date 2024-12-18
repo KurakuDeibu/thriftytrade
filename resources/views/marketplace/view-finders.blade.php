@@ -10,8 +10,7 @@
                 <span class="text-sm text-muted ">Looking for a finder?</span>
 
             </div>
-            <a href="{{ route('users.finder') }}"
-                class="bg-blue-600 text-white px-3 py-1.5 md:px-4 md:py-2 text-sm md:text-base rounded-lg hover:bg-blue-700 transition-colors">
+            <a href="{{ route('users.finder') }}" class="btn btn-outline-primary">
                 <i class="fas fa-search me-2"></i> View All
             </a>
         </div>
