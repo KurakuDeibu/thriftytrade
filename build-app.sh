@@ -2,7 +2,8 @@
 # Make sure this file has executable permissions, run `chmod +x build-app.sh`
 
 # Build assets using NPM
-npm install --production && npm run prod
+npm install --production
+npm run production
 composer install
 
 # Clear cache
