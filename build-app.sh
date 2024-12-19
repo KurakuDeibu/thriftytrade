@@ -2,9 +2,8 @@
 # Make sure this file has executable permissions, run `chmod +x build-app.sh`
 
 # Build assets using NPM
-npm install --production
+npm install --production && npm run prod
 composer install
-npm install laravel-echo pusher-js
 
 # Clear cache
 php artisan optimize:clear
