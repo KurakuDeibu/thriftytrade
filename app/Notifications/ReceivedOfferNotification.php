@@ -51,8 +51,8 @@ class ReceivedOfferNotification extends Notification
     public function toArray(object $notifiable): array
     {
             return [
-                'message' => "You have received an offer for {$this->offer->product->prodName} with an offer of: {$this->offer->offer_price}.",
-                'link' => route('product', $this->offer->product->id) // Link to offer details page
+                'message' => "You have received an offer for {$this->offer->product->prodName} with an offer of ₱{$this->offer->offer_price}.",
+                'link' => route('product', $this->offer->product->id) // Link to product details page
             ];
 
     }
