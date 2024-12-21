@@ -117,6 +117,8 @@ Route::middleware(['auth', 'verified'])->group( function () {
 
     // -------MY TRANSACTIONS-----//
     Route::get('/user/transactions', [TransactionController::class, 'index'])->name('user.transactions');
+    Route::get('/user/transactions/finder', [TransactionController::class, 'showFinder'])->name('finder.transactions');
+
 
     //-------REVIEWCONTROLLER------//
     Route::post('/user/transaction/{transaction}/review', [ReviewController::class, 'storeReview'])->name('transactions.review.store');

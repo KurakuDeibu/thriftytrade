@@ -41,6 +41,8 @@ class TransactionController extends Controller
           ->latest()
           ->get();
 
+
+
             // \Illuminate\Support\Facades\Log::info('Retrieved Transactions: ', $transactions->toArray()); // Log the retrieved transactions
 
 
@@ -77,4 +79,26 @@ class TransactionController extends Controller
         return $pdf->stream('transaction-details-' . $offerId . '.pdf');
         // return $pdf->download('transaction-details-' . $offerId . '.pdf');
     }
+
+    public function showFinder()
+    {
+        // Transactions (for finders )
+        $transactionsfinder = Transaction::whereHas('offer', function ($query) {
+            $query->where('user_id', Auth::id());
+        })
+          ->where('tranStatus', 'completed')
+          ->with(['offer', 'user'])
+          ->latest()
+          ->get();
+
+        return view('dashboard', compact(['transactionsfinder']));
+    }
+    //    // Transactions (for finders )
+    //    $transactionsfinder = Transaction::whereHas('offer', function ($query) {
+    //     $query->where('user_id', Auth::id());
+    // })
+    //   ->where('tranStatus', 'completed')
+    //   ->with(['offer', 'user'])
+    //   ->latest()
+    //   ->get();
 }

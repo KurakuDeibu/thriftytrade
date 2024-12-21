@@ -1,8 +1,13 @@
 @auth
     @if (Auth::user()->id == $marketplaceProducts->author->id)
         <div class="container box-border mt-2">
-            <h3 class="mb-4">Product Offers
-                <span class="badge bg-primary ms-2">{{ $marketplaceProducts->offers->count() }}</span>
+
+            @if ($marketplaceProducts->is_looking_for == true)
+                <h3 class="mb-4">Finder Offers
+                @else
+                    <h3 class="mb-4">Product Offers
+            @endif
+            <span class="badge bg-primary ms-2">{{ $marketplaceProducts->offers->count() }}</span>
             </h3>
 
             @if ($marketplaceProducts->offers->count() > 0)
@@ -10,7 +15,12 @@
                     <table class="table table-hover table-striped">
                         <thead class="table-light">
                             <tr>
-                                <th>Buyer</th>
+                                @if ($marketplaceProducts->is_looking_for == true)
+                                    <th>Finder</th>
+                                @else
+                                    <th>Buyer</th>
+                                @endif
+
                                 <th>Offer Price</th>
                                 <th>Meetup Details</th>
                                 <th>Status</th>

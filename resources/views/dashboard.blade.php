@@ -52,6 +52,8 @@
                             @include('seller.offers.index')
                         @elseif (Route::currentRouteName() === 'user.transactions')
                             @include('transactions.index')
+                        @elseif (Route::currentRouteName() === 'finder.transactions')
+                            @include('transactions.finder-transaction')
                         @endif
                     </div>
 

@@ -71,6 +71,12 @@
                         <div class="mb-2 card bg-light"><a href="{{ route('finder.registration') }}"
                                 class="btn btn-outline-primary">Become a Finder</a></div>
                     @endif
+
+                    @if (Auth::user()->isFinder == true)
+                        <div class="mb-2 card bg-light"><a href="{{ route('finder.transactions') }}"
+                                class="btn btn-outline-primary {{ Route::currentRouteName() === 'finder.transactions' ? 'active' : '' }}">
+                                Commission History</a></div>
+                    @endif
                 @endauth
             @endif
 

@@ -1,6 +1,6 @@
 <!-- Offer Details Modal (from previous response) -->
 @if ($selectedOffer)
-    <div wire:ignore.self class="modal fade" id="offerDetailsModal" tabindex="-1">
+    <div wire:ignore.self class="modal fade" id="transactionModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="text-white modal-header bg-primary">

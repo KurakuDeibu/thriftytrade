@@ -34,7 +34,10 @@ return new class extends Migration
             $table->text('prodDescription')->nullable();
             // $table->string('prodRefTag', 10)->unique();
             $table->boolean('featured')->default(false);
-            $table->softDeletes()->nullable();
+            $table->boolean('is_looking_for')->default(false);
+            $table->decimal('finders_fee', 10, 2)->nullable();
+
+            // $table->softDeletes()->nullable();
             $table->timestamps();
 
         });

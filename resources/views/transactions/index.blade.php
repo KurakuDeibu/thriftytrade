@@ -22,11 +22,12 @@
                 As a Seller ( {{ $transactionsseller->count() }})
             </button>
         </li>
+
     </ul>
 
     <div class="tab-content" id="transactionTabsContent">
 
-        {{-- TRANSACTION FOR BUYER TABS --}}
+        {{-- TRANSACTION TABS FOR BUYER TABS --}}
         <div class="tab-pane fade show active" id="buyer-transaction" role="tabpanel"
             aria-labelledby="buyer-transaction-tab">
             @if ($transactionsbuyer->isEmpty())
@@ -44,15 +45,26 @@
                         <div class="col-lg-12">
                             <div class="card listing-card position-relative border-primary">
                                 <div class="row g-0">
+                                    {{-- @if ($transaction->product->isLookingFor())
+                                        <div class="mb-4">
+                                            <div class="p-4 text-center bg-white rounded shadow-sm stat-card-custom">
+                                                <div class="p-3 mx-auto mb-3">
+                                                    <i class="fas fa-inbox text-secondary fa-3x"></i>
+                                                </div>
+                                                <h5 class="mb-2 text-muted">This is a "Finder" transaction and
+                                                    cannot be displayed.</h5>
+                                            </div>
+                                        </div>
+                                    @else --}}
                                     <!-- Product Image -->
                                     <div class="col-md-4 position-relative">
                                         <div class="h-100 listing-image-container" style="height: 250px; width: 100%;">
-                                            <img src="{{ $transaction->product->prodImage && file_exists(public_path('storage/' . $transaction->product->prodImage))
-                                                ? asset('storage/' . $transaction->product->prodImage)
+                                            <img src="{{ $transaction->product?->prodImage && file_exists(public_path('storage/' . $transaction->product?->prodImage))
+                                                ? asset('storage/' . $transaction->product?->prodImage)
                                                 : asset('img/NOIMG.jpg') }}"
                                                 class="border-2 card-img-top listing-image w-100 h-100 object-fit-cover"
                                                 style="max-height: 250px; min-height: 250px; object-fit: cover;"
-                                                alt="{{ $transaction->product->prodName }}">
+                                                alt="{{ $transaction->product?->prodName }}">
                                         </div>
                                     </div>
 
@@ -62,10 +74,17 @@
                                             <div class="mb-2 d-flex justify-content-between align-items-start">
                                                 <div>
                                                     <h5 class="mb-1 card-title">
-                                                        {{ Str::limit($transaction->product->prodName, 50) }}
+                                                        <a href="{{ route('product', $transaction->product?->id) }}">
+                                                            {{ Str::limit($transaction->product?->prodName, 50) }}
+                                                        </a>
                                                     </h5>
                                                     <p class="mb-0 text-muted small">
-                                                        Bought from: {{ $transaction->product->author->name }} <br> •
+                                                        <a
+                                                            href="{{ route('profile.user-listing', $transaction->product?->author->id) }}">
+                                                            Bought from: {{ $transaction->product?->author->name }}
+                                                            <br>
+                                                            •
+                                                        </a>
                                                         {{ $transaction->updated_at->format('M d, Y') }} @
                                                         {{ $transaction->updated_at->format('h:i A') }}
                                                     </p>
@@ -85,10 +104,10 @@
                                                 <div class="col-md-12">
                                                     <div class="mb-1 text-sm text-muted">
                                                         Original Price:
-                                                        ₱{{ number_format($transaction->product->prodPrice, 2) }}
+                                                        ₱{{ number_format($transaction->product?->prodPrice, 2) }}
                                                     </div>
                                                     <div class="mb-1 text-sm text-muted">
-                                                        You offered {{ $transaction->product->author->name }} for:
+                                                        You offered {{ $transaction->product?->author->name }} for:
                                                         ₱{{ number_format($transaction->offer_price, 2) }}
                                                     </div>
                                                 </div>
@@ -100,7 +119,7 @@
 
                                                 <button wire:click="viewOfferDetails({{ $transaction->id }})"
                                                     class="btn btn-outline-primary w-50" data-bs-toggle="modal"
-                                                    data-bs-target="#offerDetailsModal">
+                                                    data-bs-target="#transactionModal">
                                                     <i class="bi bi-eye me-1"></i> View Transaction
                                                 </button>
 
@@ -128,6 +147,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {{-- @endif --}}
                                 </div>
                             </div>
                         </div>
@@ -212,7 +232,7 @@
             @endif
         </div>
 
-        {{-- TRANSACTION FOR SELLER TABS --}}
+        {{-- TRANSACTION TABS FOR SELLER --}}
         <div class="tab-pane fade" id="seller-transaction" role="tabpanel" aria-labelledby="seller-transaction-tab">
             @if ($transactionsseller->isEmpty())
                 <div class="mb-4">
@@ -227,7 +247,11 @@
                 <div class="row row-cols-1 g-4">
                     @foreach ($transactionsseller as $transaction)
                         <div class="col-lg-12">
-                            <div class="card listing-card position-relative border-primary">
+                            <div
+                                class="card listing-card position-relative
+                                @if ($transaction->product->isLookingFor()) border-success
+                                @else border-primary @endif">
+
                                 <div class="row g-0">
                                     <!-- Product Image -->
                                     <div class="col-md-4 position-relative">
@@ -248,10 +272,18 @@
                                             <div class="mb-2 d-flex justify-content-between align-items-start">
                                                 <div>
                                                     <h5 class="mb-1 card-title">
-                                                        {{ Str::limit($transaction->product->prodName, 50) }}
+                                                        <a href="{{ route('product', $transaction->product->id) }}">
+                                                            {{ Str::limit($transaction->product->prodName, 50) }}</a>
                                                     </h5>
                                                     <p class="mb-0 text-muted small">
-                                                        Sold to: {{ $transaction->user->name }} <br> •
+                                                        <a
+                                                            href="{{ route('profile.user-listing', $transaction->user->id) }}">
+                                                            @if ($transaction->product->isLookingFor())
+                                                                Finder: {{ $transaction->user->name }} <br> •
+                                                            @else
+                                                                Sold to: {{ $transaction->user->name }} <br> •
+                                                            @endif
+                                                        </a>
                                                         {{ $transaction->updated_at->format('M d, Y') }} @
                                                         {{ $transaction->updated_at->format('h:i A') }}
                                                     </p>
@@ -270,12 +302,22 @@
                                             <div class="mt-2 mb-2 row">
                                                 <div class="col-md-12">
                                                     <div class="mb-1 text-sm text-muted">
-                                                        Original Price:
-                                                        ₱{{ number_format($transaction->product->prodPrice, 2) }}
+                                                        @if ($transaction->product->isLookingFor())
+                                                            Finder's Fee:
+                                                            ₱{{ number_format($transaction->offered_finders_fee, 2) }}
+                                                        @else
+                                                            Original Price:
+                                                            ₱{{ number_format($transaction->product->prodPrice, 2) }}
+                                                        @endif
                                                     </div>
                                                     <div class="mb-1 text-sm text-muted">
-                                                        You accepted {{ $transaction->user->name }} offer:
-                                                        ₱{{ number_format($transaction->offer_price, 2) }}
+                                                        @if ($transaction->product->isLookingFor())
+                                                            You accepted {{ $transaction->user->name }} offered fee:
+                                                            ₱{{ number_format($transaction->offer_price, 2) }}
+                                                        @else
+                                                            You accepted {{ $transaction->user->name }} offer:
+                                                            ₱{{ number_format($transaction->offer_price, 2) }}
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
@@ -285,7 +327,7 @@
                                             <div class="inline-flex gap-2 mt-2 d-flex">
                                                 <button wire:click="viewOfferDetails({{ $transaction->id }})"
                                                     class="btn btn-outline-primary w-50" data-bs-toggle="modal"
-                                                    data-bs-target="#offerDetailsModal">
+                                                    data-bs-target="#transactionModal">
                                                     <i class="bi bi-eye me-1"></i> View Transaction
                                                 </button>
 
@@ -404,6 +446,8 @@
                 </div>
             @endif
         </div>
+
+
     </div>
 </div>
 

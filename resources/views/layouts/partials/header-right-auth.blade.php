@@ -53,8 +53,14 @@
                </x-dropdown-link>
 
                <x-dropdown-link wire:navigate.hover href="{{ route('user.transactions') }}">
-                   {{ __('History') }}
+                   {{ __('Transaction History') }}
                </x-dropdown-link>
+
+               @if (Auth::user()->isFinder == true)
+                   <x-dropdown-link wire:navigate.hover href="{{ route('finder.transactions') }}">
+                       {{ __('Commission History') }}
+                   </x-dropdown-link>
+               @endif
 
                @if (Auth::user()->isFinder == false)
                    <x-dropdown-link href="{{ route('finder.registration') }}">

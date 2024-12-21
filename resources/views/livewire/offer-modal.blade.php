@@ -6,8 +6,13 @@
                 <div class="border-0 modal-header">
                     <i class="fas fa-tags"></i>
                     <h5 class="modal-title fw-bold" id="offerModalLabel">&nbsp;
-                        Send Offer
+                        @if ($product->is_looking_for == true && auth()->user()->isFinder)
+                            Submit Finder's Offer
+                        @else
+                            Send Offer
+                        @endif
                     </h5>
+
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
@@ -40,43 +45,93 @@
                                 <p class="mb-2 price">₱{{ number_format($product?->prodPrice, 2) }}</p>
                                 <p class="mb-2 small">{{ $product?->category->categName }} •
                                     {{ $product?->prodCondition }}</p>
+
+                                @if ($product->is_looking_for == true)
+                                    <div class="p-2 mt-3 alert alert-info">
+                                        <small>
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            Finders Fee:
+                                            ₱{{ number_format($product?->finders_fee ?? 0, 2) }}
+                                        </small>
+                                    </div>
+                                @endif
+
                             </div>
                         </div>
 
 
                         <!-- Offer Form (Right Side) -->
                         <div class="p-4 bg-white col-md-7">
-                            <h5 class="mb-4 text-primary">Make Your Offer</h5>
+
+                            <h5 class="mb-4 text-primary">
+                                @if ($product->is_looking_for == true && auth()->user()->isFinder)
+                                    Finder's Offer Details
+                                @else
+                                    Make Your Offer
+                                @endif
+                            </h5>
+
+
                             <form wire:submit.prevent="submitOffer">
-                                <div class="mb-3">
-                                    <label for="offerPrice" class="form-label">
-                                        @if ($product?->price_type == 'Fixed')
-                                            Fixed Price
-                                        @else
-                                            Your Price
-                                        @endif
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="text-white border-0 input-group-text bg-primary">₱</span>
-                                        <input type="number" class="form-control" id="offerPrice"
-                                            x-ref="offerPriceInput" wire:model.defer="offerPrice"
-                                            @if ($product?->price_type == 'Fixed') readonly
-                                                   value="{{ $product?->prodPrice }}"
-                                               @else
-                                                   min="1"
-                                                   step="0.01"
-                                                   placeholder="{{ $product?->prodPrice }}" @endif>
+                                @if ($product->is_looking_for == true && auth()->user()->isFinder)
+                                    <div class="mb-3">
+                                        <label for="offerPrice" class="form-label">Offered Price</label>
+                                        <div class="input-group">
+                                            <span class="text-white input-group-text bg-primary">₱</span>
+                                            <input type="number"
+                                                class="form-control @error('offerPrice') is-invalid @enderror"
+                                                wire:model.defer="offerPrice" min="1" step="0.01"
+                                                placeholder="Enter your offer price">
+                                            @error('offerPrice')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
                                     </div>
-                                    @if ($product?->price_type == 'Fixed')
+
+                                    <div class="mb-3">
+                                        <label for="offeredFindersFee" class="form-label">
+                                            Offered Finders Fee
+                                            <span class="text-muted">
+                                                (Max: ₱{{ number_format($product?->finders_fee, 2) }})
+                                            </span>
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="text-white input-group-text bg-success">₱</span>
+                                            <input type="number"
+                                                class="form-control @error('offeredFindersFee') is-invalid @enderror"
+                                                wire:model.defer="offeredFindersFee" max="{{ $product?->finders_fee }}"
+                                                min="0" step="0.01" placeholder="Enter your finders fee">
+                                            @error('offeredFindersFee')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
                                         <small class="text-muted">
                                             <i class="bi bi-info-circle me-1"></i>
-                                            This is a fixed-price item. The offer price cannot be changed.
+                                            Your proposed finders fee must not exceed the maximum set.
                                         </small>
-                                    @endif
-                                    @error('offerPrice')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
+                                    </div>
+                                @else
+                                    <div class="mb-3">
+                                        <label for="offerPrice" class="form-label">
+                                            @if ($product?->price_type == 'Fixed')
+                                                Fixed Price
+                                            @else
+                                                Your Price
+                                            @endif
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="text-white border-0 input-group-text bg-primary">₱</span>
+                                            <input type="number" class="form-control" id="offerPrice"
+                                                x-ref="offerPriceInput" wire:model.defer="offerPrice"
+                                                @if ($product?->price_type == 'Fixed') readonly
+                                                       value="{{ $product?->prodPrice }}"
+                                                @else
+                                                       min="1"
+                                                       step="0.01"
+                                                       placeholder="{{ $product?->prodPrice }}" @endif>
+                                        </div>
+                                    </div>
+                                @endif
 
                                 <div class="mb-3">
                                     <label for="meetupLocation" class="form-label">Meetup Location</label>
@@ -142,7 +197,12 @@
 
                                 <button type="submit" class="btn btn-primary w-100" wire:loading.attr="disabled">
                                     <span wire:loading.remove>
-                                        <i class="fas fa-paper-plane me-2"></i> Send Offer
+                                        <i class="fas fa-paper-plane me-2"></i>
+                                        @if ($product->is_looking_for == true && auth()->user()->isFinder)
+                                            Submit Finder's Offer
+                                        @else
+                                            Send Offer
+                                        @endif
                                     </span>
                                     <span wire:loading>
                                         <span class="spinner-border spinner-border-sm" role="status"></span>
@@ -151,7 +211,6 @@
                                 </button>
                             </form>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -269,8 +328,8 @@
                         }, 2000);
                     });
                 }
-
             }
         }
     </script>
+
 </div>

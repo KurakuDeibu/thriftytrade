@@ -155,6 +155,9 @@ class OfferController extends Controller
             // Update Offer Status
             $offer->update(['status' => 'completed']);
 
+            // Send the notification that the transaction is completed
+            Notification::send($offer->user, new OfferNotification($offer));
+
             DB::commit();
 
             return back()->with('success', 'Transaction completed successfully');

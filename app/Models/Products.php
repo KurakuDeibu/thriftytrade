@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Storage;
 class Products extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $table = "products";
 
@@ -26,7 +25,9 @@ class Products extends Model
         'prodDescription',
         'featured',
         'status', // added status, deleted status database instead
-        'price_type' // added price type ,- fixed, negotiable
+        'price_type', // added price type ,- fixed, negotiable
+        'finders_fee',
+        'is_looking_for',
     ];
 
     const STATUS_AVAILABLE = 'Available';
@@ -64,6 +65,11 @@ class Products extends Model
     public function reports()
     {
         return $this->hasMany(Report::class, 'products_id');
+    }
+
+    public function isLookingFor()
+    {
+        return $this->is_looking_for == true;
     }
 
     public function scopeFeatured($query)

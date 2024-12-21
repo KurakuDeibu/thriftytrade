@@ -28,6 +28,8 @@ class UserSeeder extends Seeder
             'phoneNum' => '123-456-7890',
             'email_verified_at' => now(),
             'isAdmin' => true,
+            'isFinder' => true,
+            'finder_status' => 'approved',
         ]);
     }
 }

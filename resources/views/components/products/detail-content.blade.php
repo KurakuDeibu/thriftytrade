@@ -188,7 +188,7 @@
             </ol>
         </nav>
 
-        <div class="row">
+        <div class=" row">
             <!-- Product Image Slider Column -->
             <div class="mb-4 col-lg-6">
                 <!-- Glide slider container -->
@@ -264,6 +264,7 @@
 
                 </div>
 
+                {{-- REPORT MODAL --}}
                 @include('components.products.report-listing-form')
 
                 {{-- SELLER INFO --}}
@@ -317,15 +318,31 @@
                 <p class="py-1 text-muted d-flex justify-content-between align-items-center">
                     <small>Posted {{ $marketplaceProducts->created_at->diffForHumans() }} •
                         {{ $marketplaceProducts->offers->count() }} chats </small>
-                    @if ($marketplaceProducts->featured == true)
-                        <small class="text-white badge bg-primary">Featured</small>
+                    @if ($marketplaceProducts->is_looking_for == true)
+                        <small class="text-white badge bg-primary"><i class="bi bi-search me-1"></i>Is Looking
+                            For</small>
                     @endif
                 </p>
 
 
-                <h2 class="py-2 fw-bold h4">₱{{ $marketplaceProducts->prodPrice }} <span
-                        class="text-sm text-secondary">/ {{ $marketplaceProducts->price_type }}</span>
-                </h2>
+                @if ($marketplaceProducts->is_looking_for && $marketplaceProducts->finders_fee)
+                    <h2 class="py-2 fw-bold h4">₱{{ $marketplaceProducts->prodPrice }} <span
+                            class="text-sm text-primary">/ Finder's Fee:
+                            ₱{{ $marketplaceProducts->finders_fee }}</span>
+                    </h2>
+                @elseif($marketplaceProducts->is_looking_for && !$marketplaceProducts->finders_fee)
+                    <h2 class="py-2 fw-bold h4">₱{{ $marketplaceProducts->prodPrice }}
+                        <span class="text-sm text-secondary">/ {{ $marketplaceProducts->price_type }}</span>
+                    </h2>
+                    <span class="badge bg-warning">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Finder's Fee Not Set
+                    </span>
+                @else
+                    <h2 class="py-2 fw-bold h4">₱{{ $marketplaceProducts->prodPrice }}
+                        <span class="text-sm text-secondary">/ {{ $marketplaceProducts->price_type }}</span>
+                    </h2>
+                @endif
 
 
                 @php
@@ -374,44 +391,67 @@
                         @endphp
 
                         @if ($isAvailableForOffers)
-                            <!-- Offer Button for buyers -->
-                            <div class="mt-4 mb-2">
-                                <button class="btn btn-outline-primary btn-lg w-100" data-bs-toggle="modal"
-                                    data-bs-target="#offerModal">
-                                    <i class="fas fa-tags"></i> OFFER
-                                    [₱{{ number_format($marketplaceProducts->prodPrice, 2) }}]
-                                </button>
-                            </div>
+                            <!-- Offer Button for buyers / If the author is not looking for-->
+                            @if ($marketplaceProducts->is_looking_for != true)
+                                <div class="mt-4 mb-2">
+                                    <button class="btn btn-outline-primary btn-lg w-100" data-bs-toggle="modal"
+                                        data-bs-target="#offerModal">
+                                        <i class="fas fa-tags"></i> OFFER
+                                        [₱{{ number_format($marketplaceProducts->prodPrice, 2) }}]
+                                    </button>
+                                </div>
+                                {{-- LIVEWIRE OFFER-MODAL --}}
+                                @livewire('offer-modal', ['product' => $marketplaceProducts])
 
-                            {{-- LIVEWIRE OFFER-MODAL --}}
-                            @livewire('offer-modal', ['product' => $marketplaceProducts])
+                                {{-- FINDER- BUTTON TO CONTACT --}}
+                            @elseif (Auth::user()->isFinder == true)
+                                <div class="mt-4 mb-2">
+                                    <button class="btn btn-outline-primary btn-lg w-100" data-bs-toggle="modal"
+                                        data-bs-target="#offerModal">
+                                        <i class="bi bi-telephone-forward me-1"></i> CONTACT
+                                        [{{ $marketplaceProducts->author->name }}]
+                                    </button>
+                                </div>
+                                @livewire('offer-modal', ['product' => $marketplaceProducts])
 
-                            <!-- Chat Button for buyers -->
-                            <!-- Button to trigger modal -->
-                            {{-- <div class="mb-2 d-lg-block">
-                                <a wire:click="message()"
-                                    href="{{ route('chat', ['query' => $marketplaceProducts->author->id]) }}"
-                                    class="shadow-sm btn btn-primary btn-lg w-100" data-bs-toggle="modal"
-                                    data-bs-target="#chatModal">
-                                    <i class="fas fa-envelope me-2"></i> CHAT WITH SELLER
-                                </a>
-                            </div> --}}
-                            <livewire:message-modal :userId="$marketplaceProducts->author->id" />
+
+                                {{-- MESSAGE MODAL THE USER --}}
+                                <livewire:message-modal :userId="$marketplaceProducts->author->id" />
+                                {{-- END OF MODAL --}}
+                            @else
+                                <div class="mt-4 mb-2">
+                                    <a href="{{ route('finder.registration') }}"
+                                        class="btn btn-outline-primary btn-lg w-100">
+                                        <i class="bi bi-person-bounding-box"></i> BECOME A FINDER
+                                    </a>
+                                </div>
+                            @endif
+
+
 
                             <!-- Status-specific messages -->
-                            @if ($marketplaceProducts->price_type == 'Negotiable')
+                            @if ($marketplaceProducts->is_looking_for == true)
                                 <div class="mt-2 alert alert-info" role="alert">
-                                    <i class="fas fa-handshake"></i> Price is negotiable. Feel free to make an
-                                    offer!
+                                    <i class="fas fa-handshake"></i> <span class="fw-bold">
+                                        {{ $marketplaceProducts->author->name }}
+                                    </span>is
+                                    looking for a finder for the listing.
                                 </div>
-                            @elseif($marketplaceProducts->status == 'Available')
-                                <div class="mt-2 alert alert-success" role="alert">
-                                    <i class="fas fa-check-circle"></i> This listing is available for transaction.
-                                </div>
-                            @elseif($marketplaceProducts->price_type == 'Fixed')
-                                <div class="mt-2 alert alert-success" role="alert">
-                                    <i class="fas fa-check-circle"></i> This listing is available for transaction.
-                                </div>
+                            @else
+                                @if ($marketplaceProducts->price_type == 'Negotiable')
+                                    <div class="mt-2 alert alert-info" role="alert">
+                                        <i class="fas fa-handshake"></i> Price is negotiable. Feel free to make an
+                                        offer!
+                                    </div>
+                                @elseif($marketplaceProducts->status == 'Available')
+                                    <div class="mt-2 alert alert-success" role="alert">
+                                        <i class="fas fa-check-circle"></i> This listing is available for transaction.
+                                    </div>
+                                @elseif($marketplaceProducts->price_type == 'Fixed')
+                                    <div class="mt-2 alert alert-success" role="alert">
+                                        <i class="fas fa-check-circle"></i> This listing is available for transaction.
+                                    </div>
+                                @endif
                             @endif
                         @else
                             <div class="mt-4 mb-2 d-lg-block">
@@ -449,12 +489,18 @@
                     </div>
                 @else
                     @if ($isAvailableForOffers)
-                        <div class="d-lg-none sticky-bottom">
-                            <button class="btn btn-primary btn-lg w-100" data-bs-toggle="modal"
-                                data-bs-target="#offerModal">
-                                <i class="fas fa-tags"></i> MAKE OFFER
-                            </button>
-                        </div>
+                        @if ($marketplaceProducts->is_looking_for != true)
+                            <div class="d-lg-none sticky-bottom">
+                                <button class="btn btn-primary btn-lg w-100" data-bs-toggle="modal"
+                                    data-bs-target="#offerModal">
+                                    <i class="fas fa-tags"></i> MAKE OFFER
+                                </button>
+                            </div>
+                        @else
+                            <div class="d-lg-none sticky-bottom">
+                                <livewire:message-modal :userId="$marketplaceProducts->author->id" />
+                            </div>
+                        @endif
                     @endif
                 @endif
             @else

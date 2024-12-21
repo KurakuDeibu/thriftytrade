@@ -34,11 +34,23 @@
                 Sold ({{ $soldProducts->count() }})
             </button>
         </li>
+        {{-- New Looking For Tab --}}
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#looking-for">
+                Your Looking For ({{ $lookingforProducts->count() }})
+            </button>
+        </li>
     </ul>
 
     <!-- Tabs Content -->
     <div class="tab-content">
-        @foreach (['All' => $userProducts, 'active' => $activeProducts, 'pending' => $pendingProducts, 'sold' => $soldProducts] as $tabName => $products)
+        @foreach ([
+        'All' => $userProducts,
+        'active' => $activeProducts,
+        'pending' => $pendingProducts,
+        'sold' => $soldProducts,
+        'lookingforPorducts' => $lookingforProducts,
+    ] as $tabName => $products)
             <div class="tab-pane fade {{ $tabName == 'All' ? 'show active' : '' }}" id="{{ $tabName }}">
                 <div class="row row-cols-1 g-4">
                     @forelse ($products as $product)

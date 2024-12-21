@@ -8,9 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Offer;
 use App\Models\Review;
 use App\Models\Status;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Termwind\Components\Dd;
 
 class ProductController extends Controller
@@ -18,6 +20,15 @@ class ProductController extends Controller
 
     public function dashboard()
     {
+        $completedTransaction = Transaction::whereHas('offer', function ($query) {
+            $query->where('user_id', Auth::id());
+        })
+          ->where('tranStatus', 'completed')
+          ->with(['offer'])
+          ->latest()
+          ->get();
+
+
         $offers = Offer::whereHas('product', function ($query) {
             $query->where('user_id', Auth::id());
         })
@@ -34,11 +45,11 @@ class ProductController extends Controller
         $soldProducts = $userProducts->where('status', 'Sold');
         $pendingProducts = $userProducts->where('status', 'Pending');
         $activeProducts = $userProducts->where('status', 'Available');
+        $lookingforProducts = $userProducts->where('is_looking_for', true);
         $pendingOffers = $offers->where('status', 'pending');
         $acceptedOffers = $offers->where('status', 'accepted');
         $rejectedOffers = $offers->where('status', 'rejected');
         $completedOffers = $offers->where('status', 'completed');
-
 
         return view('dashboard', compact(
             'userProducts',
@@ -49,7 +60,9 @@ class ProductController extends Controller
             'acceptedOffers',
             'rejectedOffers',
             'completedOffers',
-            'averageRating'
+            'averageRating',
+            'completedTransaction',
+            'lookingforProducts',
         ));
     }
 
@@ -78,19 +91,33 @@ class ProductController extends Controller
         return redirect()->back()->with('error', 'You can only post a maximum of 10 available listings. Please remove an existing available listing to add a new one.');
         }
 
-        $request->validate([
+        $rules = [
             'name' => 'required|string|min:3|max:255',
             'category_id' => 'required|exists:category,id',
             'status' => 'nullable|in:Available,Pending,Sold',
-            'price_type' => 'required|in:Fixed,Negotiable',
+            'price_type' => 'nullable|in:Fixed,Negotiable',
             'location' => 'required|in:Lapu-Lapu City,Mandaue City',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'quantity' => 'required|numeric|min:0',
             'condition' => 'required|string|max:20',
-            'images' => 'required|image|mimes:jpeg,png,jpg|max:2048'
-        ]);
+            'images' => 'required|image|mimes:jpeg,png,jpg|max:2048',
 
+            'is_looking_for' => 'nullable|boolean',
+            'finders_fee' => 'nullable|numeric|min:0'
+        ];
+
+        if ($request->has('is_looking_for')) {
+            $rules['finders_fee'] = 'required|numeric|min:0';
+        }
+
+        // Validate the request
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
         $imagePath = null;
         if ($request->hasFile('images')) {
@@ -98,22 +125,27 @@ class ProductController extends Controller
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('products/images', $imageName, 'public');
         }
-        // Creating product listing
-        Products::create([
-            'user_id' => auth()->id(),
-            'category_id' => $request->category_id,
-            'status' => 'Available', //set to available
-            'price_type' => $request->price_type,
-            'location' => $request->location,
-            'prodName' => $request->name,
-            'prodDescription' => $request->description,
-            'prodPrice' => $request->price,
-            'prodQuantity' => $request->quantity,
-            'prodCondition' => $request->condition,
-            'prodImage' => $imagePath,
-            'featured' => $request->has('featured')
-        ]);
 
+        // Prepare data for creating the product
+                $productData = [
+                    'user_id' => auth()->id(),
+                    'category_id' => $request->category_id,
+                    'status' => 'Available',
+                    'price_type' => $request->price_type,
+                    'location' => $request->location,
+                    'prodName' => $request->name,
+                    'prodDescription' => $request->description,
+                    'prodPrice' => $request->price,
+                    'prodCondition' => $request->condition,
+                    'prodImage' => $imagePath,
+
+                    // New fields for Looking For
+                    'is_looking_for' => $request->has('is_looking_for') ? true : false,
+                    'finders_fee' => $request->has('is_looking_for') ? $request->finders_fee : null
+                ];
+
+                // Create the product
+                $product = Products::create($productData);
 
         return redirect()->route('listing.create')->with('success', 'Product listing created successfully.');
     }
@@ -139,9 +171,12 @@ class ProductController extends Controller
             'location' => 'required|in:Lapu-Lapu City,Mandaue City',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'quantity' => 'required|numeric|min:0',
             'condition' => 'required|string|max:20',
-            'images' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'images' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+
+            'is_looking_for' => 'nullable|boolean',
+            'finders_fee' => 'nullable|numeric|min:0'
+
         ]);
 
         // Initialize update data
@@ -152,8 +187,11 @@ class ProductController extends Controller
             'price_type' => $request->price_type,
             'location' => $request->location,
             'prodPrice' => $request->price,
-            'prodQuantity' => $request->quantity,
             'prodCondition' => $request->condition,
+
+            'is_looking_for' => $request->has('is_looking_for') ? true : false,
+            'finders_fee' => $request->has('is_looking_for') ? $request->finders_fee : null
+
         ];
 
         // Handle image upload if a new image is provided
@@ -175,7 +213,7 @@ class ProductController extends Controller
         // Update the product with all the data
         $product->update($updateData);
 
-        return redirect()->back()->with('success', 'Listing updated successfully.');
+        return redirect()->route('manage-listing')->with('success', 'Listing updated successfully.');
     }
 
     //Delete the seller's product in the database

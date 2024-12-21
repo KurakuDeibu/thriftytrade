@@ -47,6 +47,15 @@ public static function checkReviewExists($offerId, $reviewerId)
 }
 public function getRoleAttribute()
     {
+        // Check if this is a Looking For product
+        $product = Products::find($this->products_id);
+
+        // If it's a Looking For product, set role as Finder
+        if ($product && $product->is_looking_for) {
+            return 'Finder Transaction';
+        }
+
+        // Existing logic for non-looking for products
         $offer = Offer::where('products_id', $this->products_id)
             ->where('user_id', $this->reviewee_id)
             ->first();

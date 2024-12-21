@@ -23,6 +23,11 @@
                 <div class="top-0 m-2 badge bg-primary position-absolute end-0">Featured</div>
             @endif
 
+            @if ($products->is_looking_for)
+                <div class="top-0 m-2 badge bg-primary position-absolute end-0"><i class="bi bi-search me-1"></i>Is
+                    Looking For</div>
+            @endif
+
             @php
                 $isInWishlist = Auth::check() && $products->wishlists()->where('user_id', Auth::id())->exists();
             @endphp

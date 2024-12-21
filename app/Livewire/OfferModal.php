@@ -14,17 +14,18 @@ class OfferModal extends Component
 {
     public $product;
     public $offerPrice;
+    public $offeredFindersFee;
     public $meetupLocation;
     public $meetupTime;
     public $message;
 
     public $successMessage = '';
+
     protected $listeners = [
         'offer-submitted' => 'refreshPage'
     ];
 
     protected $rules = [
-        'offerPrice' => 'required|numeric|min:1',
         'meetupLocation' => 'required|string',
         'meetupTime' => 'required|date',
         'message' => 'nullable|string',
@@ -59,43 +60,58 @@ class OfferModal extends Component
             $this->offerPrice = $this->product?->prodPrice;
         }
 
-        $this->validate([
-            'meetupLocation' => 'required|string',
-            'meetupTime' => 'required|date',
-            'message' => 'nullable|string',
-            'offerPrice' => $this->product?->price_type == 'Fixed'
-                ? 'in:' . $this->product?->prodPrice
-                : 'required|numeric|min:1'
-            ], [
-                'offerPrice.in' => 'For fixed-price items, the offer price must match the product price.',
+            $rules = [
+                'meetupLocation' => 'required|string',
+                'meetupTime' => 'required|date',
+                'message' => 'nullable|string',
+            ];
+
+            // Add dynamic validation based on product type
+            if ($this->product->is_looking_for && auth()->user()->isFinder) {
+                $rules['offeredFindersFee'] = 'required|numeric|min:0|max:' . $this->product->finders_fee;
+                $rules['offerPrice'] = 'required|numeric|min:1';
+            } else {
+                $rules['offerPrice'] = $this->product->price_type == 'Fixed'
+                    ? 'in:' . $this->product->prodPrice
+                    : 'required|numeric|min:1';
+            }
+
+            $this->validate($rules, [
+                'offeredFindersFee.required' => 'Please specify the finders fee you are offering.',
+                'offeredFindersFee.max' => 'Your offered finders fee cannot exceed the maximum set.',
                 'offerPrice.required' => 'Please enter an offer price.',
                 'offerPrice.numeric' => 'The offer price must be a number.',
-                'offerPrice.min' => 'The offer price must be at least 1.'
+                'offerPrice.min' => 'The offer price must be at least 1.',
             ]);
 
-                // Attempt to create the offer
-                $offer = Offer::create([
-                    'products_id' => $this->product?->id,
-                    'user_id' => auth()->id(),
-                    'offer_price' => $this->offerPrice,
-                    'meetup_location' => $this->meetupLocation,
-                    'meetup_time' => $this->meetupTime,
-                    'message' => $this->message,
-                    'status' => 'pending'
-                ]);
+            // Create offer with additional finder details if applicable
+            $offerData = [
+                'products_id' => $this->product->id,
+                'user_id' => auth()->id(),
+                'offer_price' => $this->offerPrice,
+                'meetup_location' => $this->meetupLocation,
+                'meetup_time' => $this->meetupTime,
+                'message' => $this->message,
+                'status' => 'pending'
+            ];
+
+            // Add finder-specific fields if applicable
+            if ($this->product->is_looking_for && auth()->user()->isFinder) {
+                $offerData['offered_finders_fee'] = $this->offeredFindersFee;
+            }
+
+            $offer = Offer::create($offerData);
+
 
                 if ($offer) {
                     // notify the recipient of the offer
                     Notification::send($offer->product->author, new ReceivedOfferNotification($offer));
 
                     $this->successMessage = 'Your offer has been successfully sent!';
-
-
                     // Browser event to trigger page reload
                     $this->dispatch('offer-submitted');
-                }
-                    $this->reset(['offerPrice', 'meetupLocation', 'meetupTime', 'message']);
-
+                    $this->reset(['offerPrice', 'offeredFindersFee', 'meetupLocation', 'meetupTime', 'message']);
+            }
         }
 
     public function clearMessages()

@@ -42,7 +42,7 @@ class ProductOffers extends Component
             ->paginate(5);
 
         return view('livewire.product-offers', [
-            'offers' => $offers
+            'offers' => $offers,
         ]);
     }
 }

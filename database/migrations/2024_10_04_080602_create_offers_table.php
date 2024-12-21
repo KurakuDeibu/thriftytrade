@@ -18,9 +18,11 @@ return new class extends Migration
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete('cascade');
             $table->foreign('products_id')->references('id')->on('products')->cascadeOnDelete('cascade');
-            $table->decimal('offer_price', 10, 2);
-            $table->string('meetup_location');
-            $table->dateTime('meetup_time');
+            $table->decimal('offer_price', 10, 2)->nullable();
+            $table->decimal('offered_finders_fee', 10, 2)->nullable();
+
+            $table->string('meetup_location')->nullable();
+            $table->dateTime('meetup_time')->nullable();
             $table->text('message')->nullable();
             $table->enum('status', ['pending', 'accepted', 'rejected', 'completed'])->default('pending');
             $table->timestamps();

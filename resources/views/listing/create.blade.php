@@ -1,6 +1,21 @@
 @extends('layouts.app')
 
 <link href="{{ asset('css/listings-styles.css') }}" rel="stylesheet">
+<style>
+    #finders-fee-section {
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: 0.5s ease-in-out;
+        padding: 0;
+    }
+
+    #finders-fee-section.active {
+        max-height: 500px;
+        opacity: 1;
+        padding: 15px;
+    }
+</style>
 
 @section('content')
     <div class="container">
@@ -34,22 +49,61 @@
                         </div>
 
                         <!-- Product Details Section -->
-                        <div class="col-12 col-lg-7">
-                            <div class="row g-3">
+                        <div class="col-12 col-lg-7" id="listing-form-container">
+                            <div class="row g-3" id="listing-form-wrapper">
                                 <!-- Product Name -->
-                                <div class="col-12">
-                                    <label for="name" class="form-label">Listing Title <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                        id="name" name="name" value="{{ old('name') }}">
-                                    @error('name')
-                                        <small class="text-danger">{{ $message }}</small>
-                                    @enderror
+                                <div class="col-12 d-flex align-items-center">
+                                    <div class="flex-grow-1">
+                                        <label for="name" class="form-label">Listing Title <span
+                                                class="text-danger">*</span></label>
+                                        <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                            id="name" name="name" value="{{ old('name') }}">
+                                        @error('name')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="mt-4 ms-2">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="is_looking_for"
+                                                name="is_looking_for" value="1"
+                                                {{ old('is_looking_for') ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="is_looking_for" data-bs-toggle="tooltip"
+                                                title="Toggle to apply commission listing">
+                                                Looking For
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
 
-
-
-
+                                <!-- Finders Fee Section (Conditionally Shown) -->
+                                <div class="col-12" id="finders-fee-section" style="display: none;">
+                                    <div class="card border-primary">
+                                        <div class="card-header bg-primary text-dark">
+                                            <h5 class="mb-0">Commission Fee Details</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="mb-3 col-12 col-md-12">
+                                                    <label for="finders_fee" class="form-label">
+                                                        Finders Fee (₱)
+                                                        <i class="fas fa-info-circle text-muted" data-bs-toggle="tooltip"
+                                                            title="The amount you're willing to pay to someone who helps you find the product your looking for"></i>
+                                                    </label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">₱</span>
+                                                        <input type="number" class="form-control" id="finders_fee"
+                                                            name="finders_fee" min="0" step="0.01"
+                                                            placeholder="Enter finders fee amount"
+                                                            value="{{ old('finders_fee') }}">
+                                                    </div>
+                                                    <small class="form-text text-muted">
+                                                        Optional: Set a finder's fee for the commission listing
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <!-- Description -->
                                 <div class="col-12">
@@ -101,7 +155,7 @@
                                 </div>
 
                                 <!-- Price -->
-                                <div class="col-12 col-sm-4">
+                                <div class="col-12 col-sm-6">
                                     <label for="price" class="form-label">Price (₱) <span
                                             class="text-danger">*</span></label>
                                     <input type="number" class="form-control @error('price') is-invalid @enderror"
@@ -113,7 +167,7 @@
                                 </div>
 
                                 {{-- QUANTITY --}}
-                                <div class="col-12 col-sm-3">
+                                {{-- <div class="col-12 col-sm-3">
                                     <label for="quantity" class="form-label">Quantity <span
                                             class="text-danger">*</span></label>
                                     <input type="number" class="form-control @error('quantity') is-invalid @enderror"
@@ -122,10 +176,10 @@
                                     @error('quantity')
                                         <small class="text-danger">{{ $message }}</small>
                                     @enderror
-                                </div>
+                                </div> --}}
 
                                 {{-- PRICE TYPE --}}
-                                <div class="col-12 col-sm-5">
+                                <div class="col-12 col-sm-6">
                                     <label for="price_type" class="form-label">Price Type <span
                                             class="text-danger">*</span></label>
                                     <select class="form-select @error('price_type') is-invalid @enderror" id="price_type"
@@ -197,6 +251,63 @@
             }
         }
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const lookingForCheckbox = document.getElementById('is_looking_for');
+            const nameInput = document.getElementById('name');
+            const descriptionTextarea = document.getElementById('description');
+            const priceInput = document.getElementById('price');
+            const findersFeeSection = document.getElementById('finders-fee-section');
+            const listingFormWrapper = document.getElementById('listing-form-wrapper');
+            const findersFeeInput = document.getElementById('finders_fee');
+
+            function toggleLookingForDetails() {
+                const isChecked = lookingForCheckbox.checked;
+
+                findersFeeSection.style.display = isChecked ? 'block' : 'none';
+
+                // Toggle finders fee section visibility with animation
+                if (isChecked) {
+                    findersFeeSection.classList.add('active');
+                } else {
+                    findersFeeSection.classList.remove('active');
+                }
+
+                // Update placeholders based on checkbox state
+                if (isChecked) {
+                    nameInput.setAttribute('placeholder', 'What item are you looking for?');
+                    descriptionTextarea.setAttribute('placeholder',
+                        'Provide detailed information about the specific item you\'re seeking. Include specifications, model, or any other relevant details that will help potential finder\'s understand exactly what you\'re looking for.'
+                    );
+                    priceInput.setAttribute('placeholder', 'Maximum price you\'ll pay for the item');
+                } else {
+                    nameInput.setAttribute('placeholder', '');
+                    descriptionTextarea.setAttribute('placeholder', '');
+                    priceInput.setAttribute('placeholder', '');
+                }
+
+                // Add/remove warning border to the form wrapper
+                if (isChecked) {
+                    listingFormWrapper.classList.add('border', 'border-primary', 'p-3', 'rounded');
+                } else {
+                    listingFormWrapper.classList.remove('border', 'border-primary', 'p-3', 'rounded');
+                }
+
+
+                // Require finders fee input if checkbox is checked
+                findersFeeInput.required = isChecked;
+            }
+
+            // Initial state
+            toggleLookingForDetails();
+
+            // Event listeners
+            lookingForCheckbox.addEventListener('change', toggleLookingForDetails);
+
+        });
+    </script>
+
 
     <script src="{{ asset('js/listings-validation.js') }}"></script>
 

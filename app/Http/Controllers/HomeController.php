@@ -27,6 +27,15 @@ class HomeController extends Controller
         ->take(9)
         ->get();
 
+        $lookingforProducts = Products::where('is_looking_for', true)
+        ->orderByRaw('CASE
+        WHEN status = "Available" THEN 1
+        WHEN status = "Pending" THEN 2
+        WHEN status = "Sold" THEN 3
+        ELSE 4
+        END ')
+        ->with('author')->take(9)->get();
+
         $finders = User::query()
         ->where('isFinder', true)
         ->orderBy('created_at', 'desc')
@@ -35,6 +44,7 @@ class HomeController extends Controller
         return view('home', [
             'finders' => $finders,
             'featuredProducts' => $featuredProducts,
+            'lookingforProducts' => $lookingforProducts,
             'sortBy' => request('sort', 'latest'),
             'categoryFilter' => request('category', null),
             'conditionFilter' => request('condition', null)

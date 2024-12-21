@@ -13,6 +13,7 @@ class Offer extends Model
         'seller_id',
         'products_id',
         'offer_price',
+        'offered_finders_fee',
         'meetup_location',
         'meetup_time',
         'message',

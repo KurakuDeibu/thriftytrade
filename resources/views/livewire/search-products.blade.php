@@ -71,16 +71,19 @@
                     </svg>
                 </div>
                 <h2 class="mb-3 text-muted">No Listings Found</h2>
-                <p class="mb-4 text-muted">
+                <p class="mb-2 text-muted">
                     We couldn't find any listing matching your search or filter criteria.
+                </p>
+
+                <p class="mb-4 text-muted">
+                    Can't find what your looking for? <a href="{{ route('listing.create') }}" class="btn btn-link">
+                        Create an commission
+                        listing </a>
                 </p>
 
                 <div class="gap-3 d-flex">
                     <a href="{{ route('marketplace') }}" class="btn btn-outline-primary">
                         <i class="bi bi-arrow-clockwise me-2"></i>Clear Filters
-                    </a>
-                    <a href="{{ route('listing.create') }}" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-2"></i>Create New Listing
                     </a>
                 </div>
 

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreign('reviewer_id')->references('id')->on('users');
             $table->foreign('reviewee_id')->references('id')->on('users');
             $table->foreign('products_id')->references('id')->on('products');
-            $table->foreign('offer_id')->references('id')->on('offers');
+            $table->foreign('offer_id')->references('id')->on('offers')->cascadeOnDelete();
 
             $table->text('content')->nullable();
             $table->integer('rating')->nullable(); //rating 1 to 5

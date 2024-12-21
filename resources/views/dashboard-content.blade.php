@@ -19,7 +19,9 @@
             </span>
         </h1>
     </div>
-    <button class="btn btn-primary"><i class="bi bi-graph-up-arrow"> </i>Generate Reports</button>
+    @if (Auth::user()->finder_status == 'approved')
+        <button class="btn btn-primary"><i class="bi bi-wallet"> </i>My Finder History</button>
+    @endif
 </div>
 
 <div class="mb-4 row">
@@ -48,8 +50,23 @@
                     <i class="fas fa-external-link-alt"></i>
                 </a>
             </div>
-            <div class="mb-2 text-muted">Items Sold</div>
+            <div class="mb-2 text-muted">Sold Listings</div>
             <div class="mb-0 h3">{{ $soldProducts->count() }}</div>
+        </div>
+    </div>
+
+    <div class="mb-3 col-md-4">
+        <div class="p-4 bg-white rounded shadow-sm stat-card-custom position-relative hover-effect">
+            <div class="d-flex justify-content-between">
+                <div class="p-3 mb-3 card-icon-bg rounded-circle bg-info bg-opacity-10">
+                    <i class="bi bi-bag-check-fill text-info fa-2x"></i>
+                </div>
+                <a href="{{ route('user.transactions') }}" class="text-muted" title="View Completed Transactions">
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </div>
+            <div class="mb-2 text-muted">Completed Transaction</div>
+            <div class="mb-0 h3">{{ $completedTransaction->count() }}</div>
         </div>
     </div>
 
@@ -71,8 +88,8 @@
     <div class="mb-3 col-md-4">
         <div class="p-4 bg-white rounded shadow-sm stat-card-custom position-relative hover-effect">
             <div class="d-flex justify-content-between">
-                <div class="p-3 mb-3 card-icon-bg rounded-circle bg-info bg-opacity-10">
-                    <i class="fas fa-star text-info fa-2x"></i>
+                <div class="p-3 mb-3 card-icon-bg rounded-circle bg-warning bg-opacity-10">
+                    <i class="fas fa-star text-warning fa-2x"></i>
                 </div>
                 <a href="{{ route('profile.user-listing', Auth::user()->id) }}" class="text-muted" title="View Ratings">
                     <i class="fas fa-external-link-alt"></i>
