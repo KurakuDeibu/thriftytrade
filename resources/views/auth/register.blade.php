@@ -69,7 +69,7 @@
                             <div>
                                 <input type="date" name="birthDay"
                                     class="form-input @error('birthDay') error @enderror" value="{{ old('birthDay') }}"
-                                    placeholder="Birth Date">
+                                    placeholder="YYYY-MM-DD">
                                 @error('birthDay')
                                     <div class="text-sm error-message">{{ $message }}</div>
                                 @enderror

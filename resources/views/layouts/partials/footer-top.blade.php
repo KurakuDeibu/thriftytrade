@@ -4,7 +4,7 @@
                 <div class="row">
                     <!-- About Section -->
                     <div class="footer-section col-md-6">
-                        <div class="footer-logo mb-2">
+                        <div class="mb-2 footer-logo">
                             <a href="{{ route('home') }}">
                                 <img src="{{ asset('img/thriftytrade-logo.png') }}" alt="ThriftyTrade Logo"
                                     style="height: 4rem;">
@@ -14,7 +14,7 @@
                             amazing deals!</p>
 
                         <!-- Social Icons moved here -->
-                        <div class="social-icons mt-3">
+                        <div class="mt-3 social-icons">
                             <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
                             <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
                             <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
@@ -27,7 +27,7 @@
                     <div class="footer-section col-md-2">
                         <h5>Categories</h5>
                         <ul>
-                            @foreach (\App\Models\Category::all() as $category)
+                            @foreach (\App\Models\Category::paginate(8) as $category)
                                 <li>
                                     <a href="{{ route('marketplace', ['category' => $category->id]) }}"
                                         class="text-decoration-none">

@@ -20,7 +20,8 @@
         </h1>
     </div>
     @if (Auth::user()->finder_status == 'approved')
-        <button class="btn btn-primary"><i class="bi bi-wallet"> </i>My Finder History</button>
+        <a href="{{ route('finder.transactions') }}" class="btn btn-primary"><i class="bi bi-wallet"> </i>My Finder
+            History</a>
     @endif
 </div>
 

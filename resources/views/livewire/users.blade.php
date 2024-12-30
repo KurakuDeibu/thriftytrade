@@ -69,15 +69,6 @@
                             </div>
 
                             <div class="mb-3 space-y-2">
-                                <div class="flex items-center text-sm text-blue-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 text-blue-400"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745" />
-                                    </svg>
-                                    <span>Specialized at: {{ $finder->specialization ?? 'Not specified' }}</span>
-                                </div>
-
                                 <div class="flex items-center text-sm text-blue-600">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1 text-blue-400"
                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">

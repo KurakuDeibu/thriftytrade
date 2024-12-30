@@ -11,9 +11,6 @@
                              ? asset('storage/' . $similarProduct->prodImage)
                              : asset('img/NOIMG.jpg') }}"
                              class="card-img-top fixed-image" alt="{{ $similarProduct->prodName }}">
-                         <div class="wishlist-icon">
-                             <i class="far fa-heart"></i>
-                         </div>
                          <div class="card-body">
                              <h5 class="card-title">
                                  {{ Str::limit($similarProduct->prodName, 40, '...') }}</h5>

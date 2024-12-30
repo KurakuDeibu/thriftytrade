@@ -38,17 +38,6 @@
                             <h3 class="mb-1 text-lg font-semibold text-blue-800">{{ $finder->name }}</h3>
                         </div>
 
-                        <div class="mb-3 space-y-2">
-                            <div class="flex items-center text-sm text-blue-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2 text-blue-400"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                                </svg>
-                                <span>Specialized: [Category]</span>
-                            </div>
-                        </div>
-
                         <div class="flex items-center justify-between pt-3 border-t border-blue-100">
                             <div class="flex items-center text-sm text-blue-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1 text-blue-400"

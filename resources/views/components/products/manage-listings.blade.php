@@ -5,7 +5,7 @@
             <h1 class="text-xl navbar-brand">MY LISTINGS</h1>
             <h1 class="text-sm text-muted">Manage your listings</h1>
         </div>
-        <button class="btn btn-primary"><i class="bi bi-plus"> </i> New Listing</button>
+        <a href="{{ route('listing.create') }}" class="btn btn-primary"><i class="bi bi-plus"> </i> New Listing</a>
     </div>
 
     @php
@@ -49,7 +49,7 @@
         'active' => $activeProducts,
         'pending' => $pendingProducts,
         'sold' => $soldProducts,
-        'lookingforPorducts' => $lookingforProducts,
+        'looking-for' => $lookingforProducts,
     ] as $tabName => $products)
             <div class="tab-pane fade {{ $tabName == 'All' ? 'show active' : '' }}" id="{{ $tabName }}">
                 <div class="row row-cols-1 g-4">

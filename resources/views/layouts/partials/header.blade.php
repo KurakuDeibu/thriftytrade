@@ -19,6 +19,17 @@
 
         }
 
+        /* Navigation Bar Styles */
+        @media (max-width: 991.98px) {
+            .navbar-collapse:not(.custom-show) {
+                display: none !important;
+            }
+
+            .navbar-collapse.custom-show {
+                display: block !important;
+            }
+        }
+
         /* Notification Sidebar Styles */
         .notification-sidebar {
             position: fixed;
@@ -138,7 +149,7 @@
             </div>
 
             {{-- MOBILE TOGGLE BUTTON --}}
-            <button class="navbar-toggler" data-bs-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+            <button class="navbar-toggler" type="button" aria-controls="navbarNav" id="navbarToggler"
                 aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -162,7 +173,7 @@
             <div class="quick-categories">
                 <small class="mb-2 text-muted w-100">Quick Searches:</small>
                 @foreach (\App\Models\Category::take(8)->get() as $category)
-                    <a href="{{ route('marketplace', ['category' => $category->id]) }}"
+                    <a href="{{ route('marketplace', ['categories' => [$category->id]]) }}"
                         class="badge bg-light text-dark">
                         {{ $category->categName }}
                     </a>
@@ -173,7 +184,7 @@
 
 
         {{-- navbarNav NAVBAR --}}
-        <div class="navbar-collapse" id="navbarNav">
+        <div class="custom-collapse navbar-collapse" id="navbarNav">
             <div class="mx-auto navbar-nav">
             </div>
 
@@ -283,8 +294,21 @@
         }
     });
 
-    // Prevent closing when interacting with search header
-    document.getElementById('searchHeader').addEventListener('click', function(event) {
-        event.stopPropagation();
+    document.addEventListener('DOMContentLoaded', function() {
+        const navbarToggler = document.getElementById('navbarToggler');
+        const navbarNav = document.getElementById('navbarNav');
+
+        navbarToggler.addEventListener('click', function() {
+            navbarNav.classList.toggle('custom-show');
+            navbarToggler.setAttribute('aria-expanded', navbarNav.classList.contains('custom-show'));
+        });
+
+        // Close navbar when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!navbarNav.contains(event.target) && !navbarToggler.contains(event.target)) {
+                navbarNav.classList.remove('custom-show');
+                navbarToggler.setAttribute('aria-expanded', 'false');
+            }
+        });
     });
 </script>

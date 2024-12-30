@@ -21,9 +21,6 @@ class Transaction extends Model
         'tranStatus',
         'systemCommission',
         'finderCommission',
-        'meetup_location',
-        'meetup_time',
-
 
     ];
     public function user()
