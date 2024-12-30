@@ -20,13 +20,18 @@ class ProductController extends Controller
 
     public function dashboard()
     {
-        $completedTransaction = Transaction::whereHas('offer', function ($query) {
-            $query->where('user_id', Auth::id());
+        $completedTransaction = Transaction::where(function ($query) {
+            $query->whereHas('offer', function ($offerQuery) {
+                $offerQuery->whereHas('product', function ($productQuery) {
+                    $productQuery->where('user_id', Auth::id());
+                });
+            })
+            ->orWhere('user_id', Auth::id());
         })
-          ->where('tranStatus', 'completed')
-          ->with(['offer'])
-          ->latest()
-          ->get();
+        ->where('tranStatus', 'completed')
+        ->with(['offer'])
+        ->latest()
+        ->get();
 
 
         $offers = Offer::whereHas('product', function ($query) {
@@ -73,7 +78,7 @@ class ProductController extends Controller
         $categories = Category::orderBy('categName', 'asc')->get();
 
         if (auth()->user() && !auth()->user()->hasVerifiedEmail()) {
-            return redirect()->back()->with('error', 'You must verify your email address before you can sell.');
+            return redirect()->back()->with('info', 'You must verify your email address before you can create a new listing.');
         }
         return view('listing.create', compact('categories'));
     }

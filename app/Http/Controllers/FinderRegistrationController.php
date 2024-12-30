@@ -17,7 +17,7 @@ class FinderRegistrationController extends Controller
         $user = Auth::user();
 
         if (!$user->hasVerifiedEmail()) {
-            return redirect()->back()->with('error', 'Please verify your email before applying to become a finder.');
+            return redirect()->back()->with('info', 'Please verify your email before applying to become a finder.');
         }
 
         if ($user->isFinder === true) {
