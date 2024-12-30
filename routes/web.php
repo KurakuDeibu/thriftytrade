@@ -17,7 +17,7 @@ use App\Livewire\Chat\Chat;
 use App\Livewire\Chat\Index;
 use App\Livewire\Users;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\URL;
 
 // Route::get('/', HomeController::class)->name('home');
 
@@ -133,3 +133,5 @@ Route::middleware(['auth', 'verified'])->group( function () {
     Route::delete('/offers/clear-deleted', [OfferController::class, 'clearDeletedOffers'])->name('offers.clear-deleted');
 
 });
+
+if (env('APP_ENV')) { URL::forceScheme('https'); }
