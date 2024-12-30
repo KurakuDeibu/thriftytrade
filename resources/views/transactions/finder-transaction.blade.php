@@ -97,15 +97,15 @@
                                             <div class="inline-flex gap-2 mt-2 d-flex">
                                                 <button wire:click="viewOfferDetails({{ $transaction->id }})"
                                                     class="btn btn-outline-primary w-50" data-bs-toggle="modal"
-                                                    data-bs-target="#transactionModal">
-                                                    <i class="bi bi-eye me-1"></i> View Transaction
+                                                    data-bs-target="#offerDetailsModal">
+                                                    <i class="bi bi-eye me-1"></i> View Details
                                                 </button>
 
                                                 @php
-                                                    $selectedOffer = $transaction;
+                                                    $selectedOffer = $transaction->offer;
                                                 @endphp
 
-                                                @include('transactions.transaction-modal')
+                                                @include('transactions.finder-transaction-modal')
 
                                                 @php
                                                     $hasReviewed = $transaction->offer->hasBeenReviewedByUser(
