@@ -126,7 +126,7 @@ Route::middleware(['auth', 'verified'])->group( function () {
     // ------GENERATE REPORTS ------//
     Route::get('/generate-pdf/{offerId}', [TransactionController::class, 'generatePDF'])->name('offers.generate-pdf');
 
-    Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'mar`kAsRead'])->name('notifications.read');
+    Route::post('/notifications/{notificationId}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
 
     // CLEAR ALL - deleted product offers

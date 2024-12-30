@@ -2,26 +2,28 @@
 
 $ git clone git@github.com:KurakuDeibu/thriftytrade.git project
 $ cd project
-$ composer install
-$ composer update
+$ composer install & composer update
 $ cp .env.example .env # THEN EDIT YOUR ENV FILE ACCORDING TO YOUR OWN SETTINGS.
 $ modify mailer
 $ php artisan key:generate
 $ php artisan storage:link
-$ php artisan migrate
-$ php artisan db:seed
+$ php artisan migrate:fresh --seed
+$ php artisan db:seed - optional
 $ php artisan serve
+$ npm run dev -must run for tailwind ui to work
 
 
 ## admin routes ##
 -/admin/login
--/admin/products/
 
-CACHE PAGES
+CACHING PAGES
 -php artisan route:cache
 -php artisan icons:cache
 -php artisan view:cache
 -php artisan config:cache
+
+# Laravel optimization commands
+RUN php artisan config:cache && php artisan route:cache && php artisan view:cache
 
 --php artisan optimize:clear
 -php artisan view:clear
