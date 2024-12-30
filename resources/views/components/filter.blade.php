@@ -25,6 +25,16 @@
                     Show featured listings only
                 </label>
             </div>
+
+            @if (Auth::user()->isFinder)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="is_looking_for" id="is_looking_for-products"
+                        value="1" onchange="this.form.submit()" {{ request('is_looking_for') ? 'checked' : '' }}>
+                    <label class="form-check-label" for="is_looking_for-products">
+                        Show looking for listings only
+                    </label>
+                </div>
+            @endif
         </div>
 
         {{-- LISTING LOCATION BASE FILTER --}}
@@ -46,31 +56,24 @@
 
 
 
-        {{-- CATEGORY RADIO FILTER --}}
+        {{-- CATEGORY CHECKBOX FILTER --}}
+        {{-- CATEGORY CHECKBOX FILTER --}}
         <div class="mb-3">
-            <label class="form-label">Category</label>
-            <div class="category-radio-group">
+            <label class="form-label">Categories</label>
+            <div class="category-checkbox-group">
                 @php
                     $categories = \App\Models\Category::all();
                     $totalProductCount = \App\Models\Products::count();
                 @endphp
-
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="category" id="category-all" value=""
-                        onchange="this.form.submit()" {{ request('category') == '' ? 'checked' : '' }}>
-                    <label class="form-check-label" for="category-all">
-                        All Categories ({{ $totalProductCount }})
-                    </label>
-                </div>
 
                 @foreach ($categories as $category)
                     @php
                         $productCount = \App\Models\Products::where('category_id', $category->id)->count();
                     @endphp
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="category" id="category-{{ $category->id }}"
-                            value="{{ $category->id }}" onchange="this.form.submit()"
-                            {{ request('category') == $category->id ? 'checked' : '' }}>
+                        <input onchange="this.form.submit()" class="form-check-input" type="checkbox"
+                            name="categories[]" id="category-{{ $category->id }}" value="{{ $category->id }}"
+                            {{ in_array($category->id, request('categories', [])) ? 'checked' : '' }}>
                         <label class="form-check-label" for="category-{{ $category->id }}">
                             {{ $category->categName }} ({{ $productCount }})
                         </label>
@@ -78,9 +81,6 @@
                 @endforeach
             </div>
         </div>
-
-
-
 
 
         <div class="mb-3">
@@ -262,7 +262,7 @@
         }
     }
 
-    .category-radio-group {
+    .category-checkbox-group {
         max-height: 300px;
         overflow-y: auto;
         border: 1px solid #ddd;

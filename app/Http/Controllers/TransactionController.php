@@ -87,7 +87,7 @@ class TransactionController extends Controller
             $query->where('user_id', Auth::id());
         })
           ->where('tranStatus', 'completed')
-          ->with(['offer', 'user'])
+          ->with(['product', 'user'])
           ->latest()
           ->get();
 

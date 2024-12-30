@@ -12,9 +12,10 @@ class SearchProducts extends Component
     use WithPagination;
 
     public $query = '';
-    public $category = null;
+    public $categories = [];
     public $condition = null;
     public $featured = false;
+    public $is_looking_for = false;
     public $sort = 'latest';
     public $price_type = null;
     public $location = null;
@@ -22,9 +23,10 @@ class SearchProducts extends Component
 
     protected $queryString = [
         'query' => ['except' => ''],
-        'category' => ['except' => null],
+        'categories' => ['except' => []],
         'condition' => ['except' => null],
         'featured' => ['except' => false],
+        'is_looking_for' => ['except' => false],
         'sort' => ['except' => 'latest'],
         'price_type' => ['except' => null],
         'location' => ['except' => null],
@@ -35,9 +37,10 @@ class SearchProducts extends Component
     {
         // Only set values if they are actually passed in the request
         $this->query = request('query', '');
-        $this->category = request('category') ?: null;
+        $this->categories = request('categories', []);
         $this->condition = request('condition') ?: null;
         $this->featured = request('featured') ?: null;
+        $this->is_looking_for = request('is_looking_for') ?: null;
         $this->sort = request('sort', 'latest');
         $this->price_type = request('price_type') ?: null;
         $this->location = request('location') ?: null;
@@ -50,8 +53,6 @@ class SearchProducts extends Component
 
     public function render()
     {
-        $categories = Category::all();
-
         $query = Products::query();
 
         // Search filter
@@ -63,8 +64,8 @@ class SearchProducts extends Component
         }
 
         // Category filter
-        if ($this->category) {
-            $query->where('category_id', $this->category);
+        if (!empty($this->categories)) {
+            $query->whereIn('category_id', $this->categories);
         }
 
         // Condition filter
@@ -75,6 +76,11 @@ class SearchProducts extends Component
         // Featured filter
         if ($this->featured) {
             $query->where('featured', true);
+        }
+
+        // Looking for filter
+        if ($this->is_looking_for) {
+            $query->where('is_looking_for', true);
         }
 
           // Price Type filter
@@ -126,7 +132,6 @@ class SearchProducts extends Component
 
         return view('livewire.search-products', [
             'marketplaceProducts' => $marketplaceProducts,
-            'categories' => $categories,
             'activeFilters' => $this->getActiveFilters(),
         ]);
     }
@@ -136,41 +141,39 @@ class SearchProducts extends Component
     {
         $filters = [];
 
-        if ($this->featured) {
-            $filters['featured'] = [
-                'name' => 'Featured Listings',
-                'type' => 'featured'
+        if (!empty($this->query)) {
+            $filters[] = ['type' => 'query', 'name' => "Search: {$this->query}"];
+        }
+
+        if (!empty($this->categories)) {
+            $categoryNames = Category::whereIn('id', $this->categories)->pluck('categName')->toArray();
+            $filters['categories'] = [
+                'name' => implode(', ', $categoryNames),
+                'type' => 'categories'
             ];
         }
 
-        if ($this->category) {
-            $category = Category::find($this->category);
-            $filters['category'] = [
-                'name' => $category->categName,
-                'type' => 'category'
-            ];
+
+        if ($this->featured) {
+            $filters[] = ['type' => 'featured', 'name' => 'Featured Listings'];
+        }
+
+        if ($this->is_looking_for) {
+            $filters[] = ['type' => 'is_looking_for', 'name' => 'Looking For Listings'];
         }
 
         if ($this->condition) {
-            $filters['condition'] = [
-                'name' => $this->condition,
-                'type' => 'condition'
-            ];
+            $filters[] = ['type' => 'condition', 'name' => "Condition: {$this->condition}"];
         }
 
         if ($this->location) {
-            $filters['location'] = [
-                'name' => $this->location,
-                'type' => 'location'
-            ];
+            $filters[] = ['type' => 'location', 'name' => "Location: {$this->location}"];
         }
 
         if ($this->price_type) {
-            $filters['price_type'] = [
-                'name' => $this->price_type,
-                'type' => 'price_type'
-            ];
+            $filters[] = ['type' => 'price_type', 'name' => "Price Type: {$this->price_type}"];
         }
+
 
         return $filters;
     }
@@ -182,8 +185,14 @@ class SearchProducts extends Component
             case 'featured':
                 $this->featured = null;
                 break;
-            case 'category':
-                $this->category = null;
+             case 'is_looking_for':
+                $this->is_looking_for = null;
+                break;
+            case 'query':
+                $this->query = '';
+                break;
+            case 'categories':
+                $this->categories = [];
                 break;
             case 'condition':
                 $this->condition = null;

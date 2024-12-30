@@ -6,7 +6,8 @@
         <div class="mt-2">
             <div class="d-flex">
                 <input x-model="query" wire:model.live="query" wire:keydown.enter="search"
-                    class="py-2 form-control rounded-5 me-2" type="text" placeholder="What are you looking for?...">
+                    wire:model.debounce.500ms="search" class="py-2 form-control rounded-5 me-2" type="text"
+                    placeholder="What are you looking for?...">
                 <button wire:click="search" class="btn btn-primary">
                     <i class="bi bi-search"></i> <!-- Search icon -->
                 </button>
@@ -18,14 +19,13 @@
         </div>
     </div>
 
-
     {{-- SHOW ACTIVE FILTERS --}}
     @if (!empty($activeFilters))
         <div class="mt-3 mb-3 col-12">
             <div class="alert alert-primary d-flex justify-content-between align-items-center">
-                <span class="fw-bold">Your Active Filters:</span>
+                <span class="fw-bold">Active Filters:</span>
                 <div class="flex-wrap gap-2 d-flex">
-                    @foreach ($activeFilters as $key => $filter)
+                    @foreach ($activeFilters as $filter)
                         <div class="badge bg-primary d-flex align-items-center" style="font-size: 0.9rem;">
                             <span class="me-2">{{ $filter['name'] }}</span>
                             <a wire:click="removeFilter('{{ $filter['type'] }}')" class="text-white"
