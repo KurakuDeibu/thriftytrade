@@ -2,13 +2,16 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\ProductExporter;
 use App\Filament\Resources\ProductsResource\Pages;
 use App\Filament\Resources\ProductsResource\RelationManagers;
 use App\Models\Category;
 use App\Models\Products;
 use App\Models\User;
+use Filament\Tables\Actions\ExportAction;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
@@ -94,7 +97,7 @@ class ProductsResource extends Resource
             ->columns([
                 // CheckboxColumn::make('featured')->label('Is Featured')->sortable(),
 
-                TextColumn::make('author.name')->label('Posted By')->sortable()->searchable(),
+                TextColumn::make('author.name')->label('Listed By')->sortable()->searchable(),
 
                 ImageColumn::make('prodImage')->label('Image'),
                 TextColumn::make('prodName')->label('Product Name')->sortable()->searchable(),
@@ -105,15 +108,31 @@ class ProductsResource extends Resource
                 TextColumn::make('prodPrice')->label('Price')->sortable(),
                 // TextColumn::make('prodCommissionFee')->label('Commission Fee')->sortable(),
 
-                IconColumn::make('featured')
-                ->boolean()
-                ->label('Is Featured'),
+                IconColumn::make('featured')->boolean()->label('Is Featured'),
+                IconColumn::make('is_looking_for')->boolean()->label('Is Looking For'),
             ])
             ->defaultSort('created_at', 'desc')
 
             ->filters([
                 Tables\Filters\Filter::make('Non-Featured')
                 ->query(fn (Builder $query) => $query->where('featured', false)),
+
+                Tables\Filters\Filter::make('created_at')
+                ->form([
+                    DatePicker::make('created_from'),
+                    DatePicker::make('created_until'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_from'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['created_until'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+                }),
 
             ])
             ->actions([
@@ -135,10 +154,17 @@ class ProductsResource extends Resource
                     ]),
             ])
 
+            ->headerActions([
+                ExportAction::make()->exporter(ProductExporter::class)
+            ])
+
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+                Tables\Actions\ExportBulkAction::make()->exporter(ProductExporter::class)
+
             ]);
     }
 

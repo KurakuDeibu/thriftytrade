@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class FinderVerificationResource extends Resource
 {
     protected static ?string $model = User::class;
+    protected static ?string $modelLabel = 'Pending Verification';
     protected static ?string $navigationIcon = 'heroicon-o-viewfinder-circle';
     protected static ?string $navigationGroup = 'User Management';
     protected static ?string $navigationLabel = 'Finder Verifications';

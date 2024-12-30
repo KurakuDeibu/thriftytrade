@@ -5,7 +5,9 @@ namespace App\Filament\Resources\ProductsResource\Pages;
 use App\Filament\Resources\ProductsResource;
 use App\Filament\Resources\ProductsResource\Widgets\PostedProductsChart;
 use Filament\Actions;
+use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Builder;
 
 class ListProducts extends ListRecords
 {
@@ -24,4 +26,16 @@ class ListProducts extends ListRecords
             PostedProductsChart::class
         ];
     }
+    // public function getTabs(): array
+    // {
+
+    //     return
+    //     [
+    //         'All' => Tab::make(),
+    //         'Featured' => Tab::make()->modifyQueryUsing(function (Builder $query){
+    //             $query->where('featured', true);
+    //         })
+
+    //     ];
+    // }
 }

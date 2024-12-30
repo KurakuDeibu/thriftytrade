@@ -2,13 +2,16 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\TransactionExporter;
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Filament\Resources\TransactionResource\RelationManagers;
 use App\Models\Products;
 use App\Models\Transaction;
 use App\Models\User;
+use Filament\Tables\Actions\ExportAction;
 use Filament\Forms;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
@@ -67,15 +70,6 @@ class TransactionResource extends Resource
                             ->label('Transaction Status')
                             ->required(),
                     ]),
-                Grid::make(2)
-                    ->schema([
-                        TextInput::make('systemCommission')
-                            ->label('System Commission')
-                            ->required(),
-                        TextInput::make('finderCommission')
-                            ->label('Finder Commission')
-                            ->nullable(),
-                    ]),
             ]);
     }
 
@@ -102,15 +96,36 @@ class TransactionResource extends Resource
 
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('created_at')
+                ->form([
+                    DatePicker::make('created_from'),
+                    DatePicker::make('created_until'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_from'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['created_until'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+                }),
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+            ])
+
+            ->headerActions([
+                ExportAction::make()->exporter(TransactionExporter::class)
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+                Tables\Actions\ExportBulkAction::make()->exporter(TransactionExporter::class)
             ]);
     }
 
