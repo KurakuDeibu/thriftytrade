@@ -403,6 +403,8 @@
                                 {{-- LIVEWIRE OFFER-MODAL --}}
                                 @livewire('offer-modal', ['product' => $marketplaceProducts])
 
+
+
                                 {{-- FINDER- BUTTON TO CONTACT --}}
                             @elseif (Auth::user()->isFinder == true)
                                 <div class="mt-4 mb-2">
@@ -413,11 +415,6 @@
                                     </button>
                                 </div>
                                 @livewire('offer-modal', ['product' => $marketplaceProducts])
-
-
-                                {{-- MESSAGE MODAL THE USER --}}
-                                <livewire:message-modal :userId="$marketplaceProducts->author->id" />
-                                {{-- END OF MODAL --}}
                             @else
                                 <div class="mt-4 mb-2">
                                     <a href="{{ route('finder.registration') }}"
@@ -427,6 +424,11 @@
                                 </div>
                             @endif
 
+
+
+                            {{-- MESSAGE MODAL THE USER --}}
+                            <livewire:message-modal :userId="$marketplaceProducts->author->id" />
+                            {{-- END OF MODAL --}}
 
 
                             <!-- Status-specific messages -->

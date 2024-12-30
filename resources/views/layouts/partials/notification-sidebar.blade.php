@@ -20,7 +20,9 @@
         <div class="notification-header">
             <h5 class="mb-0">Notifications</h5>
             @auth
-                <button class="text-sm btn btn-link" id="markAllReadBtn">Mark all as read</button>
+                @if (auth()->user()->unreadNotifications->count() > 0)
+                    <button class="text-sm btn btn-link" id="markAllReadBtn">Mark all as read</button>
+                @endif
             @endauth
 
             <button class="btn btn-link text-dark" onclick="closeNotificationSidebar()">
@@ -32,7 +34,7 @@
 
             {{-- New Message Notification --}}
             @foreach (auth()->user()->unreadNotifications as $notification)
-                <a href="{{ $notification->data['link'] }}"
+                <a href="{{ $notification->data['link'] ?? '#' }}"
                     class="text-decoration-none text-dark notification-item border-bottom"
                     data-id="{{ $notification->id }}">
                     <div class="notification-icon text-success">
@@ -63,7 +65,7 @@
 
                 @foreach (auth()->user()->readNotifications as $notification)
                     <div class="p-2 notification-item border-bottom" data-id="{{ $notification->id }}">
-                        <a href="{{ $notification->data['link'] }}" class="text-decoration-none text-dark">
+                        <a href="{{ $notification->data['link'] ?? '#' }}" class="text-decoration-none text-dark">
                             <i class="bi bi-bell"></i>
                             {{ $notification->data['message'] }}
                         </a>

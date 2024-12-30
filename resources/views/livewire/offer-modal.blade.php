@@ -6,7 +6,7 @@
                 <div class="border-0 modal-header">
                     <i class="fas fa-tags"></i>
                     <h5 class="modal-title fw-bold" id="offerModalLabel">&nbsp;
-                        @if ($product->is_looking_for == true && auth()->user()->isFinder)
+                        @if ($product?->is_looking_for == true && auth()->user()->isFinder)
                             Submit Finder's Offer
                         @else
                             Send Offer
@@ -46,7 +46,7 @@
                                 <p class="mb-2 small">{{ $product?->category->categName }} •
                                     {{ $product?->prodCondition }}</p>
 
-                                @if ($product->is_looking_for == true)
+                                @if ($product?->is_looking_for == true)
                                     <div class="p-2 mt-3 alert alert-info">
                                         <small>
                                             <i class="bi bi-info-circle me-1"></i>
@@ -64,7 +64,7 @@
                         <div class="p-4 bg-white col-md-7">
 
                             <h5 class="mb-4 text-primary">
-                                @if ($product->is_looking_for == true && auth()->user()->isFinder)
+                                @if ($product?->is_looking_for == true && auth()->user()->isFinder)
                                     Finder's Offer Details
                                 @else
                                     Make Your Offer
@@ -73,7 +73,7 @@
 
 
                             <form wire:submit.prevent="submitOffer">
-                                @if ($product->is_looking_for == true && auth()->user()->isFinder)
+                                @if ($product?->is_looking_for == true && auth()->user()->isFinder)
                                     <div class="mb-3">
                                         <label for="offerPrice" class="form-label">Offered Price</label>
                                         <div class="input-group">
@@ -198,7 +198,7 @@
                                 <button type="submit" class="btn btn-primary w-100" wire:loading.attr="disabled">
                                     <span wire:loading.remove>
                                         <i class="fas fa-paper-plane me-2"></i>
-                                        @if ($product->is_looking_for == true && auth()->user()->isFinder)
+                                        @if ($product?->is_looking_for == true && auth()->user()->isFinder)
                                             Submit Finder's Offer
                                         @else
                                             Send Offer
@@ -325,7 +325,7 @@
                         // Reload the page after a short delay to show success message
                         setTimeout(() => {
                             window.location.reload();
-                        }, 2000);
+                        }, 500);
                     });
                 }
             }
