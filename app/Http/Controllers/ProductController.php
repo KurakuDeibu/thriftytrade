@@ -105,7 +105,7 @@ class ProductController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'condition' => 'required|string|max:20',
-            'images' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'images' => 'required|image|mimes:jpeg,png,jpg',
 
             'is_looking_for' => 'nullable|boolean',
             'finders_fee' => 'nullable|numeric|min:0'
@@ -177,7 +177,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'condition' => 'required|string|max:20',
-            'images' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'images' => 'nullable|image|mimes:jpeg,png,jpg,gif',
 
             'is_looking_for' => 'nullable|boolean',
             'finders_fee' => 'nullable|numeric|min:0'
