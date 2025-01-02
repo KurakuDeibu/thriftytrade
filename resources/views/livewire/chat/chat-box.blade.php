@@ -50,10 +50,19 @@ Echo.private('users.{{ Auth()->User()->id }}')
                 </div>
 
 
-                <h6 class="font-bold truncate"> {{ $selectedConversation->getReceiver()->email }} </h6>
-                <h6 class="font-bold truncate"> {{ $selectedConversation->getReceiver()->name }} </h6>
 
 
+                <ul class="m-2 list-unstyled">
+
+                    <li><a href="{{ route('profile.user-listing', $selectedConversation->getReceiver()->id) }}">
+                            <h6 class="font-bold truncate"> {{ $selectedConversation->getReceiver()->name }} </h6>
+                        </a>
+                    </li>
+
+                    <li>
+                        <h6> {{ $selectedConversation->getReceiver()->email }} </h6>
+                    </li>
+                </ul>
             </div>
 
 

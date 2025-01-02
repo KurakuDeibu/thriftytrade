@@ -127,8 +127,6 @@
         }
     </style>
     <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
-    <script src="https://cdn.tailwindcss.com"></script>
-
 </head>
 
 <nav class="bg-white shadow-sm sticky-top navbar navbar-expand-lg navbar-light">
