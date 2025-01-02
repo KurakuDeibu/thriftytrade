@@ -19,65 +19,75 @@
                     <form method="POST" action="{{ route('register') }}">
                         @csrf
 
-                        <div class="mb-4 name-row">
+                        <div class="mb-3 name-row">
                             <div>
-                                <input type="text" name="firstName"
-                                    class="form-input @error('firstName') error @enderror" placeholder="First Name"
-                                    value="{{ old('firstName') }}" autofocus>
+                                <label for="firstName" class="block mb-1 text-sm font-medium text-gray-700">First
+                                    Name</label>
+                                <input type="text" id="firstName" name="firstName"
+                                    class="form-input @error('firstName') error @enderror"
+                                    value="{{ old('firstName') }}">
                                 @error('firstName')
                                     <div class="text-sm error-message">{{ $message }}</div>
                                 @enderror
                             </div>
-
                             <div>
-                                <input type="text" name="middleName"
+                                <label for="middleName" class="block mb-1 text-sm font-medium text-gray-700">Last
+                                    Name</label>
+                                <input type="text" id="middleName" name="middleName"
                                     class="form-input @error('middleName') error @enderror"
-                                    placeholder="Middle Name (Optional)" value="{{ old('middleName') }}">
+                                    value="{{ old('middleName') }}">
                                 @error('middleName')
                                     <div class="text-sm error-message">{{ $message }}</div>
                                 @enderror
                             </div>
-
                             <div>
-                                <input type="text" name="lastName"
-                                    class="form-input @error('lastName') error @enderror" placeholder="Last Name"
-                                    value="{{ old('lastName') }}">
+                                <label for="lastName" class="block mb-1 text-sm font-medium text-gray-700">Last
+                                    Name</label>
+                                <input type="text" id="lastName" name="lastName"
+                                    class="form-input @error('lastName') error @enderror" value="{{ old('lastName') }}">
                                 @error('lastName')
                                     <div class="text-sm error-message">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
 
-                        <div class="mb-4 name-row">
+                        <div class="mb-3 name-row">
                             <div>
-                                <input type="text" name="name" class="form-input @error('name') error @enderror"
-                                    placeholder="Username" value="{{ old('name') }}">
+                                <label for="name" class="block mb-1 text-sm font-medium text-gray-700">Username
+                                </label>
+                                <input type="name" id="name" name="name"
+                                    class="form-input @error('name') error @enderror" value="{{ old('name') }}">
                                 @error('name')
                                     <div class="text-sm error-message">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div>
-                                <input type="email" name="email" class="form-input @error('email') error @enderror"
-                                    placeholder="Email Address" value="{{ old('email') }}">
+                                <label for="email" class="block mb-1 text-sm font-medium text-gray-700">Email
+                                    Address</label>
+                                <input type="email" id="email" name="email"
+                                    class="form-input @error('email') error @enderror" value="{{ old('email') }}">
                                 @error('email')
                                     <div class="text-sm error-message">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
 
-                        <div class="mb-4 name-row">
+                        <div class="mb-3 name-row">
                             <div>
-                                <input type="date" name="birthDay"
-                                    class="form-input @error('birthDay') error @enderror" value="{{ old('birthDay') }}"
-                                    placeholder="YYYY-MM-DD">
+                                <label for="birthDay" class="block mb-1 text-sm font-medium text-gray-700">Date of
+                                    Birth</label>
+                                <input type="date" id="birthDay" name="birthDay"
+                                    class="form-input @error('birthDay') error @enderror"
+                                    value="{{ old('birthDay') }}">
                                 @error('birthDay')
                                     <div class="text-sm error-message">{{ $message }}</div>
                                 @enderror
                             </div>
-
                             <div>
-                                <input type="tel" name="phoneNum"
-                                    class="form-input @error('phoneNum') error @enderror" placeholder="Phone Number"
+                                <label for="phoneNum" class="block mb-1 text-sm font-medium text-gray-700">Phone
+                                    Number</label>
+                                <input type="tel" id="phoneNum" name="phoneNum"
+                                    class="form-input @error('phoneNum') error @enderror"
                                     value="{{ old('phoneNum') }}">
                                 @error('phoneNum')
                                     <div class="text-sm error-message">{{ $message }}</div>
@@ -85,31 +95,33 @@
                             </div>
                         </div>
 
-                        <div class="mb-4 form-group">
-                            <input type="text" name="userAddress"
-                                class="form-input @error('userAddress') error @enderror" placeholder="Address"
+                        <div class="mb-3 form-group">
+                            <label for="userAddress"
+                                class="block mb-1 text-sm font-medium text-gray-700">Address</label>
+                            <input type="text" id="userAddress" name="userAddress"
+                                class="form-input @error('userAddress') error @enderror"
                                 value="{{ old('userAddress') }}">
                             @error('userAddress')
                                 <div class="text-sm error-message">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="mb-4 name-row">
-                            <div>
-                                <input type="password" name="password"
-                                    class="form-input @error('password') error @enderror" placeholder="Password">
+                        <div class="mb-3 name-row">
+                            <div class="relative form-group">
+                                <input type="password" name="password" id="password"
+                                    class="form-input @error('password') error @enderror" required
+                                    autocomplete="new-password" placeholder="Password">
+                                <i class="fas fa-eye-slash password-toggle" onclick="togglePassword('password')"></i>
                                 @error('password')
                                     <div class="text-sm error-message">{{ $message }}</div>
                                 @enderror
                             </div>
-
-                            <div>
-                                <input type="password" name="password_confirmation"
-                                    class="form-input @error('password_confirmation') error @enderror"
+                            <div class="relative form-group">
+                                <input type="password" name="password_confirmation" id="password_confirmation"
+                                    class="form-input" required autocomplete="new-password"
                                     placeholder="Confirm Password">
-                                @error('password_confirmation')
-                                    <div class="error-message">{{ $message }}</div>
-                                @enderror
+                                <i class="fas fa-eye-slash password-toggle"
+                                    onclick="togglePassword('password_confirmation')"></i>
                             </div>
                         </div>
 
@@ -144,6 +156,25 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const icon = passwordInput.nextElementSibling;
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
+    </script>
+
+
     <style>
         :root {
             --primary-color: #4267B2;
@@ -155,6 +186,14 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
         }
 
         body {

@@ -20,21 +20,25 @@
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
+                        <label for="email" class="block mb-1 text-sm font-medium text-gray-700">Email
+                            Address</label>
                         <div class="form-group">
                             <input type="email" name="email" class="form-input @error('email') error @enderror"
-                                placeholder="Email address" value="{{ old('email') }}" autofocus>
+                                value="{{ old('email') }}" autofocus>
                             @error('email')
                                 <div class="text-sm error-message">{{ $message }}</div>
                             @enderror
                         </div>
-
-                        <div class="form-group">
-                            <input type="password" name="password" class="form-input @error('password') error @enderror"
-                                placeholder="Password">
+                        <label for="password" class="block mb-1 text-sm font-medium text-gray-700">Password</label>
+                        <div class="relative form-group">
+                            <input type="password" name="password" id="password"
+                                class="form-input @error('password') error @enderror">
+                            <i class="fas fa-eye-slash password-toggle" onclick="togglePassword('password')"></i>
                             @error('password')
                                 <div class="text-sm error-message">{{ $message }}</div>
                             @enderror
                         </div>
+
 
                         <div class="flex items-center justify-between mb-4">
                             <label class="flex items-center cursor-pointer">
@@ -71,6 +75,26 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const icon = passwordInput.nextElementSibling;
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
+    </script>
+
+
+
     <style>
         :root {
             --primary-color: #4267B2;
@@ -195,6 +219,15 @@
             text-align: center;
             margin-top: 1rem;
         }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
 
         /* Mobile Responsiveness */
         @media screen and (max-width: 768px) {
