@@ -1,13 +1,29 @@
 {
+  "_pusher-DxtW_XPu.js": {
+    "file": "assets/pusher-DxtW_XPu.js",
+    "name": "pusher"
+  },
   "resources/css/app.css": {
-    "file": "assets/app-C_TSVpcb.css",
+    "file": "assets/app-bvfMRazr.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-C1-XIpUa.js",
+    "file": "assets/app-MRmuUb7d.js",
     "name": "app",
     "src": "resources/js/app.js",
-    "isEntry": true
+    "isEntry": true,
+    "imports": [
+      "_pusher-DxtW_XPu.js"
+    ]
+  },
+  "resources/js/echo.js": {
+    "file": "assets/echo-CGWuKy2r.js",
+    "name": "echo",
+    "src": "resources/js/echo.js",
+    "isEntry": true,
+    "imports": [
+      "_pusher-DxtW_XPu.js"
+    ]
   }
 }
